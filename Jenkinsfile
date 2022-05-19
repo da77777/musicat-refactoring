@@ -9,7 +9,7 @@ pipeline {
         stage('git Pull') {
             steps {
 
-                git branch: 'main', changelog: false, poll: false, credentialsId:'musicat-access-token-2', url: 'https://github.com/jhk1231/musicat.git'
+                git branch: 'main', changelog: false, poll: false, credentialsId:'jenkins_acccess_token', url: 'https://github.com/da77777/musicat-refactoring.git'
 
             }
         }
@@ -22,14 +22,14 @@ pipeline {
         
         stage('Deploy') {
             steps {
-                deploy adapters: [tomcat9(credentialsId: 'tomcat-username-password', path: '', url: 'http://3.38.21.160/')], contextPath: '/', onFailure: false, war: '**/*.war'
+                deploy adapters: [tomcat9(credentialsId: 'jekins_access_token', path: '', url: 'http://3.38.88.242/')], contextPath: '/', onFailure: false, war: '**/*.war'
 			}
         }
         
         stage('Restart') {
             steps {
-                sh '''curl -u tomcat:1111 http://3.38.21.160/host-manager/text/stop
-curl -u tomcat:1111 http://3.38.21.160/host-manager/text/start'''
+                sh '''curl -u admin:javatomcat http://3.38.88.242/host-manager/text/stop
+curl -u admin:javatomcat http://3.38.88.242/host-manager/text/start'''
             }
         }
     }
