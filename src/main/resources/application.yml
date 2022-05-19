@@ -2,9 +2,9 @@ spring:
   datasource:
     hikari:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://13.124.245.202:3306/musicat
-      username: scott
-      password: Tiger_1234
+      jdbc-url: jdbc:mysql://3.38.88.242:3306/musicat
+      username: root
+      password: mymysql
 #      jdbc-url: jdbc:mysql://localhost/musicat
 #      username: scott
 #      password: tiger

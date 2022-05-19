@@ -76,6 +76,8 @@ public class TemplateModelFactory {
             List<Map<String, Object>> newMusicInfos = new ArrayList<Map<String, Object>>();
             for (int i = 0; i < musics.size(); ++i) {
                 Map<String, Object> map = (Map<String, Object>) musics.get(i);
+                log.info("뭔데" + (Integer) map.get("memberNo"));
+                log.info("뭐냐고" + memberService.retrieveMemberByManager(1).getNickname());
                 map.put("memberNickname", memberService.retrieveMemberByManager((Integer) map.get("memberNo")).getNickname());
                 newMusicInfos.add((Map<String, Object>) musics.get(i));
             }
