@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.example.musicat.mapper.board.ReplyMapper">
+	
+	
+	<resultMap type="replyVo" id="selectReplyMap">
+		<result property="no" javaType="int" column="reply_no" jdbcType="INTEGER"/>
+		<result property="articleNo" javaType="int" column="article_no" jdbcType="INTEGER"/>
+		<result property="memberNo" javaType="int" column="member_no" jdbcType="INTEGER"/>
+		<result property="nickname" javaType="String" column="nickname" jdbcType="VARCHAR"/>
+		<result property="writeDate" javaType="String" column="writedate" jdbcType="VARCHAR"/>
+		<result property="content" javaType="String" column="content" jdbcType="VARCHAR"/>
+		<result property="groupNo" javaType="int" column="grp" jdbcType="INTEGER" />
+		<result property="sequence" javaType="int" column="seq" jdbcType="INTEGER" />
+		<result property="depth" javaType="int" column="depth" jdbcType="TINYINT" />
+		<result property="hide" javaType="int" column="hide" jdbcType="TINYINT" />
+	</resultMap>
+	
+	<select id="selectAllReply" parameterType="int" statementType="CALLABLE" resultType="replyVo" resultMap="selectReplyMap">
+		{ CALL sp_select_reply(#{articleNo}) }
+	</select>
+	
+	<insert id="insertReply" statementType="CALLABLE" parameterType="replyVo">
+		{ CALL sp_insert_reply(#{articleNo},#{memberNo},  #{nickname}, #{content}) }
+	</insert>
+
+	<insert id="insertDepthReply" statementType="CALLABLE" parameterType="replyVo">
+		{ CALL sp_insert_depth_reply(#{articleNo}, #{memberNo}, #{nickname}, #{content}, #{groupNo}, #{depth}) }
+	</insert>
+	
+	<update id="updateReply" statementType="CALLABLE" parameterType="replyVo">
+		{ CALL sp_update_reply(#{no}, #{content}) }
+	</update>
+	
+	
+	<delete id="deleteReply" statementType="CALLABLE" parameterType="int">
+		{ CALL sp_delete_reply(#{no}) }
+	</delete>
+
+
+	<resultMap type="replyVo" id="selectReplyOneMemberMap">
+		<result property="no" javaType="int" column="reply_no" jdbcType="INTEGER"/>
+		<result property="articleNo" javaType="int" column="article_no" jdbcType="INTEGER"/>
+		<result property="memberNo" javaType="int" column="member_no" jdbcType="INTEGER"/>
+		<result property="writeDate" javaType="String" column="writedate" jdbcType="VARCHAR"/>
+		<result property="content" javaType="String" column="content" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<select id="selectReplyOneMember" resultType="replyVo" resultMap="selectReplyOneMemberMap">
+		SELECT reply_no, article_no, member_no, writedate, content
+		FROM reply
+		WHERE member_no = #{memberNo};
+	</select>
+
+
+</mapper>

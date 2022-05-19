@@ -1,0 +1,79 @@
+@charset "UTF-8";
+
+body{
+    padding-left: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.note-inner-style{
+	
+	width: 70%;
+}
+.note-header-back{
+    /* border: 1px solid #666666; */
+    width: 150px;
+    height: 50px;
+    margin: 10px 0;
+    
+}
+.note-header-back span{
+    display: inline-block;
+    margin: 5px;
+
+}
+.note-header-back span:hover{
+		cursor: pointer;
+}
+.note-header-style{
+    margin: 0 10px 10px 0;
+
+}
+
+.note-header-style span{
+    display: inline-block;
+    border: 1px solid #666666;
+    padding: 10px;
+}
+.note-header-style span:hover{
+    background-color: #666666;
+    cursor: pointer;
+}
+
+.note-contents-style{
+    
+}
+.note-table-style{
+    text-align: center;
+    width: 100%;
+}
+.note-table-style tr td,
+.note-table-style tr th{
+    border: 1px solid #666666;
+    padding: 10px;
+}
+
+.note-btn-style{
+	display: flex;
+	justify-content: flex-end;
+}
+
+.note-del-style{
+    margin-top: 10px;
+    width: 10%;
+    height: 30px;
+    font-size: 12px;
+}
+
+.note-paging-style{
+    margin-top: 10px;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    
+    border-top: 2px solid #666666;
+    border-bottom: 2px solid #666666;
+}
+.note-pagingCenter{
+	margin: 10px 0;
+}

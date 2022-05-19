@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.musicat.mapper.board.CategoryMapper">
+
+<!-- https://jiwontip.tistory.com/80 파라미터 vo 형식으로 받기 -->
+
+	<!-- 카테고리 등록 -->
+	<insert id="insertCategory">
+		INSERT INTO category (categoryname) VALUE ( #{categoryName} )
+	</insert>
+	
+	
+	<!-- 카테고리 수정 -->
+  	<update id="updateCategory">
+		UPDATE category SET categoryname = #{categoryName}
+		WHERE category_no = #{categoryNo}
+	</update> 
+
+
+	<!-- 카테고리와 연결된 게시판 유무 체크 -->
+	<select id="selectConnectBoard" resultType="int">
+		SELECT count(*)
+		FROM board
+		WHERE category_no = #{categoryNo};
+	</select>
+
+	<!-- 카테고리 삭제 -->
+	<delete id="deleteCategory">
+		DELETE FROM category WHERE category_no = #{categoryNo}
+	</delete>
+
+
+	<!-- 카테고리 조회 -->
+	<resultMap type="categoryVo" id="selectCategoryResultMap">
+		<result property="categoryName" javaType="string" column="categoryname" jdbcType="VARCHAR"/>
+		<result property="categoryNo" javaType="int" column="category_no" jdbcType="INTEGER"/>
+	</resultMap>
+
+	<select id="selectOneCategory" resultType="categoryVo" resultMap="selectCategoryResultMap"	>
+		SELECT categoryname, category_no 
+		FROM category
+		WHERE category_no = #{categoryNo};
+	</select>
+
+	<!-- 카테고리 목록 조회 -->
+	<select id="selectCategoryList" resultType="categoryVo" resultMap="selectCategoryResultMap">
+		SELECT category_no, categoryname 
+		FROM category
+		GROUP BY category_no;
+	</select>
+	
+	
+	<!-- 카테고리, 게시판 목록 조회 -->
+  	<resultMap type="categoryVo" id="selectCategoryListResultMap">
+		<result property="categoryNo" javaType="int" column="category_no" jdbcType="INTEGER"/>
+		<result property="categoryName" javaType="string" column="categoryname" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap type="boardVo" id="selectBoardListResultMap">
+		<!--  -->
+		<result property="categoryNo" javaType="int" column="category_no" jdbcType="INTEGER"/>
+		<result property="boardNo" javaType="int" column="board_no" jdbcType="INTEGER"/>
+		<result property="boardName" javaType="string" column="boardname" jdbcType="VARCHAR"/>
+		<result property="boardkind" javaType="int" column="boardkind" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	<resultMap type="categoryBoardVo" id="selectCategoryBoardListResultMap">
+		<collection property="categoryVo" resultMap="selectCategoryListResultMap" />
+		<collection property="boardVo" resultMap="selectBoardListResultMap" />
+	</resultMap>
+		
+	<select id="selectCategoryBoardList"  resultType="categoryBoardVo" resultMap="selectCategoryBoardListResultMap">
+		SELECT c.category_no, c.categoryname, b.board_no, b.boardname, b.boardkind
+		FROM category AS c LEFT JOIN board AS b
+		ON c.category_no = b.category_no
+		ORDER BY c.category_no, b.board_no
+	</select>
+	
+	
+	
+	<!-- 카테고리 이름 중복 체크 -->
+	<select id="selectDuplicatedCategory" resultType="INTEGER">
+		SELECT category_no
+		FROM category
+		WHERE categoryname = #{categoryName};
+	</select>
+
+
+
+
+	
+</mapper>

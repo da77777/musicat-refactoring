@@ -1,0 +1,41 @@
+@charset "utf-8";
+
+.total-header{
+	border-bottom: 1px solid #444444;
+}
+
+.statistics-header table {
+  width: 30%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.statistics-header table tr td {
+  border: 1px solid #444444;
+  padding: 7px;
+}
+
+.statistics-header table tr td:hover {
+  background-color: #9c9c9c;
+  cursor: pointer;
+}
+
+.content-chart {
+  border-top: 1px solid #444444;
+  border-bottom: 1px solid #444444;
+}
+
+.daily-text table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.daily-text table tr td,
+.daily-text table tr th {
+  border: 1px solid #444444;
+}
+
+.daily-text table tr th {
+  background-color: #9c9c9c;
+}

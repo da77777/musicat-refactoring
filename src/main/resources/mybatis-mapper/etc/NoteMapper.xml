@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.musicat.mapper.etc.NoteMapper">
+	<select id="test" resultType="noteVo">
+		SELECT *
+		FROM note
+		WHERE note_no = 1 
+	</select>
+
+	<!-- 쪽지 리스트 select -->
+	<select id="selectNoteList" parameterType="noteVO" resultType="noteVo">
+		SELECT note.note_no, note.member_no, note.notecontent_no, note.counterpart_no, note.counterpart_nickname,
+		notecontent.content, note.sendDate, note.readdate, note.sendrecieve
+		FROM note, notecontent
+		WHERE note.member_no = #{userNo} AND note.sendrecieve = #{isUserReciever}
+		AND note.notecontent_no = notecontent.notecontent_no
+		ORDER BY note_no DESC
+		LIMIT #{pageSize} OFFSET #{startOffset}
+	</select>
+	
+	<!-- 쪽지 갯수 select -->
+	<select id="selectTotalNoteCount" resultType="INTEGER">
+		SELECT COUNT(*)
+		FROM note
+		WHERE member_no = #{userNo} AND sendrecieve = #{isRecieve}
+	</select>
+	
+
+	<!-- 쪽지 상세 조회 select -->
+	<select id="selectNote" resultType="noteVo">
+		SELECT note.note_no, notecontent.notecontent_no, note.counterpart_no, note.counterpart_nickname, notecontent.content,
+			   note.sendDate, note.readdate, note.sendrecieve
+		FROM note, notecontent
+		WHERE note.note_no = #{noteNo} AND note.notecontent_no = notecontent.notecontent_no
+	</select>
+	
+	<!-- 쪽지 읽음 update -->
+	<update id="updateRead_member">
+		UPDATE note
+		SET readdate = NOW()
+		WHERE note.notecontent_no = #{noteNo} AND member_no = #{userNo} AND note.sendrecieve = #{isRecieve}
+	</update>
+	<update id="updateRead_counterpart">
+		UPDATE note
+		SET readdate = NOW()
+		WHERE note.notecontent_no = #{noteNo} and counterpart_no = #{userNo} and note.sendrecieve = #{isRecieve}
+	</update>
+	
+	<!-- 쪽지 insert -->
+	<insert id = "insertNoteContent">
+		INSERT INTO notecontent(content) VALUES(#{content})
+	</insert>
+	<select id = "selectLastID" resultType="INTEGER">
+		SELECT LAST_INSERT_ID()
+	</select>
+	<insert id="insertNote_member" parameterType="Map">
+		INSERT INTO note(notecontent_no, member_no, counterpart_no, counterpart_nickname, sendrecieve)
+		VALUES(#{notecontent_no}, #{member_no}, #{counterpart_no}, #{counterpart_nickname}, #{sendrecieve_member})
+	</insert>
+	<insert id="insertNote_counterpart" parameterType="Map">
+		INSERT INTO note(notecontent_no, member_no, counterpart_no, counterpart_nickname, sendrecieve)
+		VALUES(#{notecontent_no}, #{counterpart_no}, #{member_no}, #{member_nickname}, #{sendrecieve_counterpart})
+	</insert>
+	
+	<!-- 쪽지 삭제 -->
+	<delete id = "deleteNote" parameterType="noteVo">
+		DELETE FROM note
+		WHERE notecontent_no = #{notecontent_no} AND member_no = #{member_no}
+	</delete>
+	<update id = "updateRecieveDeleteOnNoteContent" parameterType="noteVo">
+		UPDATE notecontent
+		SET recieveDelete = 1
+		WHERE notecontent_no = #{notecontent_no} 
+	</update>
+	<update id = "updateSendDeleteOnNoteContent" parameterType="noteVo">
+		UPDATE notecontent
+		SET sendDelete = 1
+		WHERE notecontent_no = #{notecontent_no} 
+	</update>
+	<delete id="deleteNoteContent">
+		DELETE FROM notecontent
+		WHERE recieveDelete = 1 AND sendDelete = 1
+	</delete>
+	
+</mapper>

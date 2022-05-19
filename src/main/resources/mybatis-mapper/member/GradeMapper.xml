@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.musicat.mapper.member.GradeMapper">
+<!--	<resultMap type="gradeVo" id="gradeInfo">-->
+<!--		<result property="gradeNo" javaType="int" column="grade_no" jdbcType="SMALLINT"/>-->
+<!--		<result property="name" javaType="string" column="name" jdbcType="VARCHAR"/>-->
+<!--		<result property="docs" javaType="int" column="docs" jdbcType="INTEGER"/>-->
+<!--		<result property="comms" javaType="int" column="comms" jdbcType="INTEGER"/>-->
+<!--		<result property="person" javaType="int" column="person" jdbcType="INTEGER"/>-->
+<!--	</resultMap>-->
+
+	<resultMap type="boardVO" id="boardNameInfo">
+		<result property="boardName" javaType="string" column="boardname" jdbcType="VARCHAR"/>
+	</resultMap>
+
+<!--	<select id="selectGradeList" resultType="gradeVo" resultMap="gradeInfo">-->
+<!--		SELECT G.grade_no, name, G.docs, G.comms, COUNT(M.grade_no) AS person-->
+<!--		FROM member M RIGHT JOIN grade G-->
+<!--		ON M.grade_no = G.grade_no-->
+<!--		GROUP BY G.grade_no, name, G.docs, G.comms-->
+<!--		ORDER BY G.grade_no ASC-->
+<!--	</select>-->
+
+	<update id="rearrangeMemberGrade" statementType="CALLABLE">
+		{ CALL sp_member_grade_modification() }
+	</update>
+
+	<select id="selectReadBoardByGrade" parameterType="int" resultType="boardVO" resultMap="boardNameInfo">
+		SELECT boardName
+		FROM board
+		WHERE board_no = 
+		ANY(
+		SELECT board_no
+		FROM board_grade BG LEFT JOIN grade G
+		ON BG.grade_no = G.grade_no
+		WHERE (readwrite = 0) AND ((G.grade_no &lt; #{gradeNo}) OR (G.grade_no = #{gradeNo}))
+		)
+	</select>
+	
+	<select id="selectWriteBoardByGrade" parameterType="int" resultType="boardVO" resultMap="boardNameInfo">
+		SELECT boardName
+		FROM board
+		WHERE board_no = 
+		ANY(
+		SELECT board_no
+		FROM board_grade BG LEFT JOIN grade G
+		ON BG.grade_no = G.grade_no
+		WHERE (readwrite = 1) AND ((G.grade_no &lt; #{gradeNo}) OR (G.grade_no = #{gradeNo}))
+		)
+	</select>
+	
+	<parameterMap type="gradeVo" id="insertVo">
+		<parameter property="gradeNo" javaType="int" jdbcType="INTEGER"/>
+		<parameter property="name" javaType="string" jdbcType="VARCHAR"/>
+		<parameter property="docs" javaType="int" jdbcType="INTEGER"/>
+		<parameter property="comms" javaType="int" jdbcType="INTEGER"/>
+	</parameterMap>
+	
+	<insert id="updateGrade" parameterType="gradeVo" parameterMap="insertVo">
+		INSERT INTO grade(grade_no, name, docs, comms)
+		VALUES (#{gradeNo}, #{name}, #{docs}, #{comms}) 
+		ON DUPLICATE KEY UPDATE name = #{name}, docs = #{docs}, comms = #{comms}   
+	</insert>
+	
+	<update id="rearrangeGrade" parameterType="int" statementType="CALLABLE">
+		{ CALL sp_before_delete_grade(#{no}) }
+	</update>
+	
+	<delete id="deleteGrade" parameterType="int">
+		DELETE FROM grade
+		WHERE grade_no = #{no}
+	</delete>
+	
+	<update id="fillEmptyNum" statementType="CALLABLE">
+		{ CALL fill_empty_grade_no() }
+	</update>
+	
+	<update id="standGrade" statementType="CALLABLE">
+		{ CALL sp_sort_grade() }
+	</update>
+
+<!-- 양 ~	-->
+<!-- 사용자 등급에 따른 gradeNo 조회 -->
+	<resultMap type="int" id="selectGradeNoResultMap" >
+		<result property="gradeNo" javaType="int" column="grade_no" jdbcType="SMALLINT"/>
+	</resultMap>
+
+	<select id="selectGradeNo" parameterType="String" resultMap="selectGradeNoResultMap">
+		SELECT grade_no FROM  grade WHERE auth = #{auth}
+	</select>
+
+<!-- 등급 목록 조회 -->
+	<resultMap type="gradeVo" id="selectGradeListResultMap">
+		<result property="gradeNo" javaType="int" column="grade_no" jdbcType="SMALLINT"/>
+		<result property="grade" javaType="String" column="auth" jdbcType="VARCHAR"/>
+		<result property="name" javaType="String" column="name" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<select id="selectGradeList" resultMap="selectGradeListResultMap">
+		SELECT grade_no, auth, name
+		FROM grade
+		ORDER BY grade_no DESC
+	</select>
+<!-- ~ 양	-->
+</mapper>

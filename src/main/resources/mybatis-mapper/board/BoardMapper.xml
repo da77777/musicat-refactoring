@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.musicat.mapper.board.BoardMapper">
+	
+	<!-- 게시판 추가 -->
+	<insert id="insertBoard" parameterType="boardVo">
+		INSERT INTO board (category_no, boardname, boardkind)
+		VALUE (#{categoryNo}, #{boardName}, #{boardkind});
+	</insert>
+	
+	<!-- 마지막에 추가된 게시판 번호 조회 -->
+	<select id="selectLastInsertBoardNo" resultType="int">
+		SELECT last_insert_id();
+	</select>
+	
+	<!-- 게시판 등급 추가 -->
+	<insert id="insertBoardGrade" statementType="CALLABLE">
+		{ CALL sp_insert_board_grade(#{boardNo}, #{readGrade}, #{writeGrade}) }
+	</insert>
+
+
+	<!-- 게시판 종류 조회 -->
+	<resultMap id="selectBoardkindResultMap" type="boardVo">
+		<result property="boardkind" javaType="int" column="boardkind" jdbcType="INTEGER"/>
+		<result property="boardkindName" javaType="String" column="boardkind_name" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<select id="selectBoardkind" resultMap="selectBoardkindResultMap"  resultType="boardVo">
+		SELECT boardkind, boardkind_name
+		FROM boardkind;
+	</select>
+
+	<!-- 게시판과 연결된 게시글 조회 -->
+	<select id="selectConnectArticle" resultType="int">
+		SELECT count(*)
+		FROM article
+		WHERE board_no = #{boardNo};
+	</select>
+	
+	<!-- 게시판 삭제 -->
+	<delete id="deleteBoard" statementType="CALLABLE">
+		{ CALL sp_delete_board(#{boardNo}) }
+	</delete>
+
+	<!-- 게시판 수정 -->
+	<update id="updateBoard" statementType="CALLABLE" parameterType="hashmap">
+		{ CALL sp_update_board(#{boardVo.boardNo}, 
+		#{boardVo.categoryNo}, #{boardVo.boardName}, #{boardVo.boardkind}, 
+		#{boardGradeVo.readGrade}, #{boardGradeVo.writeGrade}) }
+	</update>
+
+	<!-- 게시판 조회 -->
+	<resultMap type="boardVo" id="boardVoMap">
+		<result property="categoryNo" javaType="int" column="category_no" jdbcType="INTEGER"/>
+		<result property="boardNo" javaType="int" column="board_no" jdbcType="INTEGER"/>
+		<result property="boardName" javaType="string" column="boardname" jdbcType="VARCHAR"/>
+		<result property="boardkind" javaType="int" column="boardkind" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	<resultMap type="boardGradeVo" id="boardGradeVoMap">
+		<!-- selectOneBoard -->
+		<result property="readGrade" javaType="int" column="readgrade" jdbcType="INTEGER"/>
+		<result property="writeGrade" javaType="int" column="writegrade" jdbcType="INTEGER"/>
+		<!-- selectAllBoard -->
+		<result property="gradeNo" javaType="int" column="grade_no" jdbcType="INTEGER"/>
+		<result property="readwrite" javaType="int" column="readwrite" jdbcType="INTEGER"/>
+	</resultMap>
+ 
+	<resultMap type="boardBoardGradeVo" id="boardBoardGradeResultMap">
+		<collection property="boardVo" resultMap="boardVoMap"/>
+		<collection property="boardGradeVo" resultMap="boardGradeVoMap"/>
+	</resultMap>
+		
+	
+	<select id="selectOneBoard" resultType="boardBoardGradeVo" resultMap="boardBoardGradeResultMap">
+		{CALL sp_select_one_board(#{boardNo}) }	
+	</select>
+	
+	<!-- 게시판 조회 (전체 - 카테고리 이름 제외) -->
+	<select id="selectAllBoard" resultType="boardBoardGradeVo" resultMap="boardBoardGradeResultMap">
+		SELECT category_no, board_no, boardname, boardkind, grade_no, readwrite
+		FROM board_grade JOIN board USING (board_no);
+	</select>
+	
+	<!-- 게시판 중복 조회 -->
+	<select id="selectDuplicatedBoard" resultType="INTEGER">
+		SELECT board_no
+		FROM board
+		WHERE boardname = #{boardName};
+	</select>
+
+	<!-- 게시판 이름 목록 조회 (MyPage 내댓글 목록에 게시판 이름 띄울 예정 -->
+	<resultMap id="selectBoardNameListResultMap" type="boardVo">
+		<result property="boardNo" javaType="int" column="board_no" jdbcType="INTEGER"></result>
+		<result property="boardName" javaType="String" column="boardname" jdbcType="VARCHAR"></result>
+	</resultMap>
+	<select id="selectBoardNameList" resultType="boardVo" resultMap="selectBoardNameListResultMap">
+		SELECT board_no, boardname
+		FROM board;
+	</select>
+	
+	<!-- 즐겨찾기 게시판 추가 -->
+	<insert id="insertLikeBoard">
+		INSERT INTO likeboard (member_no, board_no) VALUE (#{memberNo}, #{boardNo});
+	</insert>
+
+	<!-- 즐겨찾기 게시판 삭제 -->
+	<delete id="deleteLikeBoard">
+		 DELETE FROM likeboard
+		 WHERE member_no = #{memberNo} AND board_no = #{boardNo};
+	</delete>
+
+	<!-- 즐겨찾기 게시판 여부 조회 -->
+	<select id="selectLikeBoard" resultType="int">
+		SELECT COUNT(*)
+		FROM likeboard
+		WHERE member_no = #{memberNo} AND board_no = #{boardNo};
+	</select>
+	
+	<!-- 즐겨찾기 게시판 조회 -->
+  	<resultMap type="boardVo" id="selectLikeBoardListResultMap">
+		<result property="boardNo" javaType="int" column="board_no" jdbcType="INTEGER"/>
+		<result property="boardName" javaType="string" column="boardname" jdbcType="VARCHAR"/>
+	</resultMap> 
+	
+	<select id="selectLikeBoardList" resultType="boardVo" resultMap="selectLikeBoardListResultMap">
+		SELECT board_no, boardname
+		FROM board
+		WHERE board_no IN (SELECT board_no
+						   FROM likeboard
+						   WHERE member_no = #{memberNo});
+	</select>
+	
+</mapper>

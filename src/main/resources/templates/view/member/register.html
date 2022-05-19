@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta property="og:description" content="Hello. This is a music site. Share your information.">
+    <meta name="description" content="Hello. This is a music site. Share your information.">
+    <link rel="shortcut icon" th:href="@{/upload/favicon.ico}">
+    <title>Musicat - Register</title>
+    <link href="css/theme_styles.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
+            crossorigin="anonymous"></script>
+</head>
+<body class="bg-primary">
+<div id="layoutAuthentication">
+    <div id="layoutAuthentication_content">
+        <main>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-7">
+                        <div class="card shadow-lg border-0 rounded-lg mt-5">
+                            <div class="card-header">
+                                <h3 class="text-center font-weight-light my-4">Create
+                                    Account</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="join-form"
+                                      method="POST" th:action="@{/join}" th:object="${form}"
+                                      onsubmit="return confirm('회원가입 하시겠습니까?')">
+
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="inputEmail" type="email"
+                                               th:field="*{email}" placeholder="name@example.com" required="required"/>
+                                        <label for="inputEmail">Email
+                                            address</label>
+                                        <!-- th:field="${member.email}" 설명 : 사용자가 view에서 입력한 내용을 member라는 빈칸 종이 양식에서 email 항목에 쓰겠다. -->
+
+                                    </div>
+                                    <p id="email-access" ></p>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <div class="form-floating mb-3 mb-md-0">
+                                                <input class="form-control" id="inputPassword"
+                                                       type="password" th:field="*{password}"
+                                                       placeholder="Create a password" required="required"/> <label
+                                                    for="inputPassword">Password</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-floating mb-3 mb-md-0">
+                                                <input class="form-control" id="inputPasswordConfirm"
+                                                       type="password" placeholder="Confirm password"
+                                                       th:field="*{confirmPassword}" required="required"/> <label
+                                                    for="inputPasswordConfirm">Confirm Password</label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <p id="password-access"></p>
+                                    <div class="form-floating mt-3 ">
+                                        <input class="form-control" id="inputFirstName" type="text"
+                                               th:field="*{nickname}" placeholder="Enter your first name"
+                                               required="required"/> <label
+                                            for="inputFirstName">nickname</label>
+                                    </div>
+                                    <p id="nickname-access"></p>
+                                    <div class="mt-4 mb-0">
+                                        <div class="d-grid">
+                                            <button type="button" class="btn btn-primary btn-block"
+                                                    id="join_btn">Create
+                                                Account
+                                            </button>
+
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="card-footer text-center py-3">
+                                <div class="small">
+                                    <a href="/musicatlogin">Have an account? Go to login</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</div>
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+<script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+<script th:src="@{/js/register.js}"></script>
+</body>
+<style>
+    #email-access {
+        color: red;
+    }
+    #password-access {
+        color: red;
+    }
+    #nickname-access {
+        color: red;
+    }
+</style>
+</html>

@@ -1,0 +1,152 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<meta charset="UTF-8"/>
+	<!-- 작성 폼 css -->
+	<link th:href="@{/css/writeArticleStyle.css}" rel="stylesheet" />
+	<link th:href="@{/css/detailAudioArticle.css}" rel="stylesheet" />
+<div id="layoutSidenav_content">
+	<main>
+
+		<div class="container-fluid px-4">
+
+			<div class="row mt-3 mb-5">
+
+				<div id="write_board_page" class="write-board-style">
+					<form id="insertForm" enctype="multipart/form-data" th:object="${form}"
+						  th:action="@{/articles/insert}" method="post" class="board-form-style">
+
+						<input type="hidden" id="memberNo" th:value="${memberNo}">
+						<input type="hidden" id="tags" name="tags" value="">
+
+						<!-- 게시판 설정-->
+						<div id="selectBoard" class="select-board-style">
+							<select id="boardList" th:field="*{boardNo}">
+								<option value="0" selected>게시판을 선택하세요.</option>
+								<option th:each="board: ${boardList}"
+									th:value="${board.boardNo}" th:text="${board.boardName}">
+								</option>
+							</select>
+							<p th:if="${#fields.hasErrors('boardNo')}"
+							   th:errors="*{boardNo}"></p>
+							<!--tag-->
+							<div class="content-tag-style">
+								<div>
+									<h4>Tag</h4>
+									<input type="text" id="tag" size="20" placeholder="태그입력" />
+								</div>
+								<ul id="tag-list" class="tag-list">
+								</ul>
+							</div>
+						</div>
+
+
+						<div id="write_area" class="write-area-style">
+							<!-- 개발 후 display:none 풀기 -->
+							<div class="write_options" style="display: none;">
+								<!-- 공지사항 출력 여부 -->
+								<div class="displayNotice">
+
+									<!-- 관리자가 아니면 미설정을 default로 -->
+									<input th:unless="${gradeNo}==1" type="hidden"
+										name="displayNotice" value=0>
+
+									<!-- 관리자면 활성화 -->
+
+									<p id="noticeCheck" th:if="${gradeNo}==1" style="width: 50%;">공지등록</p>
+									<select id="displayNotice" th:if="${gradeNo}==1"
+										th:field="*{displayNotice}">
+										<option value="0" selected>미설정</option>
+										<option value="1">공지 설정</option>
+									</select>
+								</div>
+							</div>
+							<div id="in_subject" class="write-subject-style">
+								<textarea id="utitle" th:field="*{subject}" rows="1" cols="55"
+									placeholder="제목" maxlength="100"></textarea>
+								<p th:if="${#fields.hasErrors('subject')}"
+								   th:errors="*{subject}"></p>
+							</div>
+
+							<div id="import_bth" class="write-area-style">
+								<!-- &lt;!&ndash; 첨부파일 &ndash;&gt; -->
+								<label class="write-file-style" for="write-attachefile-upload">
+									<i class="fas fa-file-upload fa-2x"></i>
+									<span id="file-upload-filename"></span>
+								</label>
+
+								<input type="file" id="write-attachefile-upload" th:field="*{importAttacheFile}" />
+
+								<!-- &lt;!&ndash; 이미지 파일 첨부 &ndash;&gt; -->
+								<label class="write-image-style" for="write-imagefile-upload">
+									<i class="far fa-file-image fa-2x"></i>
+								</label>
+
+								<input type="file" id="write-imagefile-upload" th:field="*{imageFiles}"
+									onchange="setThumbnail(event)" multiple="multiple" />
+									<a name="selectbtnimage" id="selectimage"></a>
+
+								<label class="write-audio-style" for="write-audiofile-upload">
+									<i class="fas fa-file-audio fa-2x"></i>
+								</label>
+								<input type="button" value="노래 등록" onclick="openChild()" id="write-audiofile-upload"/><br />
+<!--								<img src="/importfile.png" board='0'onclick="document.all.selectFile.click();document.all.selectbtnimage.value=document.all.selectFile.value" />-->
+							</div>
+							<div id="image_container">
+<!--								<div id="image_container"></div>-->
+							</div>
+
+							<div id="in_content" class="write-content-style">
+								<textarea id="content" th:field="*{content}" placeholder="내용"
+									 rows="1" cols="71"></textarea>
+								<p th:if="${#fields.hasErrors('content')}"
+								   th:errors="*{content}"></p>
+							</div>
+							<!-- 음악 등록 칸 -->
+							<div id="receive" style="display:none" class="detail-audio-style">
+								<div class="detail-audio-part-style">
+									<img id="detailAudioImg" src="images/시보.png" alt="" srcset="" />
+
+									<div id="audioDiv" class="detail-audioDiv-style">
+										<div id="audioInfoDiv" class="detail-audioInfo-style">
+											<button
+													id="audioPlayBtn"
+													class="audioPlayBtn"
+													onclick="detailPlayAudio()"
+													style="visibility: hidden"
+											>
+												<span id="audioPlayIcon" class="material-icons">play_circle</span>
+											</button>
+
+											<span id="audioTitle" class="audioTitle">제목입니다~</span>
+											<input type="hidden" id="audioNo" name="audioNo" value="" />
+											<button type="button" class="audioDelBtn" onclick="test(this)">
+												<span id="audioDelIcon" class="material-icons">close</span>
+											</button>
+										</div>
+										<div class="detail-audioControls-style">
+											<!--            <div id="waveform"></div>-->
+											<!--            <p id="audioResource" style="display: none"></p>-->
+											<audio
+													src="file_example_MP3_2MG.mp3"
+													id="detail-audio"
+													controls
+
+											></audio>
+											<!--              style="display: none"-->
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="write-btn-style">
+								<input class="btn" type="button" value="취소" onclick="history.back()">
+								<input class="btn" type="button" id="write_btn" value="등록">
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</main>
+</div>
+</html>

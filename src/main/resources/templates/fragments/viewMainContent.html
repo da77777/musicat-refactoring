@@ -1,0 +1,130 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
+<link th:href="@{/css/homeContentsStyle.css}" rel="stylesheet"/>
+
+<div id="layoutSidenav_content" class="mb-4">
+    <main>
+        <div class="container-fluid px-4">
+
+            <div class="row mt-3 mb-5">
+
+                <div class="content-top">
+                    <div class="content-top-left">
+                        <!-- Swiper -->
+                        <div class="swiper mySwiper">
+                            <div class="swiper-wrapper">
+                                <th:block th:each="bestArticle : ${bestArticles}">
+                                    <div class="swiper-slide">
+                                        <a th:href="|/articles/${bestArticle.articleNo}|">
+                                            <img style="width:500px; height:450px; object-fit: cover;" th:src="${bestArticle.systemFileName}">
+                                        </a>
+                                    </div>
+                                </th:block>
+
+                            </div>
+                            <div class="swiper-button-next"></div>
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-pagination"></div>
+                        </div>
+                    </div>
+                    <div class="content-top-right">
+                        <div class="content-top-right-title">
+                            <span>Top 10 베스트 글</span>
+                        </div>
+                        <div class="content-top-right-table">
+                            <table>
+                                <tbody>
+                                <tr th:each="bestArticle : ${bestArticles}">
+                                    <!--                                    <td><img src="http://13.124.245.202:20000/api/musics/78ba0de4-7f75-4282-8b57-aac68198770c.audio"></td>-->
+                                    <td><img th:src="${bestArticle.systemFileName}"></td>
+                                    <td th:text="${bestArticle.rank}"></td>
+                                    <td style="display: inline-block">
+                                        <a th:text="${bestArticle.subject}"
+                                           th:href="|/articles/${bestArticle.articleNo}|"></a>
+                                    </td>
+                                    <!--                                        <td th:text="${bestArticle.likecount}"></td>-->
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-table me-1"></i><span> 전체 글 보기</span>
+                </div>
+                <div class="card-body">
+                    <table id="datatablesSimple" class="list-normal-table">
+                        <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>제목</th>
+                            <th>작성자</th>
+                            <th>날짜</th>
+                            <th>조회수</th>
+                            <th>좋아요</th>
+                        </tr>
+                        </thead>
+
+                        <tfoot>
+                        <tr>
+                            <th>No</th>
+                            <th>제목</th>
+                            <th>작성자</th>
+                            <th>날짜</th>
+                            <th>조회수</th>
+                            <th>추천</th>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+                        <tr th:each="article : ${articleList}">
+                            <td th:text="${article.no}"></td>
+                            <td>
+                                <a th:text="${article.subject}"
+                                   th:href="|/articles/${article.no}|"></a>
+                            </td>
+                            <!-- DropBox-->
+                            <td class="dropdown">
+                                <a class="dropdown-toggle" data-bs-toggle="dropdown"
+                                   th:text="${article.nickname}">
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item"
+                                           th:href="|/myPage/Playlist/${article.memberNo}|">MyPage</a></li>
+                                    <li><a class="dropdown-item" href="/notelist">쪽지함</a></li>
+                                </ul>
+                            </td>
+                            <!-- DropBox-->
+                            <td th:text="${article.writeDate}"></td>
+                            <td th:text="${article.viewcount}"></td>
+                            <td th:text="${article.likecount}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+<!-- Initialize Swiper -->
+<script>
+    var swiper = new Swiper(".mySwiper", {
+        slidesPerView: 1,
+        spaceBetween: 30,
+        loop: true,
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+    });
+</script>
+</html>

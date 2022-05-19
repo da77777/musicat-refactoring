@@ -1,0 +1,29 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<meta charset="UTF-8"/>
+<link th:href="@{../css/boardManagerStyle.css}" rel="stylesheet" />
+<link th:href="@{/css/theme_styles.css}" rel="stylesheet"/>
+
+<link
+        href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet"
+/>
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
+<div id="layoutSidenav_content">
+    <main class="h-75 d-flex flex-column justify-content-center align-items-center">
+        <i class="far fa-engine-warning fa-9x"></i>
+        <h2 class="my-3 fw-bold">접근 권한이 없습니다.</h2>
+        <button class="btn btn-primary" onclick="previousPage()">이전페이지로 돌아가기</button>
+
+        <script>
+            function previousPage() {
+                window.history.go(-1);
+            }
+        </script>
+    </main>
+</div>
+</html>

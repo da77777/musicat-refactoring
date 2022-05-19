@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="head">
+    <title>Musicat</title>
+    <meta property="og:description" content="Hello. This is a music site. Share your information.">
+    <meta name="description" content="Hello. This is a music site. Share your information.">
+    <link rel="shortcut icon" th:href="@{/upload/favicon.ico}">
+    <link
+            th:href="@{https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css}"
+            rel="stylesheet"/>
+    <link th:href="@{/css/theme_styles.css}" rel="stylesheet"/>
+
+    <link th:href="@{/css/homeNavStyle.css}" rel="stylesheet"/>
+    <link th:href="@{/css/homeHeaderStyle.css}" rel="stylesheet"/>
+
+
+</th:block>
+
+<body class="sb-nav-fixed">
+
+<!-- Header -->
+<th:block layout:fragment="viewFrameHeader"
+          th:include="@{/fragments/viewFrameHeader}"></th:block>
+
+<div id="layoutSidenav">
+    <!-- Nav -->
+    <th:block layout:fragment="nav" th:include="@{/fragments/managerNav}"></th:block>
+    <!-- Content -->
+    <th:block layout:fragment="viewMainContent"
+              th:include="@{${managerContent}}"></th:block>
+</div>
+
+<!-- footer -->
+<!--<th:block layout:fragment="viewFrameFooter"-->
+<!--          th:include="@{/fragments/viewFrameFooter}"></th:block>-->
+
+<!-- Script -->
+
+<script th:src="@{/js/all.min.js}" th:crossorigin="anonymous"></script>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"
+        th:crossorigin="anonymous"></script>
+<script th:src="@{/js/scripts.js}"></script>
+
+<script th:src="@{/js/simple-datatables@latest.js}"
+        th:crossorigin="anonymous"></script>
+<script th:src="@{/js/datatables-simple-demo.js}"></script>
+
+<!--<script th:src="@{/js/playAudioSetting.js}"></script>-->
+
+
+</body>
+</html>

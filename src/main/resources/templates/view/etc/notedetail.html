@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+
+<script
+	th:src="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js}"
+	th:crossorigin="anonymous"></script>
+
+<link th:href="@{css/bootstrap.min.css}" rel="stylesheet"
+	type="text/css" />
+<link th:href="@{css/theme_styles.css}" rel="stylesheet" type="text/css" />
+<link th:href="@{css/noteDetailStyle.css}" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<!-- <a th:href="@{/notelist(isRecieve=${isRecieve})">목록으로</a> -->
+	<div class="note-inner-style">
+		<div class="noteDetail-center-style">
+			<span th:if="${isRecieve} == 1">보낸사람 : </span> <span
+				th:if="${isRecieve} == 0">받은사람 : </span> <span
+				th:text="${note.counterpart_nickname}"></span> <br> 날짜 : <span
+				th:text="${note.sendDate}"></span> <br> 내용 : <span
+				th:text="${note.content}"></span> <br>
+
+			<form action="/deletenote" method="POST">
+				<input type="hidden" name="deleteNote"
+					th:value="${note.notecontent_no}" /> <input type="hidden"
+					name="isRecieve" th:value="${note.sendrecieve}" />
+				<button type="submit">삭제</button>
+			</form>
+		</div>
+	</div>
+
+</body>
+</html>

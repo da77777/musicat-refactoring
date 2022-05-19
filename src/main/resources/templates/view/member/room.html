@@ -1,0 +1,131 @@
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>방 내부</title>
+
+    <link rel="stylesheet" href="/css/reset.css" />
+    <link rel="stylesheet" href="/css/chatRoomInner.css" />
+    <link th:href="@{/css/theme_styles.css}" rel="stylesheet"/>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div>
+        <h1 class="chat-title">[[${room.name}]]</h1>
+      </div>
+<!--      <div class="forID" th:id="${username}"></div>-->
+      <div class="chat-list">
+        <div id="msgArea" class="col chat-content">
+          <!-- 여기는 테스트 -->
+<!--          <div class="col-6 myChat">-->
+<!--            <div class="myChat-right chat-style">-->
+<!--              <b> 내가 친 채팅</b>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="col-6 otherChat">-->
+<!--            <div class="otherChat-left chat-style">-->
+<!--              <b> 너가 친 채팅</b>-->
+<!--            </div>-->
+<!--          </div>-->
+
+
+          <!-- 여기는 테스트 -->
+        </div>
+        <div class="chat-btn">
+          <div class="chat-btn-content">
+            <input type="text" id="msg" class="form-control chat-input" />
+            <div class="chat-btn-div">
+              <button
+
+                type="button"
+                id="button-send"
+              >
+                전송
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script th:inline="javascript">
+      $(document).ready(function(){
+          var roomName = [[${room.name}]];
+          var roomId = [[${room.roomId}]];
+          //var username = $('.forID').attr('id');
+
+          var username = [[${#authentication.principal.getMemberVo.getNickname}]];
+
+
+
+          console.log(roomName + ", " + roomId + ", " + username);
+
+          var sockJs = new SockJS("/stomp/topic");
+          var stomp = Stomp.over(sockJs);
+
+          stomp.connect({}, function(){
+               console.log("STOMP Connection");
+
+               stomp.subscribe("/sub/topic/chat/room/" + roomId, function(chat) {
+                  var content = JSON.parse(chat.body);
+                  var writer = content.writer;
+                  var message = content.message;
+                  var str = "";
+
+                  console.log(content);
+                  if(content.userOuted == true){
+                    alert("퇴장 당하셨습니다.");
+                    window.close();
+                  }
+                  else if(content.system == true){
+                    str = "<div class = 'mb-2'>";
+                    str += "<div class = 'alert alert-secondary'>";
+                    str += "<b>" + " 시스템 : " + message + "</b>";
+                    str += "</div></div>";
+                  }
+                  else if(writer === username) {
+                      str = "<div class = 'myChat mb-2'>";
+                      str += "<div class = 'myChat-right chat-style'>";
+                      str += "<b>" + content.writer + " : " + message + "</b>";
+                      str += "</div></div>";
+                      //$("#msgArea").append(str);
+                  }
+                  else {
+                      str = "<div class = 'otherChat mb-2'>";
+                      str += "<div class = 'otherChat-left chat-style'>";
+                      str += "<b>" + writer + " : " + message + "</b>";
+                      str += "</div></div>";
+                      //$("#msgArea").append(str);
+                  }
+
+                  $("#msgArea").append(str);
+              });
+
+              stomp.send('/pub/topic/chat/enter', {}, JSON.stringify({roomId: roomId, writer: username}));
+          });
+          $("#button-send").on("click", function(e){
+              var msg = document.getElementById("msg");
+
+              console.log(username + ":" + msg.value);
+              stomp.send('/pub/topic/chat/message', {}, JSON.stringify({roomId: roomId, message : msg.value,
+              writer: username}));
+              msg.value = '';
+          });
+      });
+    </script>
+  </body>
+</html>

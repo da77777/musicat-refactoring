@@ -1,0 +1,84 @@
+[33mcommit 22ed4c5a8fc306f8928186d3ccdd04af2f684354[m[33m ([m[1;36mHEAD -> [m[1;32mfeature/10[m[33m)[m
+Author: jollypyun <58629366+jollypyun@users.noreply.github.com>
+Date:   Wed Jan 5 10:29:59 2022 +0900
+
+    - 회원관리 구현
+    - 프로필 구현
+
+[33mcommit 9e963e0ee8124d7055364b38202e34de82aeb6d6[m[33m ([m[1;31morigin/feature/10[m[33m, [m[1;32mfeature/9[m[33m)[m
+Author: jhk1231 <80297404+jhk1231@users.noreply.github.com>
+Date:   Wed Dec 29 09:42:03 2021 +0900
+
+    upload 2
+
+[33mcommit d5b770443074bc394d5d1ac36e1a7d827b257a65[m
+Author: jhk1231 <80297404+jhk1231@users.noreply.github.com>
+Date:   Tue Dec 28 23:49:40 2021 +0900
+
+    db ìtable명 소문자로 변환 완료
+
+[33mcommit 96d7cb5d9dc5699562ba9d1c16feea79ec512611[m
+Author: jhk1231 <80297404+jhk1231@users.noreply.github.com>
+Date:   Tue Dec 28 22:55:26 2021 +0900
+
+    import 및 초기 설정 완료
+
+[33mcommit b8ff57f9c6a630afb0d1e4865fe2da0293e49bf3[m[33m ([m[1;31morigin/feature/1[m[33m)[m
+Author: jhk1231 <80297404+jhk1231@users.noreply.github.com>
+Date:   Tue Dec 28 21:41:37 2021 +0900
+
+    final save
+
+[33mcommit 00fbe891e843fceff6d0dfa1fe9143d27c8e80ec[m
+Author: jhk1231 <80297404+jhk1231@users.noreply.github.com>
+Date:   Tue Dec 28 16:12:10 2021 +0900
+
+    save 1
+
+[33mcommit aefa954aa6de36950fff767fb254a8c4bc2cab2b[m
+Author: jhk1231 <80297404+jhk1231@users.noreply.github.com>
+Date:   Sun Dec 26 10:51:12 2021 +0900
+
+    Repository Test Success (Article, Reply, File)
+
+[33mcommit e059daa6b3d2f921afdbb87151b306a090e9043f[m
+Author: jhk1231 <80297404+jhk1231@users.noreply.github.com>
+Date:   Sat Dec 25 20:57:06 2021 +0900
+
+    ëintellij red name test
+
+[33mcommit 34f81f7b908241b515de5a0cd45142d34fbb5d36[m
+Author: jhk1231 <80297404+jhk1231@users.noreply.github.com>
+Date:   Sat Dec 25 19:39:19 2021 +0900
+
+    Modify BaseRepository.java remove rollback
+
+[33mcommit 067cad9b9c8c7098afa0fe4cdd604fd664b84c2f[m
+Author: jhk1231 <80297404+jhk1231@users.noreply.github.com>
+Date:   Sat Dec 25 19:38:01 2021 +0900
+
+    Modify BaseRepository.java remove rollback
+
+[33mcommit 3f47a601835e0f8dab3d37deae4e15af1463ad63[m
+Author: jhk1231 <80297404+jhk1231@users.noreply.github.com>
+Date:   Sat Dec 25 19:25:19 2021 +0900
+
+    Modify BaseRepository.java remove
+
+[33mcommit 50f3087b4f7af3a1b744233c6e61e97b6f81cec0[m
+Author: jhk1231 <80297404+jhk1231@users.noreply.github.com>
+Date:   Fri Dec 24 17:37:58 2021 +0900
+
+    modify application.yml
+
+[33mcommit 1d05ee6e00d7f9e74e2082ae6bdd561aff667074[m
+Author: jhk1231 <80297404+jhk1231@users.noreply.github.com>
+Date:   Fri Dec 24 17:17:33 2021 +0900
+
+    create project_2
+
+[33mcommit 93c7c152fb5c7169dccadde18d5b3137e492cbe0[m
+Author: jhk1231 <80297404+jhk1231@users.noreply.github.com>
+Date:   Fri Dec 24 16:09:08 2021 +0900
+
+    create project

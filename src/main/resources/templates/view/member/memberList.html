@@ -1,0 +1,138 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<link th:href="@{../css/memberListStyle.css}" rel="stylesheet" />
+
+<div id="layoutSidenav_content">
+	<main>
+		<div class="container-fluid px-4">
+
+			<div class="row mt-3 mb-5">
+
+				<div id="search" class="memberList-search-style">
+					<select name="" id="keyfield">
+						<option value="email">ID</option>
+						<option value="name">등급</option>
+					</select> <input type="text" id="keyword1">
+					<button type="button" id="searchBtn" onclick="sendData(1)">검색</button>
+
+				</div>
+
+				<div class="memberList-list-style">
+					<table>
+						<thead>
+							<tr>
+								<th>NO</th>
+								<th>ID</th>
+								<th>등급</th>
+								<th>가입 날짜</th>
+								<th>방문 횟수</th>
+								<th>비고</th>
+							</tr>
+						</thead>
+
+						<tbody th:each="member : ${lst}" id="memberBody">
+							<tr th:object="${member}">
+								<td th:text="*{no}"></td>
+								<td><a th:href="@{/member/{no}(no=${member.no})}"
+									th:text="*{email}"></a></td>
+								<td th:text="*{grade}"></td>
+								<td th:text="*{regDate}"></td>
+								<td th:text="*{visits}"></td>
+								<td th:text="*{ban}"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div id="resetSearch">
+				</div>
+				<div class="memberList-paging-style">
+					<div id="paging" th:object="${paging}">
+						<span th:if="*{prev == true}"><a
+							th:href="@{/members(currentPageNo=1)}"><i
+								class="fas fa-angle-double-left"></i></a></span> <span
+							th:if="*{prev == true}"><a
+							th:href="@{/members(currentPageNo=*{startPage-1})}"><i
+								class="fas fa-angle-left"></i></a></span> <span
+							th:each="i : *{#numbers.sequence(startPage, endPage)}"><a
+							th:href="@{/members(currentPageNo=${i})}" th:text="${i}"></a></span> <span
+							th:if="*{next == true}"><a
+							th:href="@{/members(currentPageNo=*{endPage+1})}"><i
+								class="fas fa-angle-right"></i></a></span> <span th:if="*{next == true}"><a
+							th:href="@{/members(currentPageNo=*{endNumber})}"><i
+								class="fas fa-angle-double-right"></i></a></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+</div>
+<script th:src="@{../js/jquery-3.6.0.min.js}"></script>
+<script>
+	function sendData(currentPageNo) {
+
+		const keyfield = $("#keyfield option:selected").val();
+		const keyword1 = $("#keyword1").val();
+		console.log(keyword1);
+		if (keyword1.trim() == "") {
+			alert("검색어를 입력해주세요.");
+			return;
+		}
+
+		$.ajax({
+			url: "/members",
+			method: "POST",
+			dataType: "json",
+			data: {
+				number: currentPageNo,
+				keyfield: keyfield,
+				keyword: keyword1
+			},
+			success: function(data) {
+				const page = data.paging;
+				$("#memberBody tr").remove();
+				var htmlStr = [];
+				for (let list of data.lst) {
+					htmlStr.push('<tr id=">' + list.no + '">');
+					htmlStr.push('<td>' + list.no + '</td>');
+					htmlStr.push('<td><a href=/member/' + list.no + '>' + list.email + '</a></td>');
+					htmlStr.push('<td>' + list.grade + '</td>');
+					htmlStr.push('<td>' + list.regDate + '</td>');
+					htmlStr.push('<td>' + list.visits + '</td>');
+					htmlStr.push('<td>' + list.ban + '</td>');
+					htmlStr.push('</tr>');
+				}
+				console.log(data.lst);
+				console.log(page);
+
+				$('#memberBody').html(htmlStr.join(""));
+
+				a = '<button type="button" onclick="sendBack()">원래대로</button>';
+				$('#resetSearch').html(a);
+
+				b = '';
+				if(page.prev == true) {
+					b += '<span><a href="#" onclick="sendData(1)">&laquo;</a></span>';
+					b += '<span><a href="#" onclick="sendData(' + (page.startPage - 1) + ')">&lt;</a></span>';
+				}
+				for (var num = page.startPage; num <= page.endPage; num++){
+					b += '<span><a href="#" onclick="sendData(' + num + ')">' + num + '</a></span>';
+				}
+				if(page.next == true) {
+					b += '<span><a href="#" onclick="sendData(' + (page.endPage + 1) + ')">&gt;</a></span>';
+					b += '<span><a href="#" onclick="sendData(' + page.endNumber + ')">&raquo;</a></span>';
+				}
+				$('#paging').html(b);
+			},
+			error: function(err) {
+				console.log(keyfield);
+				console.log(keyword1);
+				console.trace(err);
+			}
+		});
+	}
+	function sendBack() {
+		location.href="members";
+	}
+</script>
+</html>

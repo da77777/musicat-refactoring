@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.musicat.mapper.member.ProfileMapper">
+    <resultMap id="profileAll" type="profileVo">
+        <result property="no" javaType="int" column="member_no" jdbcType="INTEGER" />
+        <result property="originalFileName" javaType="String" column="originalfilename" jdbcType="VARCHAR" />
+        <result property="systemFileName" javaType="String" column="systemfilename" jdbcType="VARCHAR" />
+        <result property="fileSize" javaType="int" column="filesize" jdbcType="INTEGER" />
+        <result property="bio" javaType="String" column="bio" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="selectProfile" parameterType="int" resultType="profileVo" resultMap="profileAll">
+        SELECT member_no, originalfilename, systemfilename, filesize, bio
+        FROM profilephoto
+        WHERE member_no = #{no}
+    </select>
+
+    <update id="updateProfile" parameterType="Map">
+        UPDATE profilephoto
+        SET originalfilename = #{profile.originalFileName},
+            systemfilename = #{profile.systemFileName},
+            filesize = #{profile.fileSize}
+        WHERE member_no = #{no}
+    </update>
+
+    <insert id="insertProfile" parameterType="profileVo">
+        INSERT INTO profilephoto(member_no, originalfilename, systemfilename, filesize)
+        VALUES (#{no}, #{originalFileName}, #{systemFileName}, #{fileSize})
+    </insert>
+    
+    <update id="updateBio" parameterType="Map">
+        UPDATE profilephoto
+        SET bio = #{bio}
+        WHERE member_no = #{no}
+    </update>
+</mapper>

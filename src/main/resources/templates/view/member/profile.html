@@ -1,0 +1,116 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charSet="UTF-8"/>
+    <title>Musicat-Profile</title>
+
+    <link th:href="@{/css/theme_styles.css}" rel="stylesheet"/>
+
+    <link
+            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+            rel="stylesheet"
+    />
+
+    <style>
+        body{
+            overflow: hidden;
+        }
+        form{
+            padding-top: 10px;
+            padding-left: 10px;
+        }
+        .profile-table-style{
+        }
+        .profile-imgFile-style{
+            height: 50px;
+        }
+        .profile-imgFile-style span:hover{
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<form method="POST" encType="multipart/form-data" th:action="@{'/profile/' + ${profile.no}}">
+
+    <table class="profile-table-style">
+        <tr class="first">
+            <td id="preview_image">미리보기</br>타입 : .gif, .jpg, .png</br>크기 : 3MB이하</td>
+            <td><img id="im" class="ms-2" th:src="|/profileTempImage/${profile.getSystemFileName()}|" alt=""
+                     style="width: 200px; height: 200px;"></td>
+        </tr>
+
+        <tr class="second">
+            <td>
+                <button class="btn" type="button" id="resetBtn" onClick="resetImage()">기본 이미지</button>
+            </td>
+            <td class="profile-imgFile-style">
+                <label for="chooseFile">
+                    <span class="material-icons md-36 ms-2">image</span>
+                </label>
+                <input type="file" id="chooseFile" name="importAttachFile"
+                       accept="image/gif, image/jpg, image/png" style="display: none">
+            </td>
+        </tr>
+        <div class="dropdown-divider"></div>
+    </table>
+    <input type="hidden" id="flag" name="resetFlag" value="false">
+    <div></div>
+    <div class="dropdown-divider"></div>
+    <input type="textarea" name="bio" th:value="${profile.bio}" class="w-50">
+    <div></div>
+    <div class="dropdown-divider"></div>
+    <button type="submit" id="updateBtn" class="btn" onClick="endProfile()">수정</button>
+    <div class="dropdown-divider"></div>
+</form>
+
+</body>
+<script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+<script>
+
+    function endProfile() {
+        alert('수정완료');
+        setTimeout(function () {
+            opener.location.reload();
+            window.close();
+
+        }, 3000);
+    }
+
+    let flag = document.getElementById("flag");
+
+    $(function () {
+        $('#chooseFile').on('change', function () {
+            changeFile(this);
+        });
+    });
+
+    function changeFile(f) {
+        if (f.files && f.files[0]) {
+            var reader = new FileReader();
+            var ext = String(f.files[0].type).toLowerCase();
+            console.log(ext);
+            var size = f.files[0].size;
+            if ($.inArray(ext, ['image/png', 'image/jpg', 'image/gif']) == -1) {
+                alert(ext + ' 파일은 업로드 할 수 없습니다.');
+                $("#chooseFile").val("");
+                return false;
+            }
+            if (size > 3 * 1024 * 1024) {
+                alert('3MB 이하의 파일 크기여야 합니다.');
+                $("#chooseFile").val("");
+                return false;
+            }
+            reader.onload = function (e) {
+                $("#im").attr('src', e.target.result);
+            }
+            reader.readAsDataURL(f.files[0]);
+        }
+        flag.vlaue = "false";
+    }
+
+    function resetImage() {
+        $("#im").attr('src', "/profileTempImage/Seoul.JPG");
+        $("#chooseFile").val("");
+        flag.value = "true";
+    }
+</script>

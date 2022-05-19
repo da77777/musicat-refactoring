@@ -1,0 +1,180 @@
+ <html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<meta charset="UTF-8"/>
+<!-- 작성 폼 css -->
+<link th:href="@{/css/updateArticleStyle.css}" rel="stylesheet" />
+<div id="layoutSidenav_content">
+	<main>
+		<div class="container-fluid px-4">
+
+			<div class="row mt-3 mb-5">
+				<div id="write_board_page" class="write-board-style">
+					<form enctype="multipart/form-data" th:object="${form}"
+						id="updateForm" th:action="@{/articles/update/{articleNo}(articleNo=${article.no})}"
+						method="post" class="board-form-style">
+
+						<input type="hidden" id="tags" name="tags" value="">
+						<input id="articleNo" type="hidden" name="articleNo" th:value="${article.no}" />
+						<div id="selectBoard" class="select-board-info mt-3">
+							 <select id="boardList" th:field="*{boardNo}" required>
+								<option th:each="board: ${boardList}"
+									th:value="${board.boardNo}" th:text="${board.boardName}">
+								</option>
+							</select>
+							<!--tag-->
+							<div class="content-tag-style">
+								<div>
+									<h4>Tag</h4>
+									<input type="text" id="tag" size="20" placeholder="태그입력" />
+								</div>
+								<!--Tag 출력 부분-->
+								<div id="tag_area" class="detailArticle-tag-style">
+									<ul id="origin-tag-list" class="tag-list-style">
+										<div th:each="tag : ${article.getSelectTags()}" style="display: inline-block">
+											<li class="ori-tag-item"  th:text="${tag.name}"></li>
+											<span th:id="${tag.tagNo}" class="origin_tag_delete_btn">X</span>
+										</div>
+									</ul>
+								</div>
+								<ul id="tag-list" class="tag-list-style">
+								</ul>
+							</div>
+						</div>
+
+						<div id="write_area" class="write-area-style">
+
+
+							<div id="in_subject" class="write-subject-style">
+								<textarea id="utitle" th:field="*{subject}"
+									placeholder="제목" maxlength="100" th:value="${article.subject}"
+									required></textarea>
+							</div>
+
+
+
+							<div id="in_content" class="write-content-style">
+								<textarea id="ucontent" th:field="*{content}"
+									th:value="${article.content}" placeholder="내용" required
+									></textarea>
+							</div>
+							<div id="import_bth" class="write-area-style">
+								<!-- 첨부파일 -->
+								<input type="file" th:if="${article.attacheFile == null}"
+									name="importAttacheFile" /> <input type="file"
+									th:unless="${article.getAttacheFile == null}"
+									th:text="${article.getAttacheFile().getOriginalFileName()}" name="importAttacheFile" />
+								<!-- 이미지 파일 첨부 -->
+								<label class="write-image-style" for="write-imagefile-upload">
+									<i class="far fa-file-image fa-2x"></i></label>
+								<input type="file" id="write-imagefile-upload" name="imageFiles"
+									   onchange="setThumbnail(event)" multiple="multiple" /><br/>
+								<div id="viewImage">
+									<div th:each="imageFile : ${article.fileList }">
+											<div th:id = "${imageFile.getNo()}">
+												<img th:src="|/images/${imageFile.getSystemFileName()}|" width="200"
+												height="200" />
+												<input type="button" class="remove_file_btn"  value="삭제" />
+											</div>
+									</div>
+								</div>
+								<div id="image_container">
+								</div>
+								<label class="write-audio-style" for="write-audiofile-upload">
+									<i class="fas fa-file-audio fa-2x"></i>
+								</label>
+								<input type="button" value="노래 등록" onclick="openChild()" id="write-audiofile-upload"/><br />
+							</div>
+
+                            <!-- 음악 등록 칸 -->
+
+                            <th:block th:if="${musics.size > 0}">
+                                <th:block th:each="music : ${musics}">
+                                    <div id="receive_thymeleaf" class="detail-audio-style">
+                                        <div class="detail-audio-part-style">
+                                            <img id="detailAudioImg_thymeleaf" th:src="${music.links[1].href}" alt=""
+                                                 srcset=""/>
+
+                                            <div id="audioDiv_thymeleaf" class="detail-audioDiv-style">
+                                                <div id="audioInfoDiv_thymeleaf" class="detail-audioInfo-style">
+                                                    <!--                                                    <button-->
+                                                    <!--                                                            id="audioPlayBtn_thymeleaf"-->
+                                                    <!--                                                            class="audioPlayBtn"-->
+                                                    <!--                                                            onclick="detailPlayAudio()"-->
+                                                    <!--                                                            style="visibility: hidden"-->
+                                                    <!--                                                    >-->
+                                                    <!--                                                        <span id="audioPlayIcon_thymeleaf" class="material-icons">play_circle</span>-->
+                                                    <!--                                                    </button>-->
+
+                                                    <span id="audioTitle_thymeleaf" class="audioTitle"
+                                                          th:text="${music.title}">제목입니다~</span>
+<!--                                                    <input type="hidden" id="audioNo_thymeleaf" name="audioNo"-->
+<!--                                                           value=""/>-->
+                                                    <button type="button" th:id = "${music.id}" class="audioDelBtn" onclick="alter_delete(this)">
+                                                        <span id="audioDelIcon_thymeleaf"
+                                                              class="material-icons">close</span>
+                                                    </button>
+                                                </div>
+                                                <div class="detail-audioControls-style">
+                                                    <!--            <div id="waveform"></div>-->
+                                                    <!--            <p id="audioResource" style="display: none"></p>-->
+                                                    <audio
+                                                            src="${music.links[0].href}"
+                                                            id="detail-audio_thymeleaf"
+                                                            controls
+
+                                                    ></audio>
+                                                    <!--              style="display: none"-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th:block>
+                            </th:block>
+                            <!-- 음악 등록 칸 -->
+                            <div id="receive" style="display:none" class="detail-audio-style">
+                                <div class="detail-audio-part-style">
+                                    <img id="detailAudioImg" src="images/시보.png" alt="" srcset=""/>
+
+                                    <div id="audioDiv" class="detail-audioDiv-style">
+                                        <div id="audioInfoDiv" class="detail-audioInfo-style">
+                                            <button
+                                                    id="audioPlayBtn"
+                                                    class="audioPlayBtn"
+                                                    onclick="detailPlayAudio()"
+                                                    style="visibility: hidden"
+                                            >
+                                                <span id="audioPlayIcon" class="material-icons">play_circle</span>
+                                            </button>
+
+                                            <span id="audioTitle" class="audioTitle">제목입니다~</span>
+                                            <input type="hidden" id="audioNo" name="audioNo" value=""/>
+                                            <button type="button" class="audioDelBtn" onclick="test(this)">
+                                                <span id="audioDelIcon" class="material-icons">close</span>
+                                            </button>
+                                        </div>
+                                        <div class="detail-audioControls-style">
+                                            <!--            <div id="waveform"></div>-->
+                                            <!--            <p id="audioResource" style="display: none"></p>-->
+                                            <audio
+                                                    src="file_example_MP3_2MG.mp3"
+                                                    id="detail-audio"
+                                                    controls
+
+                                            ></audio>
+                                            <!--              style="display: none"-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+							<input type="button" value="취소" onclick="history.back(-1)">
+							<input type="button" id="update_btn" value="등록">
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</main>
+</div>
+<script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+</html>
+

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+
+<script
+	th:src="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js}"
+	th:crossorigin="anonymous"></script>
+
+<link th:href="@{css/bootstrap.min.css}" rel="stylesheet"
+	type="text/css" />
+<link th:href="@{css/theme_styles.css}" rel="stylesheet" type="text/css" />
+<link th:href="@{css/noteStyle.css}" rel="stylesheet" type="text/css" />
+
+
+</head>
+<body>
+
+	<div class="note-inner-style">
+		<div class="note-header-back">
+			<span onclick="location.href='/main'"><i
+				class="fas fa-home fa-2x"></i></span>
+		</div>
+
+		<div class="note-header-style">
+			<span onclick="location.href='/notelist?isRecieve=1'">받은쪽지함</span> <span
+				onclick="location.href='/notelist?isRecieve=0'">보낸쪽지함</span>
+		</div>
+
+		<div class="note-contents-style">
+			<table class="note-table-style">
+				<thead>
+					<tr class="note-table-tr-style">
+						<th>번호</th>
+						<th th:if="${isRecieve} == 1">보낸사람</th>
+						<th th:if="${isRecieve} == 0">받은사람</th>
+						<th>내용</th>
+						<th>보낸날짜</th>
+						<th>읽은날짜</th>
+						<th></th>
+					</tr>
+				</thead>
+
+				<tbody th:if="${notelist} != null">
+					<form id="deleteForm" action="/deletenote" method="POST">
+						<input type="hidden" id="isRecieve" name="isRecieve"
+							th:value="${ isRecieve }" />
+						<tr th:each="note : ${notelist}">
+							<td th:text="${note.note_no}"></td>
+							<td th:text="${note.counterpart_nickname}"></td>
+							<td><a
+								th:href="@{/notedetail(isRecieve=${isRecieve}, noteContentNo=${note.notecontent_no}, noteNo=${note.note_no})}"><span
+									th:text="${note.content}"></span></a></td>
+							<td th:text="${note.sendDate}"></td>
+							<td th:if="${note.read}" th:text="${note.readDate}"></td>
+							<td th:if="${note.read} == false">읽지않음</td>
+							<td><input type="checkbox" name="deleteNote"
+								th:value="${ note.notecontent_no }"></td>
+						</tr>
+					</form>
+				</tbody>
+				<tbody th:if="${#lists.size(notelist)} == 0">
+					<tr>
+						<th colspan="6">쪽지가 없습니다.</th>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="note-btn-style">
+			<button type="submit" id="delete" class="note-del-style">삭제</button>
+		</div>
+		<br>
+		<div class="note-paging-style">
+			<div class="note-pagingCenter">
+				<span th:if="${startPage} > ${pageBlock}"> <a
+					th:href="@{/notelist(isRecieve=${isRecieve}, currentPage=${startPage - pageBlock})}">[PREV]</a>
+				</span>
+				<th:block
+					th:each="pageNo : *{#numbers.sequence(startPage, endPage)}">
+					<span th:if="${pageNo == currentPage}" th:text="${pageNo}"></span>
+					<a th:if="${pageNo != currentPage}" th:text="${pageNo}"
+						th:href="@{/notelist(isRecieve=${isRecieve}, currentPage=${pageNo})}"></a>
+				</th:block>
+
+				<span th:if="${endPage} < ${totalPage}"> <a
+					th:href="@{/notelist(isRecieve=${isRecieve}, currentPage=${endPage + 1})}">[NEXT]</a>
+				</span>
+			</div>
+		</div>
+	</div>
+	<!-- 	
+	<p>스타트 페이지 : ${ pageScope.startPage }</p>
+	<p>엔드 페이지 : ${ pageScope.endPage }</p> -->
+	<!-- <c:if test="${startPage > pageBlock }">
+		<c:url var="prevUrl" value="/noteList.do">
+			<c:param name="isRecieve" value="${ param.isRecieve }" />
+			<c:param name="currentPage" value="${startPage - pageBlock}"></c:param>
+		</c:url>
+		<a href="${ prevUrl}">[PREV]</a>
+	</c:if> -->
+	<!-- page -->
+	<!-- <c:forEach var="i" begin="${startPage }" end="${endPage }">
+		<c:if test="${ i == currentPage }">
+			${ i }
+		</c:if>
+		<c:if test="${ i != currentPage }">
+			<c:url var="url" value="/noteList.do">
+				<c:param name="isRecieve" value="${ param.isRecieve }" />
+				<c:param name="currentPage" value="${i}"></c:param>
+			</c:url>
+			<a href="${url}">${ i }</a>
+		</c:if>
+	</c:forEach>
+	<c:if test="${endPage < totalPage }">
+		<c:url var="nextUrl" value="/noteList.do">
+			<c:param name="isRecieve" value="${ param.isRecieve }" />
+			<c:param name="currentPage" value="${endPage + 1}"></c:param>
+		</c:url>
+		<a href="${nextUrl }">[NEXT]</a>
+	</c:if> -->
+
+	<script>
+		$('#delete').on('click', function(event) {
+			if ($("input[name=deleteNote]:checked").length <= 0)
+				alert("삭제할 쪽지를 선택해주세요.");
+			else
+				$("#deleteForm").submit();
+		});
+	</script>
+</body>
+</html>

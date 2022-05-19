@@ -1,0 +1,84 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link th:href="@{/css/memberListStyle.css}" rel="stylesheet"/>
+    <link th:href="@{/css/theme_styles.css}" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+
+            text-align: center;
+            font-family: arial;
+
+        }
+
+        .title {
+            color: grey;
+            font-size: 18px;
+        }
+
+        button {
+            border: none;
+            outline: 0;
+            display: inline-block;
+            padding: 8px;
+            color: white;
+            background-color: #000;
+            text-align: center;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+        }
+
+        a {
+            text-decoration: none;
+            font-size: 22px;
+            color: black;
+        }
+
+        button:hover, a:hover {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body class="bg-primary">
+<button class="btn" onclick="history.back()"><span class="material-icons md-36">arrow_circle_left</span></button>
+<h2 style="text-align:center" th:if="${flag} == 0">Following</h2>
+<h2 style="text-align:center" th:if="${flag} == 1">Followers</h2>
+<div class="d-flex w-100">
+    <div class="card w-25 mx-3" th:each="following : ${followingList}" th:if="${flag} == 0">
+
+        <img th:src="|/profileImage/${following.no}|" style="width:100%; height: 200px;">
+        <h1 th:text="${following.nickname}"></h1>
+    </div>
+    <div class="card w-25 mx-3" th:each="followed : ${followedList}" th:if="${flag} == 1">
+        <div>
+            <img th:src="|/profileImage/${followed.no}|" style="width:100%; height: 200px;">
+            <h1 th:text="${followed.nickname}"></h1>
+        </div>
+    </div>
+</div>
+
+<!-- 내가 팔로우를 하고 있는 회원 목록 -->
+<!--<div th:each="following : ${followingList}" th:if="${flag} == 0">-->
+<!--    <div>-->
+<!--        <img th:src="|/profileImage/${following.no}|" height="200" width="200">-->
+<!--        <br/>-->
+<!--        <p th:text="${following.nickname}" />-->
+<!--    </div>-->
+<!--</div>-->
+
+<!-- 나를 팔로우하는 회원 목록 -->
+<!--<div th:each="followed : ${followedList}" th:if="${flag} == 1">-->
+<!--    <div>-->
+<!--        <img th:src="|/profileImage/${followed.no}|" height="200" width="200">-->
+<!--        <br/>-->
+<!--        <p th:text="${followed.nickname}"/>-->
+<!--    </div>-->
+<!--</div>-->
+</body>
+</html>

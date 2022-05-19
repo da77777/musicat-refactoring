@@ -1,0 +1,92 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<link th:href="@{../css/memberDetailStyle.css}" rel="stylesheet" />
+
+<div id="layoutSidenav_content">
+	<main>
+		<div class="container-fluid px-4">
+			<div class="row mt-3 mb-5">
+				<div class="memberdetail-back-style">
+					<button type="button" onclick="history.back()">
+						<i class="fas fa-arrow-circle-left fa-2x"></i>
+					</button>
+				</div>
+				<div class="memberdetail-form-style">
+					<form method="POST" th:action="@{'/memberMode/' + ${member.no}}">
+						<div class="memberdetail-content-style" th:object="${member}">
+							<table>
+								<colgroup>
+									<col width="15%" />
+									<col width="20%" />
+									<col width="15%" />
+									<col width="20%" />
+								</colgroup>
+								<tr>
+									<td class="title">ID</td>
+									<td class="val" th:text="*{email}"></td>
+									<td class="title">등급</td>
+									<td class="val" th:placeholder="*{grade}">
+										<select name="gradeSelect" id="gr">
+											<option value="MANAGER">MANAGER</option>
+											<option value="USER">USER</option>
+									</td>
+								</tr>
+
+								<tr>
+									<td class="title">닉네임</td>
+									<td class="val" th:text="*{nickname}"></td>
+									<td class="title">게시글 수</td>
+									<td class="val" th:text="*{docs}"></td>
+								</tr>
+
+								<tr>
+									<td class="title">가입 날짜</td>
+									<td class="val" th:text="*{regDate}"></td>
+									<td class="title">댓글 수</td>
+									<td class="val" th:text="*{comms}"></td>
+								</tr>
+
+								<tr>
+									<td class="title">최근 방문 날짜</td>
+									<td class="val" th:text="*{lastDate}"></td>
+									<td class="title">방문 횟수</td>
+									<td class="val" th:text="*{visits}"></td>
+								</tr>
+
+								<tr>
+									<td class="title">정지 해제 날짜<select name="banSelect"
+										id="ban">
+											<option value="no">미정</option>
+											<option value="7d">7일</option>
+											<option value="1d">1일</option>
+											<option value="1m">1분</option>
+									</select></td>
+									<td class="val" th:text="*{ban}"></td>
+									<td class="title">탈퇴 여부</td>
+									<td class="val" th:if="*{isMember} == 2">강제탈퇴</td>
+									<td class="val" th:if="*{isMember} == 1">자진탈퇴</td>
+									<td class="val" th:if="*{isMember} == 0">활동중</td>
+								</tr>
+							</table>
+						</div>
+						<div class="memberdetail-btn-style">
+							<input type="hidden" name="no" th:value="*{no}" />
+							<button type="submit" id="saveBtn">저장</button>
+						</div>
+					</form>
+				</div>
+				<div class="memberdetail-out-style">
+					<form th:action="@{'/memberOut/' + ${member.no}}" method="POST"
+						onsubmit="return confirm('탈퇴시키겠습니까?');">
+						<button type="submit" id="outBtn" th:value="${member.no}">탈퇴</button>
+					</form>
+				</div>
+			</div>
+
+		</div>
+	</main>
+</div>
+
+<script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+</html>

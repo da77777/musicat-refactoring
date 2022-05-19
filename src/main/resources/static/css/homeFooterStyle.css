@@ -1,0 +1,303 @@
+@charset "utf-8";
+
+footer{
+    height: 140px;
+    width: 100%;
+    font-size: 10px;
+}
+
+#footerPlayList{
+    position: fixed;
+    height: 80px;
+    bottom: 20px;
+    left: 260px;
+    right: 0;
+    z-index: 100;
+}
+
+.playListBar{
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 100%;
+    left: -15px;
+    margin: 0 auto;
+    background-color: #f8dcff;
+    /*transition: width 0.15s ease-in-out;*/
+    transition: left 0.15s ease-in-out;
+
+    border-radius: 100px;
+
+
+
+}
+
+.sb-sidenav-toggled-footer .playListBar{
+    left: -130px;
+    transition: left 0.15s ease-in-out;
+}
+
+/* -----------------세팅 ----------------*/
+
+.playListBar-inner{
+    display: flex;
+    align-items: center;
+    justify-content:space-evenly;
+    width: 95%;
+    height: 100%;
+
+
+}
+.playListBar-inner>div{
+    margin-right: 10px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.playListBar-inner-time{
+    width: 30%;
+}
+
+.playListBar-inner-time span{
+    font-size: 14px;
+}
+
+.playListBar-inner-time input{
+    width: 70%;
+    margin: 0 10px;
+}
+
+.playListBar-inner-title span{
+    display: block;
+}
+.playListBar-inner-title span:first-child{
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.volume-mute-btn,
+.playListBar-inner-play-btn button,
+.playListBar-inner-func-btn button{
+    border: none;
+    background-color:transparent;
+}
+
+.playListBar-inner-play-btn button:hover,
+.playListBar-inner-play-btn button:hover,
+.playListBar-inner-func-btn button:hover{
+    font-size: 14px;
+    color: #8d0000;
+}
+
+.playListBar-inner-play-btn span,
+.playListBar-inner-func-btn span{
+
+}
+
+.playListBar-inner-img img{
+    width: 30px;
+    height: 30px;
+}
+
+.playListBar-inner-volume{
+    width: 10%;
+}
+
+.volume-progress{
+    width: 100%;
+}
+
+
+/* playlist-dropUp Button */
+.playlist-dropUp-btn {
+    font-size: 16px;
+    border: none;
+}
+
+/* The container <div> - needed to position the playlist-dropUp content */
+.playlist-dropUp {
+    position: relative;
+    display: inline-block;
+}
+
+/* playlist-dropUp content (Hidden by Default) */
+.playlist-dropUp-content {
+    display: none;
+    position: absolute;
+    bottom: 60px;
+    left: -370px;
+    height: 300px;
+    background-color: #debaff;
+    min-width: 400px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 10px;
+}
+
+
+.playlist-dropUp-content ul {
+    list-style:none;
+    padding-left: 0px;
+    margin: 10px 0px;
+    width: 100%;
+    vertical-align: center;
+    overflow-y : auto;
+    height: 70%;
+}
+
+
+.playlist-dropUp-content h4{
+    text-align: center;
+
+
+}
+
+/* Links inside the playlist-dropUp */
+.playlist-dropUp-content li {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    margin: 5px;
+}
+
+/* Change color of playlist-dropUp links on hover */
+.playlist-dropUp-content li:hover{
+    background-color: #ddd
+
+}
+
+
+
+.playlist-dropUp-content-inner{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.playlist-dropUp-content li img{
+    width: 30px;
+    height: 30px;
+}
+
+.dropUp-inner-info{
+    display: flex;
+    width: 80%;
+    position: relative;
+}
+
+.dropUp-inner-info button{
+    position: absolute;
+    left: 20px;
+    z-index: 2;
+}
+
+.dropUp-inner-info div{
+    margin-left: 10px;
+    width: 100%;
+}
+
+.dropUp-inner-info-text{
+    padding-left: 10px;
+}
+
+.dropUp-inner-info-text span{
+    display: block;
+    width: 80%;
+    overflow-x: hidden;
+    font-size: 1rem;
+
+}
+
+/*.dropUp-inner-info-text span:last-child{*/
+/*    color: #afafaf;*/
+/*    font-size: 12px;*/
+/*}*/
+
+.dropUp-inner-time{
+    display: flex;
+    align-items: center;
+    height: 100%;
+    position: relative;
+}
+
+.dropUp-inner-time button{
+    margin-left: 10px;
+}
+
+
+.dropUp-inner-title{
+    display: flex;
+    margin: 10px 20px 20px 20px;
+    justify-content: space-between;
+
+    vertical-align: center;
+}
+
+.dropUp-inner-title div{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 50%;
+}
+
+#songInfo-dropbox{
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    position: absolute;
+
+    bottom: 30px;
+    left: 30px;
+    background-color: #f6eee1;
+    min-width: 150px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 10px;
+
+    padding: 5px;
+}
+
+#songInfo-dropbox button{
+    border-radius: 5px;
+    display: inline-block;
+    width: 100%;
+
+    text-align: center;
+    vertical-align: center;
+    border: 1px solid #666666;
+    font-size: 12px;
+
+    box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
+}
+
+#songInfo-dropbox button:first-child{
+    margin: 10px 0;
+
+}
+
+#songInfo-dropbox button:last-child{
+    margin: 0 0 10px 0;
+}
+
+
+
+.playlist-dropUp-content-playBtn:hover span{
+    cursor: pointer;
+    color: #0b5ed7;
+}
+
+.playlist-dropUp-content-playBtn input{
+    border: none;
+    background-color: transparent;
+}
+
+.playlist-dropUp-content-playBtn span{
+    left: 2px;
+    top: 2px;
+}

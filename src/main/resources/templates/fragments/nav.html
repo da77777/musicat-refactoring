@@ -1,0 +1,138 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<!--   <nav class="nav-icon-hidden">
+    <ul>
+      <li class="nav-category">
+        <div class="nav-category-icon">
+          <a href="#"><span class="material-icons"> account_circle </span></a>
+        </div>
+        <div class="nav-category-name">
+          <span>Profile</span>
+          <span class="material-icons"> expand_more </span>
+        </div>
+      </li>
+      
+    </ul>
+   -->
+<div id="layoutSidenav_nav">
+	<nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
+		<div class="sb-sidenav-menu section">
+			<div class="nav">
+				<div class="sb-sidenav-menu-heading"></div>
+				<!-- 카테고리 시작 -->
+				<div id="categoryBoardList" class="collapsed">
+
+					<table>
+<!--						양 -->
+						<tr>
+							<td class="nav-link category-articleVO-header fw-bold">
+								<div class="sb-nav-link-icon"> <i class="fas fa-star"></i></div>
+							<span>즐겨찾기 게시판</span>
+							</td>
+						</tr>
+						<th:block th:if="${likeBoard} != null" th:each="likeBoard : ${likeBoardList}">
+							<tr th:id="b + ${likeBoard.boardNo}">
+								<td class="category-board-style">
+								<span> <i class="fas fa-star"></i></span>
+									<a th:text="${likeBoard.boardName}" th:href="@{/board/{boardNo}/articles(boardNo = ${likeBoard.boardNo})}"></a>
+								</td>
+							</tr>
+						</th:block>
+<!--						양 -->
+
+						<th:block th:each="category : ${categoryBoardList}">
+							<tr th:id="c + ${category.getCategoryNo()}">
+
+								<td class="nav-link category-articleVO-header fw-bold">
+
+									<div class="sb-nav-link-icon">
+										<i class="fas fa-columns"></i>
+									</div> <span th:text="${category.getCategoryName()}"></span> <!-- <div class="sb-sidenav-collapse-arrow">
+										<i class="fas fa-angle-down"></i>
+									</div> -->
+								</td>
+							</tr>
+							<th:block th:if="${category.getBoardList() != null}">
+								<th:block th:each="board : ${category.boardList}">
+									<tr>
+
+										<td class="category-board-style">
+
+											<div th:if="${board.boardkind == 0}">
+												<span> <i class="far fa-list-alt"></i> </span>
+												<a th:text="${board.boardName}"
+												   th:href="@{/board/{boardNo}/articles(boardNo = ${board.boardNo})}"></a>
+											</div>
+											<div th:if="${board.boardkind == 1}">
+												<span> <i class="far fa-image"></i>
+												</span> <a th:text="${board.boardName}"
+														   th:href="@{/board/{boardNo}/articles(boardNo = ${board.boardNo})}"></a>
+											</div>
+											<div th:if="${board.boardkind == 2}">
+												<span> <i class="fas fa-music"></i>
+												</span> <a th:text="${board.boardName}"
+														   th:href="@{/board/{boardNo}/articles(boardNo = ${board.boardNo})}"></a>
+											</div>
+											<div th:if="${board.boardkind == 3}">
+												<span><i class="far fa-sticky-note"></i>
+												</span> <a th:text="${board.boardName}"
+														   th:href="@{/board/{boardNo}/articles(boardNo = ${board.boardNo})}"></a>
+											</div>
+
+
+<!--											<div th:if="${board.boardkind == 0}">-->
+<!--												<span> <i class="far fa-list-alt"></i> </span>-->
+<!--												 <a th:text="${board.boardName}"-->
+<!--													th:href="@{/board/{boardNo}/articles(boardNo = ${board.boardNo})}"></a>-->
+<!--											</div>-->
+<!--											<div th:unless="${board.boardkind == 0}">-->
+<!--												<span> <i class="far fa-image"></i>-->
+<!--												</span> <a th:text="${board.boardName}"-->
+<!--													th:href="@{/board/{boardNo}/articles(boardNo = ${board.boardNo})}"></a>-->
+<!--											</div>-->
+
+									</tr>
+								</th:block>
+							</th:block>
+						</th:block>
+					</table>
+
+					<!-- <div class="sb-nav-link-icon">
+						<i class="fas fa-columns"></i>
+					</div> 
+					
+					<span>Category</span>
+					
+					<div class="sb-sidenav-collapse-arrow">
+						<i class="fas fa-angle-down"></i>
+					</div> -->
+				</div>
+				<!-- 카테고리 끝 -->
+
+
+				<!-- <div class="sb-sidenav-menu-heading">실시간 접속자</div>
+				<div class="login-user-box">
+					<ul class="scrollable-ul">
+						<li>Item</li>
+						<li>Item</li>
+						<li>Item</li>
+						<li>Item</li>
+						<li>Item</li>
+						<li>Item</li>
+
+					</ul>
+
+				</div> -->
+
+				<div class="sb-sidenav-footer mt-5">
+					<div class="small">------------팀원------------</div>
+					<span>강종훈, 김성중, 김연주, 박예나, 양다예, 편근형</span>
+				</div>
+
+
+			</div>
+		</div>
+	</nav>
+</div>
+
+</html>

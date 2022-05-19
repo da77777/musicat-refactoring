@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html>
+<script>
+    let userid = location.search.substring(1).split("=")[1];
+    console.log(userid);
+</script>
+
+</html>
+
+
+<!--<!DOCTYPE HTML>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head th:replace="fragments/header :: header"/>-->
+<!--<body>-->
+<!--<div class="container">-->
+<!--    <div th:replace="fragments/bodyHeader :: bodyHeader"/>-->
+<!--    <div>-->
+<!--        <table class="table table-striped">-->
+<!--            <tbody>-->
+<!--            <tr>-->
+<!--                <td th:text="${article.subject}"></td>-->
+<!--                <td th:text="${article.viewcount}"></td>-->
+<!--                <td th:text="${article.nickname}"></td>-->
+<!--                <td th:text="${article.writedate}"></td>-->
+<!--                <td th:text="${article.content}"></td>-->
+<!--            </tr>-->
+<!--&lt;!&ndash;            <tr th:each="file : ${article.fileList}">&ndash;&gt;-->
+<!--&lt;!&ndash;                <td th:text="${file.originalFileName}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;            <tr th:each="reply : ${article.replyList}">&ndash;&gt;-->
+<!--&lt;!&ndash;                <td th:text="${reply.content}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td th:text="${reply.nickname}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td th:text="${reply.writedate}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--    </div>-->
+<!--    <div th:replace="fragments/footer :: footer"/>-->
+<!--</div> &lt;!&ndash; /container &ndash;&gt;-->
+<!--</body>-->
+<!--</html>-->

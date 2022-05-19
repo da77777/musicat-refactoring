@@ -1,0 +1,59 @@
+@charset "utf-8";
+
+.category-board-style a {
+    margin-left: 5px;
+    text-decoration: none;
+    color: #eeeeee;
+    font-size: 14px;
+}
+
+.category-board-style span {
+    display: inline-block;
+    margin-left: 20px;
+}
+
+.category-board-style a:hover {
+    color: #2A4FFC;
+}
+
+
+.login-user-box {
+
+    margin: 0 auto;
+}
+
+.scrollable-ul {
+    overflow-y: auto;
+    height: 100px;
+
+    background-color: #fff;
+    border: 2px solid red;
+}
+
+.scrollable-ul li {
+    color: #666;
+    width: 150px;
+}
+
+.section::-webkit-scrollbar {
+    width: 16px;
+}
+
+.section::-webkit-scrollbar-track {
+    background-color: #d290f8;
+    /*border-radius: 10px;*/
+}
+
+.section::-webkit-scrollbar-thumb {
+    background-color: #ad34fd;
+    /*border-radius: 10px;*/
+}
+
+.section {
+    scrollbar-color: #D4AA70 #e4e4e4;
+}
+
+.section::-webkit-scrollbar-thumb {
+
+    /*border-radius: 10px;*/
+}

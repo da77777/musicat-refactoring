@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.example.musicat.mapper.board.FileMapper">
+	
+	
+	<parameterMap type="fileVo" id="insertFileMap">
+		<parameter property="articleNo" javaType="Int" jdbcType="INTEGER" mode="IN"/>
+		<parameter property="originalFileName" javaType="String" jdbcType="VARCHAR" mode="IN"/>
+		<parameter property="systemFileName" javaType="String" jdbcType="VARCHAR" mode="IN"/>
+		<parameter property="fileSize" javaType="Long" jdbcType="BIGINT" mode="IN"/>
+		<parameter property="fileType" javaType="Int" jdbcType="TINYINT" mode="IN"/>
+	</parameterMap>
+	
+	<insert id="insertFile" parameterType="fileVo" parameterMap="insertFileMap">
+		INSERT INTO file (article_no, originalfilename, systemfilename, filesize, filetype)
+		VALUES (?,?,?,?,?) 
+	</insert>
+	
+	<resultMap type="fileVo" id="selectFileMap">
+		<result property="no" javaType="int" column="file_no" jdbcType="INTEGER" />
+		<result property="articleNo" javaType="int" column="article_no" jdbcType="INTEGER"/>
+		<result property="originalFileName" javaType="String" column="originalfilename" jdbcType="VARCHAR" />
+		<result property="systemFileName" javaType="String" column="systemfilename" jdbcType="VARCHAR" />
+		<result property="fileSize" javaType="Long" column="filesize" jdbcType="BIGINT" />
+		<result property="fileType" javaType="int" column="filetype" jdbcType="TINYINT"/>
+	</resultMap>
+	
+	<select id="selectFile" parameterType="int" statementType="CALLABLE" resultType="fileVo" resultMap="selectFileMap">
+		{ CALL sp_file_select(#{fileNo}) }
+	</select>
+	
+	<parameterMap type="fileVo" id="thumbMap">
+		<parameter property="articleNo" javaType="int" jdbcType="INTEGER" mode="IN"/>
+		<parameter property="fileType" javaType="int" jdbcType="TINYINT" mode="IN"/>
+	</parameterMap>
+	
+	<select id="selectThumbFile" parameterType="fileVo" statementType="CALLABLE" resultType="fileVo" resultMap="selectFileMap">
+		{ CALL sp_file_select_thumbnail(#{articleNo}, #{fileType}) }
+	</select>
+
+	<select id="selectArticleFiles" parameterType="int" statementType="CALLABLE" resultType="fileVo" resultMap="selectFileMap">
+		{ CALL sp_select_article_files(#{articleNo}) }
+	</select>
+	
+	<delete id="deleteFile" parameterType="int" statementType="CALLABLE">
+		DELETE FROM file WHERE file_no = #{no}
+	</delete>
+	
+
+</mapper>

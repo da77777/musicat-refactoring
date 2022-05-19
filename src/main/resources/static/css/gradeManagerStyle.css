@@ -1,0 +1,53 @@
+@charset "utf-8";
+
+.gradeList-table-style{
+	width: 100%;
+}
+
+.gradeList-table-style table th{
+	padding: 10px;
+	background-color: #cccccc;
+}
+
+.gradeList-table-style table td{
+	padding: 5px;
+}
+.gradeList-table-style table th,
+.gradeList-table-style table td{
+	border: 1px solid #000000;
+	vertical-align: middle;
+	text-align: center;
+	
+	
+}
+
+.gradeList-table-style table td input {
+	width: 100%;
+	
+}
+.gradeList-table-style table td input:focus{
+	background-color: #a2ffff;
+
+}
+
+.gradeList-table-style table td button:hover{
+	background-color: #a2ffff;
+}
+.gradeList-btn-style button {
+	margin-top: 20px;
+	padding: 5px 10px;
+}
+
+.gradeList-btn-style button:first-child{
+	margin-right: 10px;
+}
+
+.gradeList-btn-style button:last-child{
+	width: 7%;
+}
+
+.gradeList-btn-style button:hover {
+	
+	background-color: #a2ffff;
+  
+} 

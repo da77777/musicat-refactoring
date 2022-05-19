@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>제목을 지정!!!!</title>
+
+    <link
+            th:href="@{https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css}"
+            rel="stylesheet"
+    />
+    <link th:href="@{/css/theme_styles.css}" rel="stylesheet"/>
+    <link th:href="@{/css/reset.css}" rel="stylesheet"/>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
+            crossorigin="anonymous"></script>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <style>
+
+        .material-icons.md-18 { font-size: 18px; }
+        .material-icons.md-24 { font-size: 24px; }
+        .material-icons.md-36 { font-size: 36px; }
+        .material-icons.md-48 { font-size: 48px; }
+
+        input[type="file"] {
+            position: absolute;
+            width: 0;
+            height: 0;
+            padding: 0;
+            overflow: hidden;
+            border: 0;
+
+        }
+
+
+        /*.song-register-file,*/
+        /*.song-register-thumnail{*/
+        /*    width: 60px;*/
+        /*    height: 60px;*/
+        /*}*/
+
+        .song-register-content {
+            margin: 30px;
+        }
+
+        .preview-thumnail {
+            width: 100%;
+            height: 30%;
+        }
+
+        .preview-thumnail img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .song-register {
+        }
+
+        .song-register-btn {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .song-register span:hover {
+            cursor: pointer;
+        }
+
+        .preview-thumnail{
+            margin: 10px 0;
+            position: relative;
+        }
+        .preview-thumnail img{
+            width: 100px;
+            height: 100px;
+            border: 1px solid #666666;
+
+        }
+
+        .save-audioFile-style{
+            /*width: 100px;*/
+            /*height: 30px;*/
+            /*font-size: 18px;*/
+            color: #989898;
+        }
+
+        .save-audioFile-style:hover{
+            cursor: pointer;
+            color: black;
+        }
+
+        #registered_audio{
+            font-size: 56px;
+            position: absolute;
+            left: 50px;
+            top: -2px;
+            color: yellow;
+        }
+    </style>
+</head>
+<body style="height: 300px">
+<form class="song-register-content" th:action="@{/musicpost}" method="post" enctype="multipart/form-data">
+    <div class="song-title">
+        <div class="dropdown-divider"></div>
+        <input type="text" id="title" name="title" placeholder="노래 제목을 입력..."/>
+        <p th:text="${errorMsg}"></p>
+        <input style="display: none" type="text" id="memberNo" name="memberNo" th:value="${memberNo}"/>
+        <div class="dropdown-divider"></div>
+        <!--        <input type="text" id = "articleNo" name = "articleNo"/>-->
+    </div>
+    <div class="preview-thumnail">
+        <img id="registered_img" style="visibility: hidden" src="" alt=""/>
+        <span id="registered_audio" class="material-icons" style="visibility: hidden">play_circle_outline</span>
+    </div>
+    <div class="song-register">
+        <div class="dropdown-divider"></div>
+        <div class="song-register-btn">
+            <div class="song-register-thumnail me-3">
+                <label id="thumnail_register" for="image">
+<!--                    <span>썸네일 등록</span>-->
+                    <span class="material-icons md-36">add_photo_alternate</span>
+                </label>
+                <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept="image/*"
+                        onchange="setThumbnail(event);"
+                />
+            </div>
+            <div class="song-register-file">
+                <label id="songfile_register" for="audio">
+<!--                    <span>파일 등록</span>-->
+                    <span class="material-icons md-36">audiotrack</span>
+                </label>
+                <input type="file" id="audio" name="audio" accept="audio/*"/>
+            </div>
+
+        </div>
+        <div>
+            <div class="dropdown-divider"></div>
+            <button class="btn save-audioFile-style" type="submit">등록</button>
+        </div>
+    </div>
+</form>
+
+<script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+<script>
+    //이미지
+    function setThumbnail(event) {
+        var reader = new FileReader();
+        reader.onload = function (event) {
+            var img = document.getElementById("registered_img");
+            let previewText = document.getElementById("preview-text");
+
+            img.setAttribute("src", event.target.result);
+            img.style.visibility = "visible";
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    let audio = document.getElementById("audio");
+
+    audio.addEventListener("change",function () {
+        let audioIcon = document.getElementById("registered_audio");
+
+        audioIcon.style.visibility="visible";
+    })
+</script>
+</body>
+</html>

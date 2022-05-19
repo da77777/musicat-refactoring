@@ -1,0 +1,48 @@
+@charset "UTF-8";
+
+.myPage-content-left-playlist{
+    display: flex;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+.myPage-content-left-playlist-img{
+    margin-right: 20px;
+}
+.myPage-content-left-playlist-img img{
+    width: 100px;
+    height: 105px;
+}
+.myPage-content-left-playlist-table{
+    width: 100%;
+
+}
+
+.myPage-content-left-playlist-table table{
+    width: inherit;
+    text-align: center;
+    vertical-align: center;
+}
+.myPage-content-left-playlist-table tbody{
+    border: 1px solid #666666;
+}
+
+.myPage-content-left-playlist-table tr{
+    border: 1px solid #666666;
+}
+
+.myPage-content-left-playlist-table td{
+    width: 25%;
+    padding: 5px;
+}
+.myPage-content-left-playlist-table td:first-child{
+    width: 5%;
+}
+
+.myPage-content-left-playlist-btn{
+    margin-top: 10px;
+    display: flex;
+}
+
+.myPage-btn-style{
+    display: flex;
+}

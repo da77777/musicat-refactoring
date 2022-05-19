@@ -1,0 +1,128 @@
+@charset "UTF-8";
+
+
+.Thumbnail-style input,
+.Thumbnail-style textarea,
+.Thumbnail-style select,
+.Thumbnail-style button,
+.Thumbnail-style table{
+    font-family: '돋움',Dotum,AppleGothic,sans-serif;font-size: 12px;
+}
+
+.Thumbnail-style img.fieldset{border: 0;}
+
+.Thumbnail-style em,
+.Thumbnail-style address{font-style: normal;}
+.Thumbnail-style a{text-decoration: none;}
+.Thumbnail-style a:hover,
+.Thumbnail-style a:active,
+.Thumbnail-style a:focus{text-decoration: underline;}
+
+.wrap{
+    width: 600px;
+    margin: 0 auto;
+    font-family: "Nanum Gothic", sans-serif;
+}
+.wrap h1{
+    padding: 10px 0 4px;
+    border-bottom: 1px solid #aaa;
+}
+.Thumbnail-ul{
+    border-bottom: 1px solid #aaa;
+    *zoom: 1;
+    display: flex;
+    flex-flow: row wrap;
+
+}
+.Thumbnail-li{
+    float: left;
+    width: 220px;
+    height: 285px;
+    padding: 20px 15px;
+    margin-bottom: -1px;
+    border-bottom: 1px solid #aaa;
+}
+.Thumbnail-li a{
+    display: block;
+}
+.Thumbnail-li a .thumb{
+    position: relative;
+    display: block;
+    background-color: #ccc;
+    height: 120px;
+    color: #666;
+    text-align: center;
+    line-height: 120px;
+}
+.Thumbnail-li a .thumb em{
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .5);
+    color: #eee;
+    font-weight: bold;
+    text-align: center;
+    line-height: 120px;
+}
+.Thumbnail-li a:hover .thumb em{
+    display: block;
+}
+.Thumbnail-li a strong {
+    display: block;
+    padding: 8px 0 4px;
+    color: #333;
+    font-weight: bold;
+    line-height: 1.4;
+}
+.Thumbnail-li a:hover{
+    text-decoration: none;
+}
+.Thumbnail-li p {
+    color: #767676;
+    font-size: 1em;
+}
+.Thumbnail-li img{
+    width: 100%;
+    height: 80%;
+ }
+
+#nonThumbnail{
+    margin: 0 auto;
+    width: 50%;
+}
+
+.dropdown-toggle::after{
+    display: none; !important;
+}
+.dropdown-toggle{
+    cursor: pointer;
+}
+.dropdown-item{
+    text-decoration: none; !important;
+    color: black; !important;
+}
+
+.fixed_img_col{
+    width: 900px;
+}
+
+.write_article_btn{
+    width: 900px;
+}
+
+.write_article_btn button{
+    width: 100px;
+    height: 30px;
+    /*font-size: 18px;*/
+    /*border-radius: 5px;*/
+    /*border: 0;*/
+    /*background-color: #0B5ED7;*/
+    /*color: white;*/
+}
+
+#paging_area a:hover{
+    cursor: pointer;
+}

@@ -1,0 +1,309 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<link th:href="@{../css/memberListStyle.css}" rel="stylesheet" />
+
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <div class="row mt-3 mb-5">
+
+<!--            권한 + 리소스 목록 조회-->
+                <div class="memberList-list-style">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>리소스명<button type="button" onclick="addResource()" id="addResourceBtn" class="ms-3">리소스 추가</button></th>
+                                <th>리소스타입</th>
+                                <th>권한</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gradeResource">
+                        <th:block th:if="${gradeResourceList} != null">
+                            <th:block th:each="gradeResource : ${gradeResourceList}" id = "td_gradeResourceList">
+                            <tr th:id="${gradeResource.getGradeResourceNo()}">
+                                <td id = "td_gradeResourceName" th:onclick="modifyResource(this)" th:text="${gradeResource.getResourceName()}"></td>
+                                <td id = "td_ResourceType" th:text="${gradeResource.getResourceType()}"></td>
+                                <td id = "td_GradeName" th:text="${gradeResource.getGradeName()}"></td>
+                            </tr>
+                            </th:block>
+                        </th:block>
+                        </tbody>
+                    </table>
+
+<!--            권한 및 리소스 추가-->
+                <div id="writeResource" >
+                    <form>
+                        <div id="addResourceForm" class="my-3"></div>
+                        <div>
+                            <button type="reset">취소</button>
+                            <button type="button" id="writeResourceBtn">저장</button>
+                        </div>
+                    </form>
+                </div>
+
+<!--            권한 및 리소스 수정-->
+                <div id="modifyResource">
+                    <form>
+                        <div id="modifyResourceForm" class="my-3"></div>
+
+                        <div>
+                            <button type="button" id="removeResourceBtn">삭제</button>
+                            <button type="reset">취소</button>
+                            <button type="button" id="modifyResourceBtn">저장</button>
+                        </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{../js/jquery-3.6.0.min.js}"></script>
+<script>
+$(document).ready(function () {
+    $('#modifyResource').hide();
+    $('#writeResource').hide();
+});
+
+<!--    리소스 추가-->
+function addResource() {
+    $('#modifyResource').hide();
+    $('#writeResource').show();
+    $
+        .ajax({
+            url : "/selectListAddResource",
+            type : "POST",
+            success : function (data) {
+                let list = data;
+                let addResourceForm = "";
+
+                addResourceForm += "<table>";
+                addResourceForm += "<tr>";
+                addResourceForm += "<th>리소스명</th>";
+                addResourceForm += "<th>리소스타입</th>";
+                addResourceForm += "<th>권한</th>";
+                addResourceForm += "</tr>";
+                addResourceForm += "<tr>";
+                addResourceForm += "<td><input type='text' id='resourceName' name='resourceName'></td>";
+                addResourceForm += "<td><input type='text' id='resourceType' name='resourceType' value='url'></td>";
+                addResourceForm += "<td><select id='gradeNo' name='gradeNo'>";
+                for(let i = 0; i < list.gradeList.length; i++) {
+                    addResourceForm += "<option value=" + list.gradeList[i].gradeNo + ">"
+                    + list.gradeList[i].name
+                    + "</option>"
+                }
+                addResourceForm += "</select>";
+                addResourceForm += "</td></tr></table>";
+                $('#addResourceForm').html(addResourceForm);
+            },
+            error : function (e) {
+            }
+        })
+}
+
+//-----------------------------------------------------------------------------------
+    $('#writeResourceBtn').on('click', function () {
+        const resourceName = $('#resourceName').val();
+        const resourceType = $('#resourceType').val();
+        const gradeNo = $('#gradeNo').val();
+        if(!resourceName.trim().length) {
+            alert("리소스명을 입력해주세요.");
+            return false;
+        }
+        requestWriteResource('/writeResource', resourceName, resourceType, gradeNo);
+    });
+
+
+    const writeResourceAjax = function (url, resourceName, resourceType, gradeNo) {
+        return new Promise ( (resolve, reject) => {
+            $.ajax({
+                url : url,
+                method : 'POST',
+                dataType : 'json',
+                data : {
+                    resourceName : resourceName,
+                    resourceType : resourceType,
+                    gradeNo : gradeNo
+                },
+                success : function (data) {
+                    resolve(data);
+                },
+                error : function (e) {
+                    reject(e);
+                }
+            });
+        });
+    }
+
+    async function requestWriteResource(url, resourceName, resourceType, gradeNo) {
+        let result = await writeResourceAjax(url, resourceName, resourceType, gradeNo);
+        try {
+            if(result.duplicated == 0) {
+                $("#gradeResource").empty();
+                result.gradeResourceList.forEach(function (e, index) {
+                    $("#gradeResource").append('<tr id=\"' + e.gradeResourceNo + '\"><td id = \"td_gradeResourceName\" onclick=\"modifyResource(this)\">'
+                        + e.resourceName + '</td><td id = \"td_ResourceType\">' + e.resourceType + '</td><td id = \"td_GradeName\">'
+                        + e.gradeName +'</td></tr>');
+                });
+                $('#writeResource').hide();
+            } else if (result.duplicated == 1) {
+                alert("이미 설정되어 있습니다.");
+                return false;
+            }
+        } catch (error) {
+            console.log("error : ", error);
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------
+
+    function modifyResource(e) {
+        console.log("-- ", $(e).closest("tr").attr("id"))
+        $('#writeResource').hide();
+        $('#modifyResource').show();
+        $
+            .ajax({
+                url : "/selectListModifyResource",
+                type : "POST",
+                dataType: "json",
+                data: ({
+                    "gradeResourceNo" : $(e).closest("tr").attr("id")
+                }),
+                success : function (data) {
+                    console.log("modifyData : ", data);
+                    let list = data;
+                    let modifyResourceForm = "";
+                    let gradeResourceNo = $(e).closest("tr").attr("id");
+
+                    modifyResourceForm += "<input id='modifyGradeResourceNo' name='gradeResourceNo' type='hidden' value='" + gradeResourceNo + "'>";
+                    modifyResourceForm += "<input id='modifyResourceNo' name='resourceNo' type='hidden' value='" + list.oneGradeResource.resourceNo + "'>";
+                    modifyResourceForm += "<table>";
+                    modifyResourceForm += "<tr>";
+                    modifyResourceForm += "<th>리소스명</th>";
+                    modifyResourceForm += "<th>리소스타입</th>";
+                    modifyResourceForm += "<th>권한</th>";
+                    modifyResourceForm += "</tr>";
+                    modifyResourceForm += "<tr>";
+                    modifyResourceForm += "<td><input type='text' id='modifyResourceName' name='resourceName' value='" + list.oneGradeResource.resourceName + "'></td>";
+                    modifyResourceForm += "<td><input type='text' id='modifyResourceType' name='resourceType' value='url'></td>";
+                    modifyResourceForm += "<td><select id='modifyGradeNo' name='gradeNo'>";
+                    for(let i = 0; i < list.gradeList.length; i++) {
+                        modifyResourceForm += "<option value="
+                            + list.gradeList[i].gradeNo;
+                        if(list.oneGradeResource.gradeNo == list.gradeList[i].gradeNo) {
+                            modifyResourceForm += " selected>"
+                                + list.gradeList[i].name
+                                + "</option>";
+                        } else {
+                            modifyResourceForm += ">"
+                                + list.gradeList[i].name
+                                + "</option>";
+                        }
+                    }
+                    modifyResourceForm += "</select>";
+                    modifyResourceForm += "</td></tr></table>";
+                    $('#modifyResourceForm').html(modifyResourceForm);
+                },
+                error : function (e) {
+                }
+            })
+    }
+
+    $('#modifyResourceBtn').on('click', function () {
+        const gradeResourceNo = $('#modifyGradeResourceNo').val();
+        const resourceNo = $('#modifyResourceNo').val();
+        const resourceName = $('#modifyResourceName').val();
+        const resourceType = $('#modifyResourceType').val();
+        const gradeNo = $('#modifyGradeNo').val();
+        if(!resourceName.trim().length) {
+            alert("리소스명을 입력해주세요.");
+            return false;
+        }
+        requestModifyResource('/modifyResource', gradeResourceNo, resourceNo, resourceName, resourceType, gradeNo);
+    });
+
+    const modifyResourceAjax = function (url, gradeResourceNo, resourceNo, resourceName, resourceType, gradeNo) {
+        return new Promise ( (resolve, reject ) => {
+            $.ajax({
+                url : url,
+                method : "POST",
+                dataType : "json",
+                data : {
+                    gradeResourceNo : gradeResourceNo,
+                    resourceNo : resourceNo,
+                    resourceName : resourceName,
+                    resourceType : resourceType,
+                    gradeNo : gradeNo
+                },
+                success : function (data) {
+                    resolve(data);
+                },
+                error : function (e) {
+                    reject(e);
+                }
+            });
+        });
+    }
+
+    async function requestModifyResource(url, gradeResourceNo, resourceNo, resourceName, resourceType, gradeNo) {
+        try {
+            let result = await modifyResourceAjax(url, gradeResourceNo, resourceNo, resourceName, resourceType, gradeNo);
+            console.log(result);
+            if(result.duplicated == 0) {
+                console.log(result.gradeResourceVo);
+                $("#"+gradeResourceNo).children("#td_gradeResourceName").text(result.gradeResourceVo.resourceName);
+                $("#"+gradeResourceNo).children("#td_ResourceType").text(result.gradeResourceVo.resourceType);
+                $("#"+gradeResourceNo).children("#td_GradeName").text(result.gradeResourceVo.gradeName);
+                $('#modifyResource').hide();
+            } else if (result.duplicated == 1) {
+                alert("이미 설정되어 있습니다.");
+                return false;
+            }
+        } catch (error) {
+            console.log("error : ", error);
+        }
+    }
+
+    $('#removeResourceBtn').on('click', function () {
+        const gradeResourceNo = $('#modifyGradeResourceNo').val();
+        requestRemoveResource('/deleteResource', gradeResourceNo);
+    });
+
+    const removeResourceAjax = function (url, gradeResourceNo) {
+        return new Promise( (resolve, reject) => {
+            $.ajax({
+                url : url,
+                method : "POST",
+                dataType : "json",
+                data : {
+                    gradeResourceNo : gradeResourceNo
+                },
+                success : function (data) {
+                    resolve(data);
+                },
+                error : function (e) {
+                    reject(e);
+                }
+            });
+        });
+    }
+
+    async function requestRemoveResource(url, gradeResourceNo) {
+        let result = await removeResourceAjax(url, gradeResourceNo);
+        try {
+                console.log(result);
+                $("#gradeResource").empty();
+                result.gradeResourceList.forEach(function(e, index) {
+                    $("#gradeResource").append('<tr id=\"' + e.gradeResourceNo + '\"><td id = \"td_gradeResourceName\" onclick=\"modifyResource(this)\">'
+                        + e.resourceName + '</td><td id = \"td_ResourceType\">' + e.resourceType + '</td><td id = \"td_GradeName\">'
+                        + e.gradeName +'</td></tr>');
+                });
+            $('#modifyResource').hide();
+        } catch (error) {
+            console.log("error : ", error);
+        }
+    }
+
+</script>
+</html>

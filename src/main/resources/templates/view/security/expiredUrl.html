@@ -1,0 +1,22 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<meta charset="UTF-8"/>
+<link th:href="@{../css/boardManagerStyle.css}" rel="stylesheet" />
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
+<div id="layoutSidenav_content">
+    <main>
+        session이 만료되었습니다. 다시 로그인해주세요. <br>
+        <button onclick="previousPage()">이전페이지로 돌아가기</button>
+
+        <script>
+            function previousPage() {
+                window.history.go(-1);
+            }
+        </script>
+    </main>
+</div>
+</html>

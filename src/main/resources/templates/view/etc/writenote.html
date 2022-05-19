@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script> 
+</head>
+<body>
+
+	<div th:if ="${isSelf} == 1">
+	자기 자신에게는 쪽지를 보낼 수 없습니다.
+	</div>
+	<div th:if ="${isSelf} == 0">
+	쪽지 보내기 <br>
+	<span id = "textLength">0/1000</span>
+	<form id = "writeForm">
+		<input type="hidden" id="counterpartNo" name="counterpartNo" th:value="${counterpart.no}"/>
+		<input type="hidden" id="counterpartNickname" name="counterpartNickname" th:value="${ counterpart.nickname }"/>
+		받는 사람 : <span th:text = "${counterpart.nickname}"></span><br>
+		<textarea rows="10" name="content" id="content"></textarea><br>
+		
+		<button type="button" id = "sendBtn">전송</button> <!-- 이거 눌렸을 때 보내고 난 뒤 자바스크립트로 창 닫히게..? -->
+	</form>
+	</div>
+	
+ <script>
+
+ 	$("#content").on("change keyup paste", function() {
+	    var len = 0;
+	    var str = $(this).val();
+	    for (var i = 0; i < str.length; i++) {
+	        if (escape(str.charAt(i)).length == 6) {
+	            len++;
+	        }
+	        len++;
+	    }
+	    $('#textLength').text(len + '/ 1000');
+	    if(len > 1000){
+	    	$(this).text($(this).val().substring(0, 1000));
+	    }
+	});
+	
+	$('#sendBtn').on('click', function() {	
+		//var params = $("#writeForm").serialize();
+		$.ajax({
+			url : '/sendnote',
+			method: 'POST',
+			data : {
+				counterpartNo : $("#counterpartNo").val(),
+				counterpartNickname : $("#counterpartNickname").val(),
+				content : $("#content").val()
+			},
+			success : function(data)
+			{					
+				window.close();
+			},
+			error: function(e) {
+				console.log(e);
+			}
+		})
+	});
+</script> 
+</body>
+</html>

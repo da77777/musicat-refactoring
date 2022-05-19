@@ -1,0 +1,124 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<link th:href="@{/css/homeFooterStyle.css}" rel="stylesheet"/>
+
+<footer>
+    <div id="footerPlayList">
+        <div class="playListBar">
+            <div class="playListBar-inner">
+
+                <!-- 오디오 재생 관련 버튼 -->
+                <div class="playListBar-inner-play-btn">
+                    <button type="button" id="playlist-prev"><span class="material-icons">skip_previous</span></button>
+                    <button type="button" id="playlist-pause" style="display: none"><span class="material-icons">pause</span></button>
+                    <button type="button" id="playlist-play"><span class="material-icons">play_arrow</span></button>
+                    <button type="button" id="playlist-next"><span class="material-icons">skip_next</span></button>
+                </div>
+
+                <!-- 오디오 시간 관련 -->
+                <div class="playListBar-inner-time">
+                    <span class="playListBar-time-current">00:00</span>
+                    <input type="range" value="0" id="time-progress" class="time-progress"/>
+                    <span class="playListBar-time-duration">-:--</span>
+                </div>
+                <!-- .time -->
+
+                <!-- 오디오 볼륨 관련 -->
+                <div class="playListBar-inner-volume">
+                    <button type="button" class="volume-mute-btn" id="volume-mute">
+                        <span class="material-icons" id="volume-mute-off">volume_up</span>
+                        <span class="material-icons" id="volume-mute-on" style="display: none">volume_off</span>
+                    </button>
+                    <input
+                            type="range"
+                            value="100"
+                            max="100"
+                            step="1"
+                            id="volume-progress"
+                            class="volume-progress"
+
+                    />
+                </div>
+                <!-- .volume -->
+
+                <div class="playListBar-inner-img">
+                    <img src="/upload/defaultImg.png">
+                </div>
+
+                <div class="playListBar-inner-title">
+                    <div class="playListBar-inner-title-div">
+                        <span class="playListBar-title-song"></span>
+                        <span class="playListBar-title-singer"></span>
+                        <span class="playListBar-title-index" style="display:none"></span>
+                    </div>
+                </div>
+
+                <div class="playListBar-inner-func-btn">
+                    <!--                    <button type="button" id="playlist-heartEmpty"><span class="material-icons">favorite_border</span></button>-->
+                    <!--                    <button type="button" id="playlist-heart" style="display: none"><span class="material-icons">favorite</span>-->
+                    <!--                    </button>-->
+                    <!--                    <button type="button" id="playlist-personAdd"><span class="material-icons">person_add</span></button>-->
+                    <div class="playlist-dropUp">
+                        <button type="button" id="playlist-songList" class="playlist-dropUp-btn"><span class="material-icons">queue_music</span>
+                        </button>
+                        <div id="playlist-dropUp-content" class="playlist-dropUp-content">
+                            <div class="dropUp-inner-title">
+                                <h4>재생 목록</h4>
+                                <div>
+                                    <button type="button"><span class="material-icons">delete</span></button>
+                                    <button id="playlist-close" type="button"><span class="material-icons">close</span></button>
+                                </div>
+                            </div>
+                            <ul id="currentPlayList_ul" style="overflow-y : auto">
+                                <!--                                <button type="button" onclick="testinggg()">테스트트</button>-->
+                                <th:block th:each="music , index : ${curPlaylist}">
+                                    <li th:id="'cpl' + ${index.index}" th:class="${music.id}">
+                                        <div class="playlist-dropUp-content-inner">
+                                            <div class="dropUp-inner-info position-relative">
+                                                <img th:src="${music.links[1].href}"/>
+                                                <label class="playlist-dropUp-content-playBtn position-absolute">
+                                                    <input type="button" th:id="${music.links[0].href}" onclick="playAudio(this)">
+                                                    <span class="material-icons position-absolute" >play_circle</span>
+                                                </label>
+                                                <div class="dropUp-inner-info-text">
+                                                    <span class = "dropUp-inner-info-text__title" th:text="${music.title}"></span>
+                                                    <span class = "dropUp-inner-info-text__artist" th:text="${music.memberNickname}"></span>
+                                                </div>
+                                            </div>
+                                            <div class="dropUp-inner-time">
+                                                <!--                                            <span>2:06</span>-->
+                                                <button type="button" th:onclick="'addMusicToPlaylist(' + ${music.id} + ',' + ${#authentication.principal.getMemberVo().getNo()} + ')'"><span class="material-icons">playlist_add</span></button>
+                                                <button type="button" th:onclick="'deleteMusicFromNow(' + ${music.id} + ',' + ${#authentication.principal.getMemberVo().getNo()} + ')'"><span class="material-icons">close</span></button>
+                                                <!--                                            <button id="song-addInfo" type="button"><span class="material-icons">dehaze</span>-->
+                                                <!--                                            </button>-->
+                                                <!--                                            <div id="songInfo-dropbox">-->
+                                                <!--                                                <button type="button">삭제</button>-->
+                                                <!--                                                <button type="button">플레이리스트 추가</button>-->
+                                                <!--                                            </div>-->
+                                            </div>
+                                        </div>
+                                    </li>
+                                </th:block>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!--                <iframe src = "https://cdn.producerloops.com/files/audio/53707/Trap Aura Demo.mp3" allow="autoplay" id="audio"></iframe>-->
+                <audio style="display: none" id="audio" controls src="#">
+                    <!--                    <source type="audio/mp3">-->
+
+                </audio>
+            </div>
+        </div>
+    </div>
+    <th:block th:if="${#authorization.expr('isAuthenticated()')}">
+        <span id="userNoForPlaylist" th:text="${#authentication.principal.getMemberVo().getNo()}"
+              style="display: none"></span>
+    </th:block>
+    <!--    <th:block th:if="${#authorization.expr('isAuthenticated()') == false"}>-->
+    <!--        <span id = "userNoForPlaylist" style="display: none">-1</span>-->
+    <!--    </th:block>-->
+</footer>
+
+</html>

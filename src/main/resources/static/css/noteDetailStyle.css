@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+body{
+
+}
+
+.note-inner-style{
+	display: flex;
+	justify-content: center;
+	border: 1px solid #666666; 
+}
+.noteDetail-center-style{
+	font-size: 18px;
+
+}
+
+.noteDetail-center-style span {
+	margin: 10px 0;
+}

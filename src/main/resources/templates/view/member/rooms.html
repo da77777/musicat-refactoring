@@ -1,0 +1,85 @@
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Musicat - 방 목록</title>
+
+    <link rel="stylesheet" href="/css/chatRoomlist.css" />
+    <link rel="stylesheet" href="/css/reset.css" />
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+
+  </head>
+  <body>
+    <div class="chat-content">
+      <span class="chat-title">채팅방 목록</span>
+
+      <div class="room-list">
+        <ul>
+          <li th:each="room : ${list}">
+            <a th:href="@{/chat/room(roomId=${room.roomId})}">[[${room.name}]]</a>
+            <form th:action="@{/chat/room/delete}" method="post" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">
+              <input type="hidden" name="roomId" th:value="${room.roomId}" />
+              <button class="btn btn-secondary">
+                <span>[X]</span>
+              </button>
+            </form>
+          </li>
+        </ul>
+        <form class="chat-form" th:action="@{/chat/room}" method="post" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">
+          <input
+                  type="text"
+                  name="name"
+                  class="form-control"
+                  placeholder="채팅방 이름 입력..."
+                  maxlength="20"
+          />
+          <button class="btn btn-secondary">
+            <span class="material-icons md-48">post_add</span>
+          </button>
+        </form>
+      </div>
+
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- <script src="js/scripts.js"></script> -->
+    <!--  비동기 메시시 처리 방식 -->
+    <script th:inline="javascript">
+      $(document).ready(function(){
+          var roomName = [[${roomName}]];
+
+          if(roomName != null)
+              alert(roomName + "방이 개설되었습니다.");
+
+          $(".btn-create").on("click", function (e){
+              e.preventDefault();
+
+              var name = $("input[name='name']").val();
+
+              if(name == "")
+                  alert("Please write the name.")
+              else
+                  $("form").submit();
+          });
+
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+@charset "UTF-8";
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  
+}
+
+.content {
+  font-family: system-ui, serif;
+  font-size: 2rem;
+  padding: 3rem;
+  border-radius: 1rem;
+  background: #a4a9ee;
+}

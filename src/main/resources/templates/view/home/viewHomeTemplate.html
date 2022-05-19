@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="head">
+    <title>Musicat</title>
+    <meta property="og:description" content="Hello. This is a music site. Share your information.">
+    <meta name="description" content="Hello. This is a music site. Share your information.">
+    <link rel="shortcut icon" th:href="@{/upload/favicon.ico}">
+    <link
+            th:href="@{https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css}"
+            rel="stylesheet"/>
+    <link th:href="@{/css/theme_styles.css}" rel="stylesheet"/>
+
+    <link th:href="@{/css/homeNavStyle.css}" rel="stylesheet"/>
+    <link th:href="@{/css/homeHeaderStyle.css}" rel="stylesheet"/>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
+
+</th:block>
+
+<body class="sb-nav-fixed">
+
+<!-- Header -->
+<th:block layout:fragment="viewFrameHeader"
+          th:include="@{/fragments/viewFrameHeader}"></th:block>
+
+<div id="layoutSidenav" class="mb-5">
+    <!-- Nav -->
+    <th:block layout:fragment="nav" th:include="@{/fragments/nav}"></th:block>
+
+    <!-- Content -->
+    <th:block layout:fragment="viewMainContent"
+              th:include="@{${HomeContent}}"></th:block>
+</div>
+<!-- footer -->
+<th:block layout:fragment="viewFrameFooter"
+          th:include="@{/fragments/viewFrameFooter}"></th:block>
+
+<!-- Script -->
+<script
+        th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js}"
+        th:crossorigin="anonymous"></script>
+<script th:src="@{/js/scripts.js}"></script>
+<script
+        th:src="@{https://cdn.jsdelivr.net/npm/simple-datatables@latest}"
+        th:crossorigin="anonymous"></script>
+<script th:src="@{/js/datatables-simple-demo.js}"></script>
+<script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+
+<script th:src="@{/js/playAudioSetting.js}"></script>
+
+<script th:src="@{/js/playlistbar.js}"></script>
+
+
+
+<script
+        th:src="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js}"
+        th:crossorigin="anonymous"></script>
+
+<!--게시글 작성 js-->
+<script th:src="@{/js/writeArticleForm.js}"></script>
+<!--게시글 수정 js-->
+<script th:src="@{/js/updateArticleForm.js}"></script>
+<!--게시글 세부 조회-->
+<script th:src="@{/js/detailArticle.js}"></script>
+</body>
+</html>

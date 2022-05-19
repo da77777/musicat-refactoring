@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- <mapper namespace="com.example.vo.MemberVO"> -->
+<mapper namespace="com.example.musicat.mapper.board.ArticleMapper">
+
+	<resultMap type="articleVo" id="articleVOResult">
+		<result property="no" javaType="int" column="article_no"  jdbcType="INTEGER"/>
+		<result	property="memberNo" javaType="int" column="member_no" jdbcType="INTEGER"/>
+		<result property="subject" javaType="String" column="subject"  jdbcType="VARCHAR"/>
+		<result property="nickname" javaType="String" column="nickname"  jdbcType="VARCHAR"/>
+		<result property="writeDate" javaType="String" column="writedate" jdbcType="VARCHAR"/>
+		<result property="viewcount" javaType="int" column="viewcount" jdbcType="VARCHAR"/>
+		<result property="likecount" javaType="int" column="likecount"  jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<select id="selectBoard" parameterType="Integer" statementType="CALLABLE" resultType="articleVo" resultMap="articleVOResult">
+		{ CALL sp_article_select_board(#{boardNo}) }
+	</select>
+
+	<!-- paging -->
+	<select id="selectBoardList" parameterType="hashMap" statementType="CALLABLE" resultType="articleVo" resultMap="articleVOResult">
+		{ CALL sp_article_select_board_pag(#{boardNo}, #{offset}) }
+	</select>
+
+	<select id="boardTotalCount" parameterType="int" statementType="CALLABLE" resultType="int">
+		{ CALL sp_article_select_board_totalcount(${boardNo}) }
+	</select>
+
+
+	<resultMap id="gradaArticleMap" type="gradeArticleVo">
+		<result property="no" javaType="int" column="article_no" jdbcType="INTEGER" />
+		<result property="memberNo" javaType="int" column="member_no" jdbcType="INTEGER" />
+		<result property="nickname" javaType="String" column="nickname" jdbcType="VARCHAR" />
+		<result property="proGrade" javaType="String" column="prograde" jdbcType="VARCHAR" />
+		<result property="nowGrade" javaType="String" column="nowgrade" jdbcType="VARCHAR" />
+		<result property="visits" javaType="int" column="visits" jdbcType="INTEGER" />
+		<result property="docs" javaType="int" column="docs" jdbcType="INTEGER" />
+		<result property="comms" javaType="int" column="comms" jdbcType="INTEGER" />
+		<result property="regdate" javaType="String" column="regdate" jdbcType="VARCHAR" />
+		<result property="writedate" javaType="String" column="writedate" jdbcType="VARCHAR" />
+		<result property="content" javaType="String" column="content" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 등업 게시판 -->
+	<select id="selectGradeArticles" resultType="gradeArticleVo" resultMap="gradaArticleMap">
+		SELECT * FROM grade_article ORDER BY writedate DESC
+	</select>
+
+	<select id="selectAllArticle" resultType="articleVo" resultMap="articleVOResult">
+		SELECT * FROM article ORDER BY writedate DESC
+	</select>
+
+	<insert id="inserGradeArticle" parameterType="gradeArticleVo" statementType="CALLABLE">
+		{ CALL sp_insert_grade_article(#{memberNo},#{nickname},#{proGrade},#{nowGrade},#{visits},#{docs},#{comms},#{regdate},#{content} ) }
+	</insert>
+
+	<delete id="deleteGradeArticle" parameterType="INTEGER">
+		DELETE FROM grade_article WHERE article_no = #{articleNo}
+	</delete>
+
+
+	<resultMap type="articleVo" id="detailArticleVOResult">
+		<result property="no" javaType="int" column="article_no"  jdbcType="INTEGER"/>
+		<result property="memberNo" javaType="int" column="member_no" jdbcType="INTEGER"/>
+		<result property="boardNo" javaType="int" column="board_no" jdbcType="INTEGER"/>
+		<result property="subject" javaType="String" column="subject"  jdbcType="VARCHAR"/>
+		<result property="nickname" javaType="String" column="nickname"  jdbcType="VARCHAR"/>
+		<result property="writeDate" javaType="String" column="writedate" jdbcType="VARCHAR"/>
+		<result property="content" javaType="String" column="content" jdbcType="VARCHAR"/>
+		<result property="viewcount" javaType="int" column="viewcount" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	<resultMap type="fileVo" id="detailFileVOResult">
+		<result property="no" javaType="int" column="file_no" jdbcType="INTEGER" />
+		<result property="originalFileName" javaType="String" column="originalfilename" jdbcType="VARCHAR" />
+		<result property="systemFileName" javaType="String" column="systemfilename" jdbcType="VARCHAR" />
+		<result property="fileSize" javaType="Long" column="filesize" jdbcType="BIGINT" />
+		<result property="fileType" javaType="int" column="filetype" jdbcType="TINYINT" />
+	</resultMap>
+	
+	<resultMap type="selectArticleVo" id="detailSelectMap">
+		<collection property="article" resultMap="detailArticleVOResult" />
+		<collection property="file" resultMap="detailFileVOResult" />
+	</resultMap>
+	
+	<select id="selectArticle" parameterType="Integer" statementType="CALLABLE" resultMap="detailSelectMap">
+		{ CALL sp_article_select_detail(#{articleNo}) }
+	</select>
+
+	<select id="selectSubArticle" parameterType="Integer" statementType="CALLABLE" resultMap="detailArticleVOResult">
+		{ CALL sp_select_subarticle(#{articleNo}) }
+	</select>
+
+
+
+
+	
+	<insert id="insertArticle" statementType="CALLABLE" parameterType="articleVo">
+		{ CALL sp_article_insert(#{memberNo}, #{boardNo}, #{nickname}, #{subject}, #{content}) }
+		
+		<selectKey resultType="int" keyProperty="no" keyColumn="article_no" order="AFTER" >
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<update id="updateArticle" parameterType="articleVo" statementType="CALLABLE">
+		{ CALL sp_article_update(#{no},#{boardNo}, #{subject}, #{content} ) }
+	</update>
+	
+	<update id="upLikecount" parameterType="int" statementType="CALLABLE">
+		{ CALL  sp_up_article_likecount(#{articleNo}) }
+	</update>
+	
+	<update id="downLikecount" parameterType="int" statementType="CALLABLE">
+		{ CALL  sp_down_article_likecount(#{articleNo}) }
+	</update>
+	
+	
+	<update id="upViewcount" parameterType="int" statementType="CALLABLE" >
+		{ CALL sp_up_viewcount(#{articleNo}) }
+	</update>
+	
+	
+	<delete id="deleteArticle" parameterType="int" statementType="CALLABLE">
+		{ CALL sp_article_delete(#{articleNo}) }
+	</delete>
+	
+	
+	
+	<!-- 추천 -->
+	
+	<insert id="insertLike" parameterType="likeVo" statementType="CALLABLE">
+		{ CALL sp_insert_like(#{memberNo}, #{no}) }
+	</insert>
+	
+	<resultMap type="likeVo" id="selectLikeMap">
+		<result property="no" javaType="int" column="recommend_no" jdbcType="INTEGER"/>
+		<result property="memberNo" javaType="int" column="member_no" jdbcType="INTEGER"/>
+		<result property="articleNo" javaType="int" column="article_no" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	<select id="selectLike" parameterType="likeVo" statementType="CALLABLE" resultMap="selectLikeMap">
+		{ CALL sp_select_like( #{memberNo}, #{no}) }
+	</select>
+	
+	<delete id="deleteLike" parameterType="articleVo"  statementType="CALLABLE">
+		DELETE FROM articlerecommend WHERE member_no = #{memberNo} AND article_no = #{no}
+	</delete>
+	
+	
+	<select id="likeCheck" parameterType="articleVo" resultType="int" >
+		SELECT COUNT(*) FROM articlerecommend WHERE member_no = #{memberNo} AND article_no = #{no}
+	</select>
+	
+	
+	<select id="totalLikeCount" statementType="CALLABLE" parameterType="int" resultType="INTEGER">
+			{ CALL sp_totalcount_like(#{articleNo} ) }
+	</select>
+	
+
+	<!-- tag -->
+	<insert id="insertTag" parameterType="tagVo">
+		{ CALL sp_insert_tag(#{articleNo}, #{name}) }
+	</insert>
+
+	<resultMap type="tagVo" id="selectTagMap">
+		<result property="tagNo" javaType="int" column="tag_no" jdbcType="INTEGER"/>
+		<result property="articleNo" javaType="int" column="article_no" jdbcType="INTEGER"/>
+		<result property="name" javaType="String" column="tagname" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="selectArticleTags" statementType="CALLABLE" parameterType="int" resultMap="selectTagMap">
+		{ CALL sp_select_article_tags(#{articleNo}) }
+	</select>
+
+	<delete id="deleteTag" statementType="CALLABLE" parameterType="int">
+		{ CALL sp_delete_tag(#{articleNo}) }
+	</delete>
+
+
+	<!-- 검색 -->
+
+	<resultMap type="articleVo" id="searchArticleMap">
+		<result property="no" javaType="int" column="article_no"  jdbcType="INTEGER"/>
+		<result property="memberNo" javaType="int" column="member_no" jdbcType="INTEGER"/>
+		<result property="boardNo" javaType="int" column="board_no" jdbcType="INTEGER"/>
+		<result property="subject" javaType="String" column="subject"  jdbcType="VARCHAR"/>
+		<result property="nickname" javaType="String" column="nickname"  jdbcType="VARCHAR"/>
+		<result property="writeDate" javaType="String" column="writedate" jdbcType="VARCHAR"/>
+		<result property="content" javaType="String" column="content" jdbcType="VARCHAR"/>
+		<result property="viewcount" javaType="int" column="viewcount" jdbcType="INTEGER"/>
+	</resultMap>
+
+
+	<select id="search" parameterType="hashMap" resultMap="searchArticleMap">
+		SELECT * FROM article AS a
+		<where>
+			<if test="nickname != null and !nickname.equals('')">
+				AND a.nickname LIKE CONCAT('%',#{nickname},'%')
+			</if>
+			<if test="subject != null and !subject.equals('')">
+				AND a.subject LIKE CONCAT('%',#{subject},'%')
+			</if>
+			<if test="tagname != null and !tagname.equals('')">
+				AND a.article_no IN ( SELECT t.article_no FROM tag AS t WHERE t.tagname LIKE CONCAT('%',#{tagname},'%'))
+			</if>
+			<if test="boardNo != null and !boardNo.equals('')">
+				AND a.board_no = #{boardNo}
+			</if>
+		</where>
+		ORDER BY writedate DESC
+		LIMIT 12 OFFSET ${offset}
+	</select>
+
+	<!--베스트 글-->
+	<select id="selectBestArticle"  statementType="CALLABLE" resultMap="searchArticleMap">
+		{CALL sp_select_best_article() }
+	</select>
+
+	<delete id="deleteAllBestArticle">
+		DELETE FROM bestarticle
+	</delete>
+
+	<insert id="insertBestArticle" parameterType="hashMap">
+		INSERT INTO bestarticle (article_no, subject, likecount, systemfilename) VALUES (#{articleNo}, #{subject}, #{likecount}, #{systemFileName})
+	</insert>
+
+	<!--베스트글 업데이트-->
+	<select id="selectUpdateBestArticle" parameterType="int" statementType="CALLABLE" resultMap="searchArticleMap">
+		{ CALL sp_update_bestarticles(#{now}) }
+	</select>
+	
+	<select id="selectNowDate" resultType="int">
+		SELECT WEEKDAY(NOW())
+	</select>
+
+	<!--bestarticle table에 존재하는지 여부 체크 -->
+	<select id="checkBestArticle" parameterType="int" statementType="CALLABLE" resultType="boolean">
+		{ CALL sp_check_bestarticle(#{articleNo}) }
+	</select>
+
+
+	<resultMap id="bestArticleMap" type="bestArticleVo">
+		<result property="no" javaType="int" column="bestarticle_no" jdbcType="INTEGER"/>
+		<result property="articleNo" javaType="int" column="article_no" jdbcType="INTEGER"/>
+		<result property="subject" javaType="String" column="subject" jdbcType="VARCHAR"/>
+		<result property="likecount" javaType="int" column="likecount" jdbcType="INTEGER"/>
+		<result property="systemFileName" javaType="String" column="systemfilename" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<!-- 메인 page 출력 용 -->
+	<select id="selectAllBestArticle" statementType="CALLABLE" resultMap="bestArticleMap">
+		{ CALL sp_select_all_bestarticle() }
+	</select>
+
+
+	<!-- 양 -->
+	<!-- MyPage 작성한 게시글 -->
+	<resultMap id="selectMyArticleMap" type="articleVo">
+		<result property="no" javaType="int" column="article_no"  jdbcType="INTEGER"/>
+		<result property="memberNo" javaType="int" column="member_no" jdbcType="INTEGER"/>
+		<result property="subject" javaType="String" column="subject"  jdbcType="VARCHAR"/>
+		<result property="writeDate" javaType="String" column="writedate" jdbcType="VARCHAR"/>
+		<result property="viewcount" javaType="int" column="viewcount" jdbcType="INTEGER"/>
+		<result property="likecount" javaType="int" column="likecount"  jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<select id="selectMyArticle" resultMap="selectMyArticleMap">
+		SELECT member_no, article_no, subject, writedate, viewcount, likecount
+		FROM article
+		WHERE member_no = #{memberNo};
+	</select>
+
+
+	<!-- 추천 누른 게시글 -->
+	<select id="selectMyLikeArticle" resultType="articleVo" resultMap="articleVOResult">
+		SELECT ac.member_no, ac.article_no, nickname, subject, writedate, viewcount, likecount
+		FROM articlerecommend ac JOIN article a ON ac.article_no = a.article_no
+		WHERE ac.member_no = #{memberNo}
+		ORDER BY recommend_no
+	</select>
+
+
+
+
+
+</mapper>

@@ -1,0 +1,83 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charSet="UTF-8"/>
+    <title>Musicat-ChangePlayList</title>
+
+    <link th:href="@{/css/theme_styles.css}" rel="stylesheet"/>
+
+    <link
+            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+            rel="stylesheet"
+    />
+
+    <style>
+        body {
+            overflow: hidden;
+        }
+
+        form {
+            padding-top: 10px;
+            padding-left: 10px;
+        }
+
+        .profile-table-style {
+        }
+
+        .profile-imgFile-style {
+            height: 50px;
+        }
+
+        .profile-imgFile-style span:hover {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-primary">
+<button class="btn" onclick="history.back()"><span class="material-icons md-36">arrow_circle_left</span></button>
+<div>Playlist Title</div>
+<form th:action="|/addplaylist|" enctype="multipart/form-data" method="post">
+    <input type="hidden" name="id" th:value="${memberNo}">
+    <img id="preImage" alt="" style="width: 200; height: 200;">
+    <input type="file" id="image" name="image" accept="image/gif, image/jpg, image/png">
+    <input type="text" name="title">
+    <button type="submit">Save</button>
+</form>
+<button type="button" onchange="history.back()">취소</button>
+</body>
+</html>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script>
+    $(function () {
+        $('#image').on('change', function () {
+            changePlaylistImage(this);
+        });
+    });
+
+    function changePlaylistImage(f) {
+        if (f.fil - 3.6.0
+        es && f.files[0]
+    )
+        {
+            var reader = new FileReader();
+            var ext = String(f.files[0].type).toLowerCase();
+            console.log(ext);
+            var size = f.files[0].size;
+            if ($.inArray(ext, ['image/png', 'image/jpg', 'image/gif']) == -1) {
+                alert(ext + ' 파일은 업로드 할 수 없습니다.');
+                $("#image").val("");
+                return false;
+            }
+            if (size > 3 * 1024 * 1024) {
+                alert('3MB 이하의 파일 크기여야 합니다.');
+                $("#image").val("");
+                return false;
+            }
+            reader.onload = function (e) {
+                $("#preImage").attr('src', e.target.result);
+            }
+            reader.readAsDataURL(f.files[0]);
+        }
+    }
+</script>

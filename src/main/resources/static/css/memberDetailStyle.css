@@ -1,0 +1,42 @@
+@charset "utf-8";
+
+.memberdetail-back-style button {
+	outline: none;
+	border: none;
+	background-color: #ffffff;
+}
+
+.memberdetail-back-style {
+	margin-bottom: 20px;
+}
+
+.memberdetail-content-style table {
+	width: 100%;
+}
+
+.memberdetail-content-style table td {
+	border: 1px solid #000000;
+	text-align: center;
+}
+
+.memberdetail-content-style table td select {
+	margin-left: 10px;
+}
+
+.memberdetail-content-style table tr td:first-child,
+	.memberdetail-content-style table tr td:nth-child(3) {
+	background-color: #b4b8d6;
+}
+
+.memberdetail-btn-style {
+	margin: 20px 0;
+}
+
+.memberdetail-out-style form, .memberdetail-btn-style {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.memberdetail-out-style button, .memberdetail-btn-style button {
+	width: 10%;
+}

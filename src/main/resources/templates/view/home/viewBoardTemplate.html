@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="head">
+	<title>Musicat</title>
+	<meta property="og:description" content="Hello. This is a music site. Share your information.">
+	<meta name="description" content="Hello. This is a music site. Share your information.">
+	<link rel="shortcut icon" th:href="@{/upload/favicon.ico}">
+	<link
+		th:href="@{https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css}"
+		rel="stylesheet" />
+	<link th:href="@{/css/theme_styles.css}" rel="stylesheet" />
+
+	<link th:href="@{/css/homeNavStyle.css}" rel="stylesheet" />
+	<link th:href="@{/css/homeHeaderStyle.css}" rel="stylesheet"/>
+
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+		  rel="stylesheet">
+
+</th:block>
+
+<body class="sb-nav-fixed">
+
+	<!-- Header -->
+	<th:block layout:fragment="viewFrameHeader"
+		th:include="@{/fragments/viewFrameHeader}"></th:block>
+
+	<div id="layoutSidenav">
+		<!-- Nav -->
+		<th:block layout:fragment="nav" th:include="@{/fragments/nav}"></th:block>
+		
+		<!-- Content -->
+		<!-- NomalList -->
+		<div th:if="${boardkind == 0}" class="mb-5" style="width: 100%">
+		<th:block layout:fragment="viewMainContent"
+			th:include="@{/view/board/listArticleNomal}"></th:block>
+		</div>
+		
+		<!-- Content -->
+		<!-- ThumbnailList -->
+		<div th:if="${boardkind == 1}" class="mb-5" style="width: 100%">
+		<th:block layout:fragment="viewMainContent"
+			th:include="@{/view/board/listArticleThumbnail}"></th:block>
+		</div>
+		
+		<!-- Content -->
+		<!-- audioList -->
+		<div th:if="${boardkind == 2}" class="mb-5" style="width: 100%">
+		<th:block layout:fragment="viewMainContent"
+			th:include="@{/view/board/listArticleMusic}"></th:block>
+		</div>
+
+		<div th:if="${boardkind == 3}" class="mb-5" style="width: 100%">
+			<th:block layout:fragment="viewMainContent"
+					  th:include="@{/view/board/listArticleGrade}"></th:block>
+		</div>
+
+<!-- 양 ~		-->
+<!--		<div>-->
+<!--			<th:block layout:fragment="viewMainContent"-->
+<!--					  th:include="@{${HomeContent}}"></th:block>-->
+<!--		</div>-->
+
+	</div>
+
+	<!-- footer -->
+	<th:block layout:fragment="viewFrameFooter"
+		th:include="@{/fragments/viewFrameFooter}"></th:block>
+
+	<!-- Script -->
+	<script
+		th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js}"
+		th:crossorigin="anonymous"></script>
+	<script th:src="@{/js/scripts.js}"></script>
+
+	<script
+		th:src="@{https://cdn.jsdelivr.net/npm/simple-datatables@latest}"
+		th:crossorigin="anonymous"></script>
+	<script th:src="@{/js/datatables-simple-demo.js}"></script>
+
+	<script
+			th:src="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js}"
+			th:crossorigin="anonymous"></script>
+
+	<script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+
+	<script th:src="@{/js/playAudioSetting.js}"></script>
+
+	<script th:src="@{/js/playlistbar.js}"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>제목을 지정!!!!</title>
+
+    <link
+      th:href="@{https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css}"
+      rel="stylesheet"
+    />
+    <link th:href="@{/css/theme_styles.css}" rel="stylesheet" />
+
+    <link th:href="@{/css/reset.css}" rel="stylesheet" />
+
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+
+    <link th:href="@{/css/detailAudioArticle.css}" rel="stylesheet" />
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+<!--    <script src="https://unpkg.com/wavesurfer.js"></script>-->
+<!--    <script th:src="@{/js/wavesurfer.js}"></script>-->
+  </head>
+  <body>
+    <br />
+    <b><font size="5" color="gray">부모창</font></b>
+    <br /><br />
+    <input type="button" value="자식창 열기" onclick="openChild()" /><br />
+    전달받을 값 : <input type="text" id="pInput" />
+
+    <div id="receive" class="detail-audio-style">
+      <div class="detail-audio-part-style">
+        <img id="detailAudioImg" src="images/시보.png" alt="" srcset="" />
+
+        <div id="audioDiv" class="detail-audioDiv-style">
+          <div id="audioInfoDiv" class="detail-audioInfo-style">
+            <button
+              id="audioPlayBtn"
+              class="audioPlayBtn"
+              onclick="detailPlayAudio()"
+              style="visibility: hidden"
+            >
+              <span id="audioPlayIcon" class="material-icons">play_circle</span>
+            </button>
+
+            <span id="audioTitle" class="audioTitle">제목입니다~</span>
+
+            <button id="audioDelBtn" class="audioDelBtn" onclick="test(this)">
+              <span id="audioDelIcon" class="material-icons">close</span>
+            </button>
+          </div>
+          <div class="detail-audioControls-style">
+<!--            <div id="waveform"></div>-->
+<!--            <p id="audioResource" style="display: none"></p>-->
+            <audio
+              src="file_example_MP3_2MG.mp3"
+              id="detail-audio"
+              controls
+
+            ></audio>
+            <!--              style="display: none"-->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--<form id = "formtest" action="/musicdelete" th:method="delete" onsubmit="return formbtn(this)">-->
+    <!--    <input type="hidden" id = "articleNo" name = "articleNo" value="1">-->
+    <!--    <button type="submit">삭제</button>-->
+    <!--</form>-->
+
+    <script>
+      // $(".audioDelBtn").on('click', function() {
+      //     console.log("audioDelBtn");
+      // });
+
+      const getAjaxMusic = function (url, musicId) {
+        return new Promise((resolve, reject) => {
+          $.ajax({
+            url: url,
+            method: "DELETE",
+            dataType: "json",
+            data: {
+              musicId: musicId,
+            },
+            /* beforeSend: function (jqXHR, settings) {
+                    var header = $("meta[name='_csrf_header']").attr("content");
+                    var token = $("meta[name='_csrf']").attr("content");
+                    jqXHR.setRequestHeader(header, token);
+                 }, */
+            success: function (data) {
+              // 비동기 작업 성공 시 호출
+              resolve(data);
+            },
+            error: function (e) {
+              // 비동기 작업 실패 시 호출
+              reject(e);
+            },
+          });
+        });
+      };
+
+      async function requestProcessMusic(url, musicId) {
+        try {
+          // await 다음에는 비동기 처리 작업이 와야함.
+          const result = await getAjaxMusic(url, musicId);
+
+          if (result.success == 1) {
+            $("#receive").empty();
+          } else {
+            console.log(result);
+          }
+        } catch (error) {
+          console.log("error : ", error);
+        }
+      }
+
+      function test(e) {
+        console.log($(e).attr("id"));
+        requestProcessMusic("/musicDelete", $(e).attr("id"));
+      }
+
+      // let audioEvent = document.getElementById("detail-audio");
+      // let wavesurfer;
+      //
+      // let audioRes = document.getElementById("audioResource").innerText;
+      // // Audio 관련 JS
+      // audioEvent.addEventListener("loadedmetadata",(event) =>{
+      //   wavesurfer = WaveSurfer.create({
+      //     // id="waveform" 인 오브젝트에 파형 생성
+      //     // 필수 옵션
+      //     container: "#waveform",
+      //     // 선택 옵션들
+      //     barWidth: 1,
+      //     height: 50,
+      //     progressColor: "#E2B026",
+      //     cursorColor: "transparent",
+      //     waveColor: "#333533",
+      //   });
+      //   wavesurfer.load(audioRes);
+      // })
+      //
+      //
+      //
+      // wavesurfer.on("ready", function () {
+      //   document.getElementById("audioPlayBtn").style.visibility = "visible";
+      // });
+      // wavesurfer.on("play", function () {
+      //   document.getElementById("audioPlayIcon").innerHTML = "pause";
+      // });
+      // wavesurfer.on("pause", function () {
+      //   document.getElementById("audioPlayIcon").innerHTML = "play_circle";
+      //   document.getElementById("detail-audio").pause();
+      // });
+      // function detailPlayAudio() {
+      //   document.getElementById("detail-audio").play();
+      //   wavesurfer.playPause();
+      // }
+
+      // Audio 관련 JS
+
+      var openWin;
+
+      // function formbtn(form){
+      //     event.preventDefault();
+      //     form.action="/musicdelete"+"/1";
+      //     console.log(form.action);
+      //     form.submit();
+      // }
+      function openChild() {
+        // window.name = "부모창 이름";
+        window.name = "parentForm";
+        // window.open("open할 window", "자식창 이름", "팝업창 옵션");
+        openWin = window.open(
+          "/articles/musicRegister",
+          "childForm",
+          "width=570, height=350, resizable = no, scrollbars = no"
+        );
+      }
+    </script>
+  </body>
+</html>

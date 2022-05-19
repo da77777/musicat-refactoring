@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.musicat.mapper.member.FollowMapper">
+    <select id="selectFollowingCount" parameterType="int" resultType="int">
+        SELECT Count(followed)
+        FROM follow
+        WHERE following = #{no}
+    </select>
+
+    <select id="selectFollowedCount" parameterType="int" resultType="int">
+        SELECT Count(following)
+        FROM follow
+        WHERE followed = #{no}
+    </select>
+
+    <select id="existFollow" parameterType="int" resultType="int">
+        SELECT EXISTS(
+            SELECT *
+            FROM follow
+            WHERE following = #{myNo} AND followed = #{opNo}
+                   )
+    </select>
+
+    <insert id="insertFollow" parameterType="int">
+        INSERT INTO follow(following, followed)
+        VALUES(#{myNo}, #{opNo})
+    </insert>
+
+    <delete id="deleteFollow" parameterType="int">
+        DELETE FROM follow
+        WHERE following = #{myNo} AND followed = #{opNo}
+    </delete>
+</mapper>

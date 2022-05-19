@@ -1,0 +1,152 @@
+@charset "utf-8";
+
+.boardManager-btn-style {
+	display: flex;
+	justify-content: center;
+}
+
+.boardManager-btn-style div:first-child {
+	margin-right: 20px;
+}
+
+.boardManager-btn-style div {
+	width: 30%;
+
+}
+
+.boardManager-btn-style div button:hover {
+	border-color: #66afe9;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px
+	rgba(102, 175, 233, .6);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px
+	rgba(102, 175, 233, .6);
+
+}
+.boardManager-btn-style div button {
+	width: 100%;
+	padding: 10px 0;
+	border-radius: 100px;
+}
+
+.boardManager-btn-style div:first-child button {
+	background-color: #5c03ad;
+	color: white;
+}
+
+.boardManager-btn-style div:last-child button {
+	background-color: #e4caff;
+	color: black;
+}
+
+.categoryList-content-style {
+	display: flex;
+	width: 100%;
+	margin-top: 20px;
+}
+
+.categoryList-list-style, .categoryList-input-style {
+	width: 50%;
+	display: flex;
+	justify-content: center;
+}
+
+.categoryList-list-style {
+	border: 1px solid #666666;
+	padding: 10px 0;
+}
+
+.categoryList-list-style table div {
+	border: 1px solid #666666;
+}
+
+.list-category-style,
+.list-board-style{
+	border-radius: 4px;
+
+}
+
+.list-category-style:hover,
+.list-board-style:hover{
+	cursor: pointer;
+
+	border-color: #66afe9;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px
+	rgba(102, 175, 233, .6);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px
+	rgba(102, 175, 233, .6);
+}
+
+
+
+.list-category-style {
+	font-size: 16px;
+	background-color: #5c03ad;
+	color: white;
+	margin: 5px 0;
+	padding: 5px 10px;
+}
+
+.list-board-style {
+	background-color: #e4caff;
+	color: black;
+	padding: 3px 10px;
+	margin-bottom: 3px;
+}
+
+.categoryList-input-style {
+	display: flex;
+	justify-content: center;
+	padding-top: 20px;
+	border: 1px solid #666666;
+}
+
+.categoryList-input-style div input{
+	padding: 7px 10px;
+}
+
+.categoryList-input-style div form div{
+	display: flex;
+	justify-content: space-around;
+}
+.categoryList-input-style div form div button {
+	width: 30%;
+}
+
+.categoryList-blank-style{
+	width: 80%;
+}
+
+.categoryList-blank-style table{
+	width: 100%;
+}
+
+.categoryList-blank-style table td{
+	border: 1px solid #cccccc;
+
+}
+
+.categoryList-blank-style table tr td:first-child {
+	background-color: #e4caff;
+	padding: 10px;
+	text-align: center;
+	vertical-align: middle;
+	width: 30%;
+}
+
+.categoryList-blank-style table tr td:last-child {
+	text-align: center;
+	width: 70%;
+
+}
+.categoryList-blank-style table tr td:last-child select{
+	width: 100%;
+	padding: 10px 0;
+}
+
+.categoryList-blank-style table tr td:last-child input{
+	width: 100%;
+}
+
+.boardManager-func{
+	margin-top: 10px;
+}

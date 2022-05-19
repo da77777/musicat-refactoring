@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.musicat.mapper.member.MemberMapper">
+
+
+	<!-- 양 ~ -->
+	<!-- 로그인 예외처리에서 필요한 정보 가져옴 : docs, comms, visits, regDate 없음-->
+	<resultMap id="selectMemberByEmailResultMap" type="memberVo">
+		<result property="no" javaType="int" column="member_no" jdbcType="INTEGER"/>
+		<result property="email" javaType="string" column="email" jdbcType="VARCHAR"/>
+		<result property="password" javaType="string" column="password" jdbcType="VARCHAR"/>
+<!--		nickname을 안 넣었었는데 어떻게 가져 온 거야? memberVo형태라서 상관 없었니?-->
+		<result property="nickname" javaType="string" column="nickname" jdbcType="VARCHAR"/>
+		<result property="grade" javaType="string" column="auth" jdbcType="VARCHAR"/>
+		<result property="gradeNo" javaType="int" column="grade_no" jdbcType="INTEGER"/>
+		<!--	휴면계정	-->
+		<result property="lastDate" javaType="string" column="lastdate" jdbcType="VARCHAR"/>
+		<!--	활동정지계정	-->
+		<result property="ban" javaType="string" column="ban" jdbcType="VARCHAR"/>
+		<!--	탈퇴처리된 계정	-->
+		<result property="isMember" javaType="int" column="ismember" jdbcType="INTEGER"/>
+
+	</resultMap>
+
+	<!-- email로 회원 정보 불러오기 (session에 담을 정보)	-->
+	<select id="selectMemberByEmail" resultType="memberVo" resultMap="selectMemberByEmailResultMap">
+		select member_no, email, password, nickname,
+			   (select auth from grade where grade_no =
+											 (select grade_no from member_grade where member_no =
+																					 (select member_no from member where email = #{email}))) as auth,
+			   (select grade_no from member_grade where member_no =
+													   (select member_no from member where email = #{email})) as grade_no,
+			   lastdate, ban, ismember
+		from member
+		where email = #{email}
+	</select>
+
+	<!-- ~ 양 -->
+
+
+
+	<resultMap type="memberVo" id="detailInfoByManager">
+		<result property="no" javaType="int" column="member_no" jdbcType="INTEGER"/>
+		<result property="email" javaType="string" column="email" jdbcType="VARCHAR"/>
+		<result property="grade" javaType="string" column="name" jdbcType="VARCHAR"/>
+		<result property="nickname" javaType="string" column="nickname" jdbcType="VARCHAR"/>
+		<result property="regDate" javaType="string" column="regdate" jdbcType="VARCHAR"/>
+		<result property="lastDate" javaType="string" column="lastdate" jdbcType="VARCHAR"/>
+		<result property="docs" javaType="int" column="docs" jdbcType="INTEGER"/>
+		<result property="comms" javaType="int" column="comms" jdbcType="INTEGER"/>
+		<result property="visits" javaType="int" column="visits" jdbcType="INTEGER"/>
+		<result property="ban" javaType="string" column="ban" jdbcType="VARCHAR"/>
+		<result property="isMember" javaType="int" column="ismember" jdbcType="INTEGER"/>
+	</resultMap>
+	
+		<resultMap type="memberVo" id="loginInfo">
+		<result property="no" javaType="int" column="member_no" jdbcType="INTEGER"/>
+		<result property="email" javaType="string" column="email" jdbcType="VARCHAR"/>
+		<result property="grade" javaType="string" column="name" jdbcType="VARCHAR"/>
+		<result property="gradeNo" javaType="int" column="grade_no" jdbcType="SMALLINT"/>		
+		<result property="nickname" javaType="string" column="nickname" jdbcType="VARCHAR"/>
+		<result property="regDate" javaType="string" column="regdate" jdbcType="VARCHAR"/>
+		<result property="lastDate" javaType="string" column="lastdate" jdbcType="VARCHAR"/>
+		<result property="docs" javaType="int" column="docs" jdbcType="INTEGER"/>
+		<result property="comms" javaType="int" column="comms" jdbcType="INTEGER"/>
+		<result property="visits" javaType="int" column="visits" jdbcType="INTEGER"/>
+		<result property="ban" javaType="string" column="ban" jdbcType="VARCHAR"/>
+		<result property="isMember" javaType="int" column="ismember" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	<resultMap type="memberVo" id="briefMemberInfo">
+		<result property="no" javaType="int" column="member_no" jdbcType="INTEGER"/>
+		<result property="email" javaType="string" column="email" jdbcType="VARCHAR"/>
+		<result property="grade" javaType="string" column="name" jdbcType="VARCHAR"/>
+		<result property="regDate" javaType="string" column="regdate" jdbcType="VARCHAR"/>
+		<result property="visits" javaType="int" column="visits" jdbcType="INTEGER"/>
+		<result property="ban" javaType="string" column="ban" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<resultMap id="memberFollow" type="memberVo">
+		<result property="no" javaType="int" column="member_no" jdbcType="INTEGER" />
+		<result property="nickname" javaType="string" column="nickname" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="selectMemberList" parameterType="criteria" resultType="memberVo" resultMap="briefMemberInfo">
+		SELECT M.member_no, M.email, G.name , M.regdate, M.visits, M.ban
+		FROM member M LEFT JOIN member_grade MG
+		ON M.member_no = MG.member_no
+		LEFT JOIN grade G
+		ON G.grade_no = MG.grade_no
+		WHERE M.member_no > 0
+		LIMIT #{pageStart}, #{dataPerPage}
+	</select>
+	
+	<select id="selectTotalMember" resultType="int">
+		SELECT COUNT(*)
+		FROM member
+	</select>
+	
+	<select id="selectMemberByManager" parameterType="int" resultType="memberVo" resultMap="detailInfoByManager">
+		SELECT M.member_no, M.email, G.name, M.nickname, M.regdate, M.lastdate, M.docs, M.comms, M.visits, M.ban, M.ismember
+		FROM member M LEFT JOIN member_grade MG
+		ON M.member_no = MG.member_no
+	 	LEFT JOIN grade G
+		ON G.grade_no = MG.grade_no
+		WHERE M.member_no = #{no}
+	</select>
+	
+	<update id="updateBan7days" parameterType="int">
+		UPDATE member
+		SET	ban = DATE_ADD(NOW(), INTERVAL 7 DAY)
+		WHERE member_no = #{no}
+	</update>
+	
+	<update id="updateBan1day" parameterType="int">
+		UPDATE member
+		SET	ban = DATE_ADD(NOW(), INTERVAL 1 DAY)
+		WHERE member_no = #{no}
+	</update>
+	
+	<update id="updateBan1minute" parameterType="int">
+		UPDATE member
+		SET	ban = DATE_ADD(NOW(), INTERVAL 1 MINUTE)
+		WHERE member_no = #{no}
+	</update>
+	
+	<update id="updateMemberByForce" parameterType="int">
+		UPDATE member
+		SET ismember = 2
+		WHERE member_no = #{no};
+	</update>
+	
+	<update id="plusMemberDocs" parameterType="int">
+		UPDATE member
+    	SET docs = docs + 1
+    	WHERE member_no = #{no};
+	</update>
+	
+	<update id="minusMemberDocs" parameterType="int">
+		UPDATE member
+    	SET docs = docs - 1
+    	WHERE member_no = #{no};
+	</update>
+	
+	<update id="plusMemberComms" parameterType="int">
+		UPDATE member
+    	SET comms = comms + 1
+    	WHERE member_no = #{no};
+	</update>
+	
+    <update id="minusMemberComms" parameterType="int">
+    	UPDATE member
+    	SET comms = comms - 1
+    	WHERE member_no = #{no};
+    </update>
+
+    <select id="selectMember_byIDPwd" parameterType="String" resultType="memberVo" resultMap="loginInfo">
+        <!-- SELECT member.member_no, email, nickname -->
+        SELECT member_no, email, name, nickname, regdate, lastdate, M.grade_no, M.docs, M.comms, visits, ban, ismember
+		FROM member M RIGHT JOIN grade G
+		ON M.grade_no = G.grade_no
+        WHERE email=#{email} AND password=#{password}
+    </select>
+
+
+
+    
+    <update id = "updateLastDate" parameterType = "int">
+	    UPDATE member
+	    SET lastdate = CURRENT_TIMESTAMP 
+	    WHERE member_no = #{no}
+    </update>
+  
+  <!-- 회원가입 -->
+<!--	<insert id="insertMemberNo"  parameterType="HashMap">-->
+<!--	&lt;!&ndash; ㄴ설명: insert 명령을 만들건데, 이름은 insertMemberNo이고 (내가 지은거),  파라미터값은 HashMap(자바에 원래 있는 타입)이다.&ndash;&gt;-->
+<!--		INSERT INTO memberno VALUES()-->
+<!--			&lt;!&ndash; ㄴ설명: MemberNo가 Auto Incremental로 설정 되어있어서 VALUES()에 아무값도 안 넣으면 자동으로 값이 들어감(원래는 VALUES() 괄호 안에 값을 넣어야 함 &ndash;&gt;-->
+<!--		<selectKey resultType="int"  keyProperty="no" order="AFTER"> -->
+<!--		&lt;!&ndash; ㄴ설명:  resultType는 MemberNo의 가져오는 자바타입(이쪽으로 넘어왔을 때),  keyProperty는 "no" : "쿼리문결과" 이런 형태를 가지겠다는 의미. &ndash;&gt;-->
+<!--		&lt;!&ndash; ㄴ order="AFTER" 설명 :  (위에 있는) INSERT INTO MemberNo VALUES()을 먼저 실행 후, (아래에 있는) SELECT LAST_INSERT_ID()을 실행해라 &ndash;&gt;-->
+<!--			SELECT LAST_INSERT_ID()-->
+<!--			&lt;!&ndash; ㄴ설명: 마지막에 insert 된 값을 선택&ndash;&gt;-->
+<!--		</selectKey>-->
+<!--	</insert>-->
+
+	<insert id="insertMember"  parameterType="memberVo">   <!-- parameterType(경로)의 괄호 안에 들어간 건 MemberVO에 있는 @Alias("memberVO")과 이름이 
+			일치해야 함 -->
+		INSERT INTO member(email, password, nickname)
+		VALUES (#{email}, #{password}, #{nickname})
+		<!-- #{}안에는 MemberVO에서 선언한 변수명과 일치해야 함 -->
+		<selectKey resultType="int" keyProperty="no" keyColumn="member_no" order="AFTER" >
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<insert id="insertMemberGrade" parameterType="int">
+		{ CALL sp_insert_member_grade(#{memberNo}) }
+	</insert>
+
+
+	<select id="selectSearchMemberByEmail" parameterType="Map" resultType="memberVo" resultMap="briefMemberInfo">
+		SELECT M.member_no, M.email, G.name, M.regdate, M.visits, M.ban
+		FROM member M LEFT JOIN member_grade MG
+		ON M.member_no = MG.member_no
+	  	LEFT JOIN grade G
+		ON G.grade_no = MG.grade_no
+		WHERE M.email LIKE CONCAT('%', #{keyword}, '%')
+		ORDER BY M.member_no ASC, M.ismember ASC
+		LIMIT #{crt.pageStart}, #{crt.dataPerPage}
+	</select>
+	
+	<select id="selectSearchMemberByGrade" parameterType="Map" resultType="memberVo" resultMap="briefMemberInfo">
+		SELECT M.member_no, M.email, G.name, M.regdate, M.visits, M.ban
+		FROM member M LEFT JOIN member_grade MG
+		ON M.member_no = MG.member_no
+	  	LEFT JOIN grade G
+		ON G.grade_no = MG.grade_no
+		WHERE MG.grade_no =
+		ANY(SELECT G.grade_no
+		FROM grade G
+		WHERE G.name LIKE CONCAT('%', #{keyword}, '%'))
+		ORDER BY M.member_no ASC, M.ismember ASC
+		LIMIT #{crt.pageStart}, #{crt.dataPerPage}
+	</select>
+	
+	<select id="selectTotalSearchMemberByEmail" parameterType="string" resultType="int">
+		SELECT COUNT(member_no)
+		FROM member
+		WHERE email LIKE CONCAT('%', #{keyword}, '%')
+	</select>
+	
+	<select id="selectTotalSearchMemberByGrade" parameterType="string" resultType="int">
+		SELECT COUNT(M.member_no)
+		FROM member M LEFT JOIN member_grade MG
+		ON M.member_no = MG.member_no
+	    LEFT JOIN grade G
+		ON G.grade_no = MG.grade_no
+		WHERE MG.grade_no =
+		ANY(SELECT G.grade_no
+		FROM grade G
+		WHERE G.name LIKE CONCAT('%', #{keyword}, '%'))
+	</select>
+	
+		<!-- 회원 자진 탈퇴-->
+	<update id="updateMember"  parameterType="memberVo">
+			<!-- id는  MemberDao의 메소드 명과 일치해야 함 -->
+			<!-- parameterType(경로)의 괄호 안에 들어간 건 MemberVO에 있는 @Alias("memberVo")과 이름이 일치해야 함 -->
+		UPDATE member
+		SET member.ismember = 1
+		WHERE member_no = #{no}
+		<!-- #{}안에는	MemberVO에서 선언한 변수명과 일치해야 함 -->
+	</update>
+
+	<update id="updateTempPassword" parameterType="memberVo">
+		UPDATE member
+		SET password = #{password}
+		WHERE email = #{email}
+	</update>
+
+		<!-- 비밀번호 재설정-->
+	<update id="updatePassword"  parameterType="memberVo">
+			<!-- id는  MemberDao의 메소드 명과 일치해야 함 -->
+			<!-- parameterType(경로)의 괄호 안에 들어간 건 MemberVO에 있는 @Alias("memberVo")과 이름이 일치해야 함 -->
+				
+		UPDATE member
+		SET member.password = #{password}
+		WHERE member_no = #{no}
+		<!-- #{}안에는	MemberVO에서 선언한 변수명과 일치해야 함 -->
+	</update>
+
+	<select id="selectFollowingList" parameterType="int" resultMap="memberFollow">
+		SELECT nickname, member_no
+		FROM member M
+		WHERE M.member_no = ANY
+			  (
+				  SELECT followed
+				  FROM follow
+				  WHERE following = #{no}
+			  )
+	</select>
+
+	<select id="selectFollowedList" parameterType="int" resultMap="memberFollow">
+		SELECT nickname, member_no
+		FROM member M
+		WHERE M.member_no = ANY
+			(
+			SELECT following
+			FROM follow
+			WHERE followed = #{no}
+			)
+	</select>
+
+	<select id="joinCheck" parameterType="hashMap" resultType="int">
+		SELECT count(*) FROM member
+		<where>
+			<if test="email != null and !email.equals('')">
+				AND email = #{email}
+			</if>
+			<if test="nickname != null and !nickname.equals('')">
+				AND nickname = #{nickname}
+			</if>
+		</where>
+	</select>
+
+	<select id="selectMemberPassword" parameterType="int" resultType="String">
+		SELECT password FROM member WHERE member_no = #{memberNO}
+	</select>
+
+	<update id="updateGrade" parameterType="int">
+		UPDATE member_grade MG JOIN grade G
+		ON MG.grade_no = G.grade_no
+		SET MG.grade_no = #{gradeNo}
+		WHERE MG.member_no = #{no} AND G.grade_no > 0;
+	</update>
+
+</mapper>

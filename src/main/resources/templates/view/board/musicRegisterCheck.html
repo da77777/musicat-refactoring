@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Musicat - 등록 확인</title>
+
+    <link
+      th:href="@{https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css}"
+      rel="stylesheet"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link th:href="@{/css/theme_styles.css}" rel="stylesheet" />
+    <link th:href="@{/css/reset.css}" rel="stylesheet" />
+
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+
+    <style>
+      body {
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+      }
+      .check-style {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: -20px;
+
+        background-color: beige;
+      }
+
+      .check-style span {
+        font-family: "Noto Sans KR", sans-serif;
+        font-weight: 500;
+        font-size: 36px;
+        margin: 10px 0;
+      }
+
+      .check-style button {
+        font-size: 22px;
+        border-radius: 10px;
+        color: #222222;
+        background-color: ivory;
+      }
+
+      .check-style button:hover {
+        cursor: pointer;
+        background-color: lightskyblue;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="check-style">
+      <p id="musiclink" class="hidden" th:text="*{music.links[0].href}"></p>
+      <p id="imagelink" class="hidden" th:text="*{music.links[1].href}"></p>
+      <p id="musictitle" class="hidden" th:text="${music.title}"></p>
+      <p id="musicId" class="hidden" th:text="${music.id}"></p>
+      <span>등록이 되었습니다.</span>
+
+      <button onclick="setParentText()">닫기</button>
+    </div>
+
+    <script>
+      function setParentText() {
+        let musicHref = document.getElementById("musiclink").innerText;
+        let imageHref = document.getElementById("imagelink").innerText;
+        console.log(musicHref);
+        console.log(imageHref);
+
+        // 오디오 썸네일
+        // createImage.setAttribute("src", imageHref);
+        opener.document
+          .getElementById("detailAudioImg")
+          .setAttribute("src", imageHref);
+        console.log("imagehref");
+        //오디오 제목
+        // createTitle.innerText = document.getElementById("musictitle").innerText;
+        opener.document.getElementById("audioTitle").innerText =
+          document.getElementById("musictitle").innerText;
+        console.log("musictitle");
+        //오디오 파일 경로 및 제어 설정
+        // createAudio.setAttribute("src", musicHref);
+        opener.document
+          .getElementById("detail-audio")
+          .setAttribute("src", musicHref);
+        opener.document.getElementById("detail-audio").load();
+        console.log("detail-audio");
+        //삭제버튼
+        // createInput.setAttribute(
+        //         "id",
+        //         document.getElementById("musicId").innerText
+        // );
+        var delBtn = opener.document.getElementsByClassName("audioDelBtn");
+        delBtn[0].setAttribute(
+          "id",
+          document.getElementById("musicId").innerText
+        );
+        console.log("audioDelBtn");
+
+        opener.document
+          .getElementById("audioNo")
+          .setAttribute("value", document.getElementById("musicId").innerText);
+        console.log("audioNo");
+
+        // opener.document.getElementById("audioResource").innerText = musicHref;
+
+        //opener.document.getElementById("receive").style.visibility="visible"
+
+        opener.document
+          .getElementById("receive").style.display="inline-block";
+        console.log("receive");
+
+        window.close();
+      }
+    </script>
+  </body>
+</html>

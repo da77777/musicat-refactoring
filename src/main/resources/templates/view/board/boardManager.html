@@ -1,0 +1,706 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<meta charset="UTF-8"/>
+<link th:href="@{../css/boardManagerStyle.css}" rel="stylesheet" />
+<style>
+	.hidden {
+		display: none;
+	}
+</style>
+<div id="layoutSidenav_content">
+	<main>
+		<div class="container-fluid px-4">
+
+			<div class="row mt-3 mb-5">
+
+
+				<!-- 관리버튼 -->
+				<div class="btns boardManager-btn-style">
+					<div>
+						<button type="button" onclick="addCategory()" id="addCategoryBtn">카테고리 추가</button>
+					</div>
+					<div>
+						<button type="button" onclick="addBoard()" id="addBoardBtn">게시판 추가</button>
+					</div>
+				</div>
+
+				<!-- 카테고리 + 게시판 리스트 -->
+
+				<div class="categoryList-content-style">
+					<div id="categoryBoardList" class="categoryList-list-style">
+						<table>
+							<th:block th:each="category : ${categoryBoardList}">
+
+								<tr th:id="${category.getCategoryNo()}">
+									<td th:onclick="modifyCategory(this)">
+										<div class="list-category-style"
+											th:text="${category.getCategoryName()}"></div>
+									</td>
+								</tr>
+
+								<th:block th:if="${category.getBoardList() != null}">
+									<th:block th:each="board : ${category.boardList}">
+
+										<tr th:id="${board.getBoardNo()}">
+											<td th:onclick="modifyBoard(this)">
+												<div class="list-board-style" th:text="${board.boardName}"></div>
+											</td>
+										</tr>
+
+									</th:block>
+								</th:block>
+
+							</th:block>
+						</table>
+					</div>
+
+
+
+					<div class="categoryList-input-style">
+						<!-- 빈페이지 -->
+						<div id="Blank" class="categoryList-blank-style"></div>
+
+						<!-- 카테고리 추가 -->
+						<div id="writeCategory" style="display: none;">
+							<form>
+								<th:block th:object="${categoryVo}">
+									<table>
+										<tbody>
+											<tr>
+												<td>카테고리 이름:</td>
+												<td><input type="text" th:field="*{categoryName}" placeholder="카테고리명(1 ~ 20자)" maxlength="20"></td>
+											</tr>
+										</tbody>
+									</table>
+									<div class="boardManager-func">
+										<button type="reset" class="btn btn-primary">취소</button>
+										<button type="button" id="writeCategoryBtn" class="btn btn-primary">저장</button>
+									</div>
+								</th:block>
+							</form>
+						</div>
+
+
+
+						<!-- 카테고리 수정 -->
+						<div id="modifyCategory" style="display: none;">
+							<form>
+								<th:block th:object="${categoryVo}">
+									<div id="modifyCategoryForm"></div>
+
+									<div class="boardManager-func">
+										<button type="button" id="removeCategoryBtn" class="btn btn-primary"> 삭제 </button>
+										<button type="reset" class="btn btn-primary">취소</button>
+										<button type="button" id="modifyCategoryBtn" class="btn btn-primary">저장</button>
+									</div>
+								</th:block>
+							</form>
+						</div>
+
+						<!-- 게시판 추가 -->
+						<div id="writeBoard" style="display: none;">
+							<form>
+								<div id="addBoardForm"></div>
+
+								<div class="boardManager-func">
+									<button type="reset" class="btn btn-primary">취소</button>
+									<button type="button" id="writeBoardBtn" class="btn btn-primary">저장</button>
+								</div>
+							</form>
+						</div>
+
+						<!-- 게시판 수정 -->
+						<div id="modifyBoard" style="display: none;">
+							<form>
+								<div id="modifyBoardForm"></div>
+
+								<div class="boardManager-func">
+									<button type="button" id="removeBoardBtn" class="btn btn-primary">삭제</button>
+
+									<button type="reset"  class="btn btn-primary">취소</button>
+									<button type="button" id="modifyBoardBtn"  class="btn btn-primary">저장</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+
+	<!-- ajax -->
+
+	<script th:src="@{../js/jquery-3.6.0.min.js}"></script>
+	<script type="text/javascript" th:inline="javascript">
+		// ------------------------------------------------------------- 카테고리 추가
+		function addCategory() {
+
+			$('#modifyCategory').hide();
+			$('#modifyBoard').hide();
+			$('#writeBoard').hide();
+			$('#writeCategory').appendTo('#Blank');
+			$('#writeCategory').show();
+		};
+//-------------------------------------------------------- 카테고리 추가 공백 + 중복 검사
+
+		$('#writeCategory').keypress(function(event) {
+			 if(event.which == 13) {
+				 event.preventDefault();
+			}
+		});
+
+		$('#writeCategoryBtn').on('click', function () {
+			const categoryName = $('#categoryName').val();
+			if (!categoryName.trim().length) {
+				alert("카테고리명은 1 ~ 20자로 입력해주세요.");
+				return false;
+			}
+			requestWriteCategory('/writeCategory', categoryName);
+		});
+
+		const writeCategoryAjax = function (url, categoryName) {
+			return new Promise( (resolve, reject ) => {
+				$.ajax({
+					url : url,
+					method : 'POST',
+					dataType : 'json',
+					data : {
+						categoryName : categoryName
+					},
+
+					success: function (data) {
+						resolve(data.result);
+					},
+					error: function (e) {
+						reject(e);
+					}
+				});
+			});
+		}
+
+		async function requestWriteCategory(url, categoryName) {
+			try {
+				let result = await writeCategoryAjax(url, categoryName);
+				if (result == 0) {
+					location.href = "boardManager";
+				} else if (result == 1) {
+					alert("중복된 이름의 카테고리가 존재합니다.");
+					return false;
+				}
+			} catch (error) {
+				console.log("error : ", error);
+			}
+		}
+
+		// ------------------------------------------------------------- 카테고리 수정
+		function modifyCategory(e) {
+			console.log($(e).closest("tr").attr("id")); //가장 가까운 부모인 "tr"의 "id" 갖고 오기
+			console.log($(e).text());
+
+			$('#writeCategory').hide();
+			$('#writeBoard').hide();
+			$('#modifyBoard').hide();
+			$('#modifyCategory').appendTo('#Blank');
+			$('#modifyCategory').show();
+
+			$
+					.ajax({
+						url: "/selectOneCategory",
+						method: "POST",
+						dataType: 'json',
+						contentType: 'application/json',
+						data: JSON.stringify({
+							"categoryNo": $(e).closest("tr").attr("id")
+						}),
+						success: function (data) {
+							let category = null;
+							category = data;
+							let modifyCategoryForm = "";
+							let categoryNo = $(e).closest("tr").attr("id");
+
+							modifyCategoryForm += "<input id='modifyCategoryNo' name='categoryNo' type='hidden' value=" + categoryNo + ">";
+							modifyCategoryForm += "<table><tbody>";
+							modifyCategoryForm += "<tr>";
+							modifyCategoryForm += "<td>카테고리 이름:</td>";
+							modifyCategoryForm += "<td><input id='modifyCategoryName' name='categoryName' type='text' value='" + category.categoryName + "' maxlength='20'></td>";
+							modifyCategoryForm += "</tr>";
+							modifyCategoryForm += "</tbody></table>";
+
+							$('#modifyCategoryForm').html(modifyCategoryForm);
+						},
+						error : function (e) {
+						}
+					})
+		}
+
+		// ------------------------------------------------------------- 카테고리 수정 공백 + 중복 검사
+		$('#modifyCategory').keypress(function(event) {
+			if(event.which == 13) {
+				event.preventDefault();
+			}
+		});
+
+
+		$('#modifyCategoryBtn').on('click', function () {
+			const categoryNo = $('#modifyCategoryNo').val();
+			const categoryName = $('#modifyCategoryName').val();
+			if (!categoryName.trim().length) {
+				alert("카테고리명은 1 ~ 20자로 입력해주세요.");
+				return false;
+			}
+			requestModifyCategory('/modifyCategory', categoryNo, categoryName);
+		});
+
+		const modifyCategoryAjax = function (url, categoryNo, categoryName) {
+			return new Promise( (resolve, reject ) => {
+				$.ajax({
+					url : url,
+					method : 'POST',
+					dataType : 'json',
+					data : {
+						categoryNo : categoryNo,
+						categoryName : categoryName
+					},
+
+					success: function (data) {
+						resolve(data.result);
+					},
+					error: function (e) {
+						reject(e);
+					}
+				});
+			});
+		}
+
+		async function requestModifyCategory(url, categoryNo, categoryName) {
+			try {
+				let result = await modifyCategoryAjax(url, categoryNo, categoryName);
+				if (result == 0) {
+					location.href = "boardManager";
+				} else if (result == 1) {
+					alert("중복된 이름의 카테고리가 존재합니다.");
+					return false;
+				}
+			} catch (error) {
+				console.log("error : ", error);
+			}
+		}
+
+		// ------------------------------------------------------------- 카테고리 삭제
+		$('#removeCategoryBtn').on('click', function () {
+			const categoryNo = $('#modifyCategoryNo').val();
+			requestRemoveCategory('/deleteCategory', categoryNo);
+		});
+
+		const removeCategoryAjax = function (url, categoryNo) {
+			console.log(categoryNo);
+			return new Promise( (resolve, reject ) => {
+				$.ajax({
+					url : url,
+					method : 'POST',
+					dataType : 'json',
+					data : {
+						categoryNo : categoryNo
+					},
+
+					success: function (data) {
+						resolve(data.result);
+					},
+					error: function (e) {
+						reject(e);
+					}
+				});
+			});
+		}
+
+		async function requestRemoveCategory(url, categoryNo) {
+			if (confirm("카테고리를 삭제하시겠습니까?") == true) {
+				try {
+					let result = await removeCategoryAjax(url, categoryNo);
+
+					if (result == 0) {
+						alert("카테고리가 삭제되었습니다.");
+						location.href = "boardManager";
+					} else {
+						alert("게시판이 있는 카테고리는 삭제할 수 없습니다.");
+						return false;
+					}
+				} catch (error) {
+					console.log("error : ", error);
+				}
+			} else {
+			}
+		}
+
+		// ------------------------------------------------------------- 게시판 추가
+		function addBoard() {
+
+			$('#modifyCategory').hide();
+			$('#writeCategory').hide();
+			$('#modifyBoard').hide();
+			$('#writeBoard').appendTo('#Blank');
+			$('#writeBoard').show();
+
+			$
+					.ajax({
+						url : "/selectListAdd",
+						type : "POST",
+						success : function(data) {
+
+							let list = null;
+							list = data;
+							let addBoardForm = "";
+							addBoardForm += "<table>";
+							addBoardForm += "<tbody>";
+							addBoardForm += "<tr>";
+							addBoardForm += "<td>카테고리:</td>";
+							addBoardForm += "<td><select name='categoryNo' id='writeBoardCategoryNo' >";
+							for (let i = 0; i < list.categoryList.length; i++) {
+								addBoardForm += "<option value=" + list.categoryList[i].categoryNo +">"
+										+ list.categoryList[i].categoryName
+										+ "</option>";
+							}
+							addBoardForm += "</select></td>";
+							addBoardForm += "</tr>";
+
+							addBoardForm += "<tr>";
+							addBoardForm += "<td>게시판명:</td>	<td><input type='text' id='boardName' name='boardName' placeholder='게시판명(1 ~ 20자)' maxlength='20'/></td>";
+							addBoardForm += "</tr>";
+
+							addBoardForm += "<tr>";
+							addBoardForm += "<td>게시글 쓰기등급:</td>";
+							addBoardForm += "<td><select name='writeGrade'id='writeGrade' >";
+							for (let i = 0; i < list.gradeList.length; i++) {
+								addBoardForm += "<option value=" + list.gradeList[i].gradeNo;
+								if (list.gradeList[i].name === 'USER') {
+									addBoardForm += " selected>"
+											+ list.gradeList[i].name
+											+ "</option>";
+								} else {
+									addBoardForm += ">"
+											+ list.gradeList[i].name
+											+ "</option>";
+								}
+							}
+							addBoardForm += "</select></td>";
+							addBoardForm += "</tr>";
+
+							addBoardForm += "<tr>";
+							addBoardForm += "<td>게시글 읽기등급:</td>";
+							addBoardForm += "<td><select name='readGrade' id='readGrade' >";
+							for (let i = 0; i < list.gradeList.length; i++) {
+								addBoardForm += "<option value=" + list.gradeList[i].gradeNo +">"
+										+ list.gradeList[i].name + "</option>";
+							}
+							addBoardForm += "</select></td>";
+							addBoardForm += "</tr>";
+
+							addBoardForm += "<tr>";
+							addBoardForm += "<td>게시판 종류:</td>";
+							addBoardForm += "<td><select name='boardkind' id='boardkind' >";
+							for (let i = 0; i < list.boardkindList.length; i++) {
+								addBoardForm += "<option value=" + list.boardkindList[i].boardkind +">"
+										+ list.boardkindList[i].boardkindName
+										+ "</option>";
+							}
+							addBoardForm += "</select></td>";
+							addBoardForm += "</tr>";
+							addBoardForm += "</tbody>";
+							addBoardForm += "</table>";
+							$('#addBoardForm').html(addBoardForm);
+						},
+						error : function(e) {
+						}
+					})
+		}
+
+		// ------------------------------------------------------------- 게시판 추가 공백 + 중복 검사
+		$('#writeBoard').keypress(function(event) {
+			if(event.which == 13) {
+				$('#writeBoardBtn').click();
+			}
+		});
+
+		$('#writeBoardBtn').on('click', function () {
+			const categoryNo = $('#writeBoardCategoryNo').val();
+			const boardName = $('#boardName').val();
+			const writeGrade = $('#writeGrade').val();
+			const readGrade = $('#readGrade').val();
+			const boardkind = $('#boardkind').val();
+			if (!boardName.trim().length) {
+				alert("게시판명은 1 ~ 20자로 입력해주세요.");
+				return false;
+			}
+			requestWriteBoard('/writeBoard', categoryNo, boardName, writeGrade, readGrade, boardkind);
+		});
+
+		const writeBoardAjax = function (url, categoryNo, boardName, writeGrade, readGrade, boardkind) {
+			return new Promise( (resolve, reject ) => {
+				$.ajax({
+					url : url,
+					method : 'POST',
+					dataType : 'json',
+					data : {
+						categoryNo : categoryNo,
+						boardName : boardName,
+						writeGrade : writeGrade,
+						readGrade : readGrade,
+						boardkind : boardkind
+					},
+
+					success: function (data) {
+						resolve(data.result);
+					},
+					error: function (e) {
+						reject(e);
+					}
+				});
+			});
+		}
+
+		async function requestWriteBoard(url, categoryNo, boardName,  writeGrade, readGrade, boardkind) {
+			try {
+				let result = await writeBoardAjax(url, categoryNo, boardName,  writeGrade, readGrade, boardkind);
+				if (result == 0) {
+					location.href = "boardManager";
+				} else if (result == 1) {
+					alert("중복된 이름의 게시판이 존재합니다.");
+					return false;
+				}
+			} catch (error) {
+				console.log("error : ", error);
+			}
+		}
+
+
+		// ------------------------------------------------------------- 게시판 수정
+		function modifyBoard(e) {
+			console.log("modifyBoard " + $(e).closest("tr").attr("id"));
+			console.log($(e).text());
+
+			$('#writeCategory').hide();
+			$('#modifyCategory').hide();
+			$('#writeBoard').hide();
+			$('#modifyBoard').appendTo('#Blank');
+			$('#modifyBoard').show();
+
+			$
+					.ajax({
+						url : "/selectListModify",
+						method : 'POST',
+						dataType : 'json',
+						contentType : 'application/json',
+						data : JSON.stringify({
+							"boardNo" : $(e).closest("tr").attr("id")
+						}),
+						success : function(data) {
+							let list = null;
+							list = data;
+							let modifyBoardForm = "";
+							let boardNo = $(e).closest("tr").attr("id");
+
+							modifyBoardForm += "<input id='modifyBoardNo' name='boardNo' type='hidden' value='"+ boardNo + "'  maxlength='20'>";
+							modifyBoardForm += "<table>";
+							modifyBoardForm += "<tbody>";
+							modifyBoardForm += "<tr>";
+							modifyBoardForm += "<td>카테고리:</td>";
+							modifyBoardForm += "<td><select name='categoryNo' id='modifyBoardCategoryNo' >";
+							for (let i = 0; i < list.categoryList.length; i++) {
+								modifyBoardForm += "<option value="
+										+ list.categoryList[i].categoryNo;
+								if (list.bbg.boardVo.categoryNo == list.categoryList[i].categoryNo) {
+									modifyBoardForm += " selected>"
+											+ list.categoryList[i].categoryName
+											+ "</option>";
+								} else {
+									modifyBoardForm += ">"
+											+ list.categoryList[i].categoryName
+											+ "</option>";
+								}
+							}
+							modifyBoardForm += "</select></td>";
+							modifyBoardForm += "</tr>";
+
+							modifyBoardForm += "<tr>";
+							modifyBoardForm += "<td>게시판명:</td>	<td><input type='text' id='modifyBoardName' name='boardName' maxlength='20' value='" + list.bbg.boardVo.boardName + "' ></td>";
+							modifyBoardForm += "</tr>";
+
+							modifyBoardForm += "<tr>";
+							modifyBoardForm += "<td>게시글 쓰기등급:</td>";
+							modifyBoardForm += "<td><select name='writeGrade' id='modifyWriteGrade'>";
+							for (let i = 0; i < list.gradeList.length; i++) {
+								modifyBoardForm += "<option value="
+										+ list.gradeList[i].gradeNo;
+								if (list.bbg.boardGradeVo.writeGrade == list.gradeList[i].gradeNo) {
+									modifyBoardForm += " selected>"
+											+ list.gradeList[i].name
+											+ "</option>";
+								} else {
+									modifyBoardForm += ">"
+											+ list.gradeList[i].name
+											+ "</option>";
+								}
+							}
+							modifyBoardForm += "</select></td>";
+							modifyBoardForm += "</tr>";
+
+							modifyBoardForm += "<tr>";
+							modifyBoardForm += "<td>게시글 읽기등급:</td>";
+							modifyBoardForm += "<td><select name='readGrade' id='modifyReadGrade'>";
+							for (let i = 0; i < list.gradeList.length; i++) {
+								modifyBoardForm += "<option value="
+										+ list.gradeList[i].gradeNo;
+								if (list.bbg.boardGradeVo.readGrade == list.gradeList[i].gradeNo) {
+									modifyBoardForm += " selected>"
+											+ list.gradeList[i].name
+											+ "</option>";
+								} else {
+									modifyBoardForm += ">"
+											+ list.gradeList[i].name
+											+ "</option>";
+								}
+							}
+							modifyBoardForm += "</select></td>";
+							modifyBoardForm += "</tr>";
+
+							modifyBoardForm += "<tr>";
+							modifyBoardForm += "<td>게시판 종류:</td>";
+							modifyBoardForm += "<td><select name='boardkind' id='modifyBoardkind' >";
+							for (let i = 0; i < list.boardkindList.length; i++) {
+								modifyBoardForm += "<option value="
+										+ list.boardkindList[i].boardkind;
+								if (list.bbg.boardVo.boardkind == list.boardkindList[i].boardkind) {
+									modifyBoardForm += " selected>"
+											+ list.boardkindList[i].boardkindName
+											+ "</option>";
+								} else {
+									modifyBoardForm += ">"
+											+ list.boardkindList[i].boardkindName
+											+ "</option>";
+								}
+							}
+							modifyBoardForm += "</select></td>";
+							modifyBoardForm += "</tr>";
+							modifyBoardForm += "</tbody>";
+							modifyBoardForm += "</table>";
+							$('#modifyBoardForm').html(modifyBoardForm);
+
+						},
+						error : function(e) {
+						}
+					})
+		}
+
+
+		// ------------------------------------------------------------- 게시판 수정 공백 + 중복 검사
+	$('#modifyBoard').keypress(function(event) {
+		if(event.which == 13) {
+			event.preventDefault();
+		}
+	});
+
+		$('#modifyBoardBtn').on('click', function () {
+			const boardNo = $('#modifyBoardNo').val();
+			const categoryNo = $('#modifyBoardCategoryNo').val();
+			const boardName = $('#modifyBoardName').val();
+			const writeGrade = $('#modifyWriteGrade').val();
+			const readGrade = $('#modifyReadGrade').val();
+			const boardkind = $('#modifyBoardkind').val();
+			if (!boardName.trim().length) {
+				alert("게시판명은 1 ~ 20자로 입력해주세요.");
+				return false;
+			}
+			requestModifyBoard('/modifyBoard', boardNo, categoryNo, boardName, writeGrade, readGrade, boardkind);
+		});
+
+		const modifyBoardAjax = function (url, boardNo, categoryNo, boardName, writeGrade, readGrade, boardkind) {
+			return new Promise( (resolve, reject ) => {
+				$.ajax({
+					url : url,
+					method : 'POST',
+					dataType : 'json',
+					data : {
+						boardNo : boardNo,
+						categoryNo : categoryNo,
+						boardName : boardName,
+						writeGrade : writeGrade,
+						readGrade : readGrade,
+						boardkind : boardkind
+					},
+
+					success: function (data) {
+						resolve(data.result);
+					},
+					error: function (e) {
+						reject(e);
+					}
+				});
+			});
+		}
+
+		async function requestModifyBoard(url, boardNo, categoryNo, boardName,  writeGrade, readGrade, boardkind) {
+			try {
+				let result = await modifyBoardAjax(url, boardNo, categoryNo, boardName,  writeGrade, readGrade, boardkind);
+				if (result == 0) {
+					location.href = "boardManager";
+				} else if (result == 1) {
+					alert("중복된 이름의 게시판이 존재합니다.");
+					return false;
+				}
+			} catch (error) {
+				console.log("error : ", error);
+			}
+		}
+
+
+		// ------------------------------------------------------------- 게시판 삭제
+		$('#removeBoardBtn').on('click', function () {
+			const boardNo = $('#modifyBoardNo').val();
+			console.log("boardNo", boardNo);
+			requestRemoveBoard('/deleteBoard', boardNo);
+		});
+
+		const removeBoardAjax = function (url, boardNo) {
+			return new Promise( (resolve, reject ) => {
+				$.ajax({
+					url : url,
+					method : 'POST',
+					dataType : 'json',
+					data : {
+						boardNo : boardNo
+					},
+
+					success: function (data) {
+						console.log("data.result", data.result);
+						resolve(data.result);
+					},
+					error: function (e) {
+						reject(e);
+					}
+				});
+			});
+		}
+
+		async function requestRemoveBoard(url, boardNo) {
+			if (confirm("게시판을 삭제하시겠습니까?") == true) {
+				try {
+					let result = await removeBoardAjax(url, boardNo);
+
+					if (result == 0) {
+						alert("게시판이 삭제되었습니다.");
+						location.href = "boardManager";
+					} else {
+						alert("게시글이 있는 게시판은 삭제할 수 없습니다.");
+						return false;
+					}
+				} catch (error) {
+					console.log("error : ", error);
+				}
+			} else {
+			}
+		}
+	</script>
+
+</div>
+</html>

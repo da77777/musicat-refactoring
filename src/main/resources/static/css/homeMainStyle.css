@@ -1,0 +1,12 @@
+@charset "utf-8";
+
+.inner>.main {
+	display: flex;
+	justify-content: center;
+}
+
+header > a {
+	position: absolute;
+	right: 0;
+	top: 300px;
+}

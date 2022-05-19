@@ -1,0 +1,209 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<meta charset="UTF-8" />
+<link th:href="@{/css/listNomalStyle.css}" rel="stylesheet" />
+<link>
+<div id="layoutSidenav_content" class="mb-5">
+    <main>
+        <div class="container-fluid px-4">
+
+            <div class="row mt-3 mb-5">
+                <div class="articleList card" style="padding-left: 0px;padding-right: 0px;">
+                    <div class="articleVO-header card-header">
+                        <i class="fas fa-table me-1"></i>
+                        <span class="board-name" th:text="${boardName}">게시판 이름</span>
+
+                        <th:block th:if="${#authorization.expr('isAuthenticated()')}">
+                            <button type="button" id="insertLikeBoard"
+                                    th:value="${#authentication.principal.getMemberVo.getNo}">즐겨찾기</button>
+                        </th:block>
+                        <th:block th:if="${#authorization.expr('isAnonymous()')}">
+                            <button type="button" id="insertLikeBoardAnonymous">즐겨찾기</button>
+                        </th:block>
+                    </div>
+                    <input type="hidden" id="memberNo" name="memberNo" th:value="${memberNo}">
+
+                    <!-- 등업신청하기 -->
+                    <div><input th:if="${#authorization.expr('isAuthenticated()')}" type="button" id="write_btn" class="mx-3 my-3" name="write_btn" value="등업 신청하기" /></div>
+                    <div class="articleVOS card-body">
+                        <input type="hidden" id="boardNo" th:value="${boardNo}">
+                        <input type="hidden" id="allSearchKeyword" th:value="${keyword}">
+                        <input type="hidden" id="allSearchContent" th:value="${content}">
+
+                        <form id="write_grade_article_form" action="/articles/insert/grade" method="post" style="display: none">
+                            <div class="dropdown-divider"></div>
+                            <table id="write_form_table" class="w-100" >
+                                <thead>
+                                <th>신청자</th>
+                                <th>신청등급</th>
+                                <th class="ps-3">현재등급</th>
+                                <th>방문수</th>
+                                <th>게시글수</th>
+                                <th>댓글수</th>
+                                <th>가입일</th>
+                                </thead>
+                                <tbody id="write-form-tbody">
+                                </tbody>
+                            </table>
+                        </form>
+
+                        <form id="grade_insert_from" method="GET" action="/update/member/grade">
+                            <div class="dropdown-divider"></div>
+                        <table id="list_table" class="w-100">
+                            <thead>
+                            <th>선 택</th>
+                            <th>신청자</th>
+                            <th>신청등급</th>
+                            <th>현재등급</th>
+                            <th>방문수</th>
+                            <th>게시글수</th>
+                            <th>댓글수</th>
+                            <th>가입일</th>
+                            <th>신청일</th>
+                            </thead>
+                            <tbody id="article_list">
+                            <tr>
+                                <td colspan="9">
+                                    <div class="dropdown-divider"></div>
+                                </td>
+                            </tr>
+                            <input type="hidden" id="result" name="result" value="">
+                            <div th:each="article : ${articles}">
+                                <tr >
+                                    <td>
+                                        <input type="hidden" id="articleNo" class="articleNo" name="articleNo" th:value="${article.no}">
+                                        <input type="hidden" class="prograde" th:value="${article.proGrade}">
+                                        <input type="hidden" class="gradeMemberNo"  th:value="${article.memberNo}">
+                                        <input class="ms-3" type="radio" name="selectMember">
+                                    </td>
+                                    <td th:text="${article.nickname}">신청자</td>
+                                    <td th:text="${article.proGrade}">>신청등급</td>
+                                    <td th:text="${article.nowGrade}">현재등급</td>
+                                    <td th:text="${article.visits}">방문수</td>
+                                    <td th:text="${article.docs}">게시글수</td>
+                                    <td th:text="${article.comms}">댓글수</td>
+                                    <td th:text="${article.regdate}">가입일</td>
+                                    <td th:text="${article.writedate}">신청일</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="9" class="pt-3">
+                                        <div class="dropdown-divider"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="9" class="pb-3 ps-2" th:text="${article.content}">신청내용</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="9" class="pt-3">
+                                        <div class="dropdown-divider"></div>
+                                    </td>
+                                </tr>
+                            </div>
+                            </tbody>
+                        </table>
+                        <!--관리자만 가능-->
+                        <div class="my-3" sec:authorize="hasAnyRole('ROLE_ADMIN')">
+                            <select id="result-choice" name="resultChoice">
+                                <option value="0">거절</option>
+                                <option value="1" selected>수락</option>
+                            </select>
+                            <input type="button" id="update_grade_btn" name="확인" value="확인">
+                        </div>
+                        </form>
+                    </div>
+
+                    <div class="dataTable-bottom"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+<script>
+
+    $(document).ready(function(){
+
+        $('#write_btn').on('click', function(){
+            $('#list_table').html("")
+            var memberNo = $('#memberNo').val();
+            $.ajax({
+                url: '/articles/insert/grade',
+                method: 'get',
+                dataType: 'json',
+                data: {
+                    memberNo: memberNo,
+                },
+                success: function (data) {
+                    var htmlStr = "";
+                    htmlStr += '<input type="hidden" name="memberNo" value="' + memberNo + '">';
+                    htmlStr += '<tr><td colspan="9"><div class="dropdown-divider"></div></td></tr>';
+                    htmlStr += '<tr>';
+                    htmlStr += '<td><input type="text" name="nickname" value="' + data.nickname + '"></td>';
+                    htmlStr += '<td>';
+                    htmlStr += '<select id="prograde" name="proGrade">';
+                    htmlStr += '<option value=" ">등급 선택</option>';
+                    htmlStr += '<option value="MANAGER">매니저</option>';
+                    htmlStr += '</select>';
+                    htmlStr += '</td>';
+                    htmlStr += '<td class="ps-3"><input type="text" name="nowGrade" value="' +  data.grade + '"/>';
+                    htmlStr += '<td><input type="text" name="visits" value="' +  data.visits + '"/>';
+                    htmlStr += '<td><input type="text" name="docs" value="' +  data.docs + '"/>';
+                    htmlStr += '<td><input type="text" name="comms" value="' +  data.comms + '"/>';
+                    htmlStr += '<td><input type="text" name="regdate" value="' +  data.regDate + '"/>';
+                    htmlStr += '</tr>';
+                    htmlStr += '<tr><td colspan="9"><div class="dropdown-divider"></div></td></tr>';
+                    htmlStr += '<tr><td colspan="7"><input type="textarea" class="w-100" name="content" placeholder="내용을 입력하세요."/></td></tr>';
+                    htmlStr += '<tr><td colspan="9"><div class="dropdown-divider"></div></td></tr>';
+                    htmlStr += '<input type="button" id="grade_write_btn" value="신청">';
+                    $('#write-form-tbody').html(htmlStr);
+                    $('#write_grade_article_form').show();
+                },
+                error: function (e) {
+                    console.trace();
+                    reject(e);
+                }
+            });
+        });
+
+        $(document).on('click', '#update_grade_btn', function (){
+            $('#grade_insert_from').submit();
+        });
+
+        $(document).on('click', '#grade_write_btn', function (){
+            var prograde = $('#prograde').val();
+            if(prograde === " "){
+                alert('등급을 선택하세요');
+                return false;
+            }
+            $('#write_grade_article_form').submit();
+        });
+
+
+        $('#update_grade_btn').on('click', function (){
+            var resultArr = new Array();
+
+                var data = new Object();
+                data.articleNo = $("input[name='selectMember']:checked").parent('td').find('.articleNo').val();
+                data.memberNo = $("input[name='selectMember']:checked").parent('td').find('.gradeMemberNo').val();
+                data.prograde = $("input[name='selectMember']:checked").parent('td').find('.prograde').val();
+                resultArr.push(data);
+                console.log('====================');
+                console.log('====================');
+
+            var jsonData = JSON.stringify(resultArr) ;
+
+            $('#result').val(jsonData);
+            $('#grade_insert_from').submit();
+        });
+    });
+
+</script>
+<style>
+    input {
+        border: none;
+    }
+    input:focus{
+        outline: none;
+    }
+</style>
+</html>

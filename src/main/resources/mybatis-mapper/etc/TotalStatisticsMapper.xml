@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.musicat.mapper.etc.TotalStatisticsMapper">
+
+	<resultMap type="totalVo" id="totalVOResult">
+		<result property="totalNo" javaType="int" column="total_no"
+			jdbcType="INTEGER" />
+		<result property="totalMember" javaType="int"
+			column="total_member" jdbcType="INTEGER" />
+		<result property="totalArticle" javaType="int"
+			column="total_article" jdbcType="INTEGER" />
+		<result property="totalView" javaType="int" column="total_view"
+			jdbcType="INTEGER" />
+		<result property="totalVisits" javaType="int"
+			column="total_visits" jdbcType="INTEGER" />
+	</resultMap>
+
+	<select id="selectTotal" statementType="CALLABLE"
+		resultType="totalVo" resultMap="totalVOResult">
+		{ CALL sp_statistics_select_total() }
+	</select>
+
+	<insert id="insertAndupdateTotal" statementType="CALLABLE">
+		{ CALL
+		sp_statistics_insert_update_total() }
+
+	</insert>
+</mapper>
+

@@ -1,0 +1,200 @@
+@charset "UTF-8";
+
+
+.write-board-style{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+}
+.board-form-style{
+
+	width: 50%;
+	border: 1px solid #666666;
+	padding-left: 20px;
+	padding-top: 16px;
+
+}
+.select-board-style {
+	margin-bottom: 10px;
+}
+
+.select-board-style select {
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+	-webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow
+		ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out
+		.15s;
+	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+.select-board-style select:focus {
+	border-color: #66afe9;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px
+		rgba(102, 175, 233, .6);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px
+		rgba(102, 175, 233, .6);
+}
+
+.write-subject-style{
+	margin-bottom: 10px;
+	width: 100%;
+}
+
+.write-subject-style textarea {
+	display:inline-block;
+	resize: none;
+	height: 40px;
+	width: 90%;
+	font-size: 20px;
+	
+	padding-left: 10px;
+}
+
+.write-subject-style textarea:focus {
+	border-color: #66afe9;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px
+		rgba(102, 175, 233, .6);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px
+		rgba(102, 175, 233, .6);
+}
+
+.write-audio-style,
+.write-image-style,
+.write-file-style{
+	margin-left:5px;
+	margin-right: 30px;
+}
+
+.write-audio-style:hover,
+.write-image-style:hover,
+.write-file-style:hover{
+	cursor: pointer;
+}
+
+.write-content-style{
+	display: inline-block;
+	margin-top: 10px;
+	width: 100%;
+}
+
+.write-content-style textarea{
+	resize: none;
+	width: 90%;
+	height: 100px;
+	padding-left: 10px;
+	padding-top: 10px;
+}
+
+.write-content-style textarea:focus{
+	border-color: #66afe9;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px
+		rgba(102, 175, 233, .6);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px
+		rgba(102, 175, 233, .6);
+}
+
+.write-btn-style{
+	margin: 10px 0;
+}
+
+.write-btn-style input{
+	margin-right: 5px;
+	color: #666666;
+}
+
+.write-btn-style input:hover{
+	cursor: pointer;
+	color: black;
+}
+
+
+.preview-de {
+	border: none;
+	background-color: transparent;
+	position: relative;
+	top: -375px;
+	right: 40px;
+}
+
+
+/*이미지 미리보기 & 태그 */
+.fas {
+	color: #fd9d00;
+}
+/** {*/
+/*	margin: 0;*/
+/*	padding: 0;*/
+/*	list-style: none;*/
+/*}*/
+
+.content-tag-style ul {
+	padding: 16px 0;
+	margin-bottom: 5px;
+}
+
+.content-tag-style ul li {
+	display: inline-block;
+	margin: 5px;
+	font-size: 14px;
+	letter-spacing: -.5px;
+}
+
+.content-tag-style ul li.tag-item {
+	padding: 4px 8px;
+	background-color: #9f9f9f;
+	color: #000000;
+
+	border-radius: 10px;
+
+}
+
+.tag-item:hover {
+	background-color: #262626;
+	color: #fff;
+}
+
+.del-btn {
+	font-size: 12px;
+	font-weight: bold;
+	cursor: pointer;
+	margin-left: 8px;
+}
+
+.content-tag-style{
+	margin-top: 20px;
+}
+
+.content-tag-style>div{
+	display: flex;
+}
+
+.content-tag-style h4{
+	margin-right: 20px;
+}
+
+#write-audiofile-upload,
+.write-area-style input[type="file"] {
+	position: absolute;
+	width: 0;
+	height: 0;
+	padding: 0;
+	overflow: hidden;
+	border: 0;
+}
+
+#image_container{
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.preview-div img{
+	border: 1px solid#666666;
+	margin: 5px;
+}
+
+.songRegisterBtn{
+	border: none;
+	background-color: transparent;
+}

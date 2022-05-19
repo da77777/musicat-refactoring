@@ -1,0 +1,119 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<!--   <nav class="nav-icon-hidden">
+  <ul>
+    <li class="nav-category">
+      <div class="nav-category-icon">
+        <a href="#"><span class="material-icons"> account_circle </span></a>
+      </div>
+      <div class="nav-category-name">
+        <span>Profile</span>
+        <span class="material-icons"> expand_more </span>
+      </div>
+    </li>
+
+  </ul>
+</nav> -->
+<div id="layoutSidenav_nav">
+    <nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
+        <div class="sb-sidenav-menu">
+            <div class="nav">
+                <div class="sb-sidenav-menu-heading ">관리자</div>
+                <div class="collapsed">
+                    <!-- 통계 시작 -->
+                    <a
+                            class="nav-link collapsed fw-bold"
+                            th:href="@{/daily}"
+                    >
+                        <div class="sb-nav-link-icon">
+                            <i class="fas fa-columns"></i>
+                        </div>
+                        <span>통계</span>
+                        <div class="sb-sidenav-collapse-arrow">
+                            <i class="fas fa-angle-down"></i>
+                        </div>
+                    </a>
+                    <!-- 통계 끝 -->
+                    <!-- 게시글 관리 시작 -->
+                    <a
+                            class="nav-link collapsed fw-bold"
+                            href="/boardManager"
+                    >
+                        <div class="sb-nav-link-icon">
+                            <i class="fas fa-columns"></i>
+                        </div>
+                        <span>게시글 관리</span>
+                        <div class="sb-sidenav-collapse-arrow">
+                            <i class="fas fa-angle-down"></i>
+                        </div>
+                    </a>
+                    <!-- 게시글 관리 끝 -->
+
+                    <!-- 회원 관리 시작 -->
+                    <a
+                            class="nav-link collapsed fw-bold"
+                            href="/members"
+                    >
+                        <div class="sb-nav-link-icon">
+                            <i class="fas fa-columns"></i>
+                        </div>
+                        <span>회원 관리</span>
+                        <div class="sb-sidenav-collapse-arrow">
+                            <i class="fas fa-angle-down"></i>
+                        </div>
+                    </a>
+                    <!-- 회원 관리 끝 -->
+
+                    <!-- 등급 관리 시작  사용안함-->
+<!--                    <a-->
+<!--                            class="nav-link collapsed fw-bold"-->
+<!--                            href="/grades"-->
+<!--                    >-->
+<!--                        <div class="sb-nav-link-icon">-->
+<!--                            <i class="fas fa-columns"></i>-->
+<!--                        </div>-->
+<!--                        <span>등급 관리</span>-->
+<!--                        <div class="sb-sidenav-collapse-arrow">-->
+<!--                            <i class="fas fa-angle-down"></i>-->
+<!--                        </div>-->
+<!--                    </a>-->
+                    <!-- 등급 관리 끝 -->
+
+
+
+                    <!-- 리소스 관리 시작 -->
+                    <a
+                            class="nav-link collapsed fw-bold"
+                            href="/resourceManager"
+                    >
+                        <div class="sb-nav-link-icon">
+                            <i class="fas fa-columns"></i>
+                        </div>
+                        <span>리소스 관리</span>
+                        <div class="sb-sidenav-collapse-arrow">
+                            <i class="fas fa-angle-down"></i>
+                        </div>
+                    </a>
+
+                    <!--           꾸미기 시작
+                              <a
+                                class="nav-link collapsed"
+                                href="#"
+                              >
+                                <div class="sb-nav-link-icon">
+                                  <i class="fas fa-columns"></i>
+                                </div>
+                                <span>꾸미기</span>
+                                <div class="sb-sidenav-collapse-arrow">
+                                  <i class="fas fa-angle-down"></i>
+                                </div>
+                              </a>
+                              꾸미기 끝 -->
+
+
+
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+</html>

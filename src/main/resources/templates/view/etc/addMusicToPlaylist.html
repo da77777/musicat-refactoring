@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<link th:href="@{/css/theme_styles.css}" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+<!-- musicNo를 받는다. 플레이리스트를 선택하여 music을 추가한다. -->
+<!-- 플레이리스트의 목록을 불러와야한다. -->
+<body class="overflow-hidden pb-3">
+<table class="w-50 mx-auto mt-5">
+    <thead class="dropdown-divider">
+    <th class="py-3">플레이리스트 이름</th>
+    <th>추가</th>
+    </thead>
+    <tbody th:each="playlist : ${playlistsByMember}">
+    <tr th:object="${playlist}">
+        <td class="py-2 dropdown-divider" ><span th:text="*{playlistName}"></span></td>
+        <form th:action="|/pushmusic2/*{id}|" method="post" >
+            <input type="hidden" name = "musicNo" th:value="${musicNo}">
+            <input type="hidden" name = "memberNo" th:value="*{memberNo}">
+            <td class="py-2 dropdown-divider"><button type="submit" class="btn btn-primary" th:onclick="console.log([[${musicNo}]])">Add</button></td>
+        </form>
+    </tr>
+    </tbody>
+
+</table>
+</body>
+</html>

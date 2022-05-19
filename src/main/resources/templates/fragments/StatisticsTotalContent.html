@@ -1,0 +1,130 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+  <link th:href="@{/css/StatisticsStyle.css}" rel="stylesheet" />
+  <!-- 차트 링크 -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+  <div id="layoutSidenav_content">
+    <main>
+      <div class="container-fluid px-4">
+        <div class="row mt-3 mb-5">
+          <div class="content-header statistics-header total-header mb-3">
+            <table class="mb-3">
+              <colgroup>
+                <col width="50%" />
+                <col width="50%" />
+              </colgroup>
+              <tr>
+                <!-- <td th:onclick="|location.href='@{/manager/daily}'|"> -->
+                <td th:onclick="|location.href='@{/daily}'|">
+                  일일 통계
+                </td>
+                <td th:onclick="|location.href='@{/total}'|">
+                  총 통계
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="content-text row">
+            <div class="col-xl-3 col-md-6">
+              <div class="card bg-danger text-white mb-4">
+                <div class="card-body" th:text="${totalOne.totalMember}"></div>
+                <div
+                  class="card-footer d-flex align-items-center justify-content-between"
+                >
+                  <span class="small text-white stretched-link" href="#"
+                    >총 회원수</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+              <div class="card bg-warning text-white mb-4">
+                <div class="card-body" th:text="${totalOne.totalArticle}"></div>
+                <div
+                  class="card-footer d-flex align-items-center justify-content-between"
+                >
+                  <span class="small text-white stretched-link" href="#"
+                    >총 게시글수</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+              <div class="card bg-primary-blue text-white mb-4">
+                <div class="card-body" th:text="${totalOne.totalView}"></div>
+                <div
+                  class="card-footer d-flex align-items-center justify-content-between"
+                >
+                  <span class="small text-white stretched-link" href="#"
+                    >총 조회수</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+              <div class="card bg-success text-white mb-4">
+                <div class="card-body" th:text="${totalOne.totalVisits}"></div>
+                <div
+                  class="card-footer d-flex align-items-center justify-content-between"
+                >
+                  <span class="small text-white stretched-link" href="#"
+                    >총 방문자수</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="content-chart mb-3">
+            <canvas
+              class="mt-3 mb-3"
+              width="100"
+              height="30"
+              id="myChart"
+            ></canvas>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <!-- 부트스트랩 -->
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"
+  ></script>
+  <!-- 차트 -->
+  <script>
+    data = {
+      datasets: [
+        {
+          backgroundColor: ["red", "yellow", "blue", "green"],
+          data: [
+            "[[ ${totalOne.totalMember} ]]",
+            "[[ ${totalOne.totalArticle} ]]",
+            "[[ ${totalOne.totalView} ]]",
+            "[[ ${totalOne.totalVisits} ]]",
+          ],
+        },
+      ],
+      labels: ["총 회원수", "총 게시글수", "총 조회수", "총 방문자수"],
+    };
+
+    // 가운데 구멍이 없는 파이형 차트
+    var ctx1 = document.getElementById("myChart");
+    var myPieChart = new Chart(ctx1, {
+      type: "pie",
+      data: data,
+      options: {},
+    });
+  </script>
+</html>

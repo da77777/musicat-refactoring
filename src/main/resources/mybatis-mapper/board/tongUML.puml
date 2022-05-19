@@ -1,0 +1,34 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+left to right direction
+actor User as u
+actor Admin as a
+
+
+
+package "통계 System"{
+    usecase "총 회원 수 조회" as UC1
+    usecase "총 회원 수 조회" as UC2
+    usecase "총 방문자 수 조회" as UC3
+    usecase "일별 방문자 수 조회" as UC4
+    usecase "게시글 총 조회 수 조회" as UC5
+    usecase "일별 게시글 수 조회" as UC6
+}
+
+u -->  UC1
+u ->  UC2
+u ->  UC3
+u ->  UC4
+u ->  UC5
+u ->  UC6
+a -> UC1
+a -> UC2
+a -> UC3
+a -> UC4
+a -> UC5
+a -> UC6
+
+
+'note right of Admin : This is an example.
+
+@enduml

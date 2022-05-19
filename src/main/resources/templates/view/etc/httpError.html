@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Musicat - 404</title>
+
+<link
+        th:href="@{https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css}"
+        rel="stylesheet"
+/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+        href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,700;0,900;1,700;1,900&display=swap"
+        rel="stylesheet"
+/>
+<link th:href="@{/css/theme_styles.css}" rel="stylesheet" />
+<link th:href="@{/css/reset.css}" rel="stylesheet" />
+
+<style>
+    body {
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+    }
+    .error-style {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: -20px;
+
+        background-color: beige;
+    }
+
+    .error-style img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .error-style span {
+        font-family: "Merriweather", serif;
+        font-weight: 900;
+        font-style: italic;
+        font-size: 36px;
+        margin: 10px 0;
+    }
+
+    .error-style p {
+        font-size: 22px;
+    }
+</style>
+</head>
+<body>
+<div class="error-style">
+    <img src="/images/sibo.png" alt="고양이헤드셋" />
+    <span th:text="${errorCode}">404</span>
+    <p th:text="${errorMsg}">에러 내용? 여기 에러났어!!!</p>
+</div>
+</body>
+</html>

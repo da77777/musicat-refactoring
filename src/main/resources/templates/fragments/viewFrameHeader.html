@@ -1,0 +1,238 @@
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <nav class="sb-topnav navbar navbar-expand navbar-dark bg-header-color">
+    <!-- Navbar Brand-->
+    <a class="navbar-brand ps-4 fw-bold" href="/main">Musicat</a>
+
+    <!-- Sidebar Toggle-->
+    <button
+      class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0"
+      id="sidebarToggle"
+      href="#!"
+      style="display: none"
+    >
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Navbar Search-->
+    <!--	<form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">-->
+    <form
+      id="all_search_form"
+      action="/articles/board/search"
+      method="get"
+      class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0"
+    >
+      <div id="search_area" class="input-group">
+        <select id="keyword" name="keyword" class="btn btn-primary">
+          <option value="subject">제목</option>
+          <option value="nickname">작성자</option>
+          <option value="tagname">태그</option>
+        </select>
+        <input
+          type="text"
+          id="search_content"
+          name="content"
+          class="form-control"
+          placeholder="검색어를 입력해 주세요."
+        />
+        <button id="search_btn" class="btn btn-primary">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </form>
+    <!--		<div class="input-group">-->
+    <!--			<input class="form-control" type="text" placeholder="Search for..."-->
+    <!--				aria-label="Search for..." aria-describedby="btnNavbarSearch" />-->
+    <!--			<button class="btn btn-primary" id="btnNavbarSearch" type="button">-->
+    <!--				<i class="fas fa-search"></i>-->
+    <!--			</button>-->
+    <!--		</div>-->
+    <!--	</form>-->
+
+    <!-- admin Toggle-->
+
+<!--    th:onclick="|location.href='@{/members}'|"-->
+
+    <button
+      sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')"
+      class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0 icon-gray"
+      id="adminToggle"
+      th:onclick="|location.href='@{/daily}'|"
+    >
+      <i class="fas fa-cog fa-lg"></i>
+    </button>
+    <button
+      class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0 icon-gray"
+      id="chatToggle"
+      onclick="openChildChat()"
+    >
+      <i class="fas fa-comments fa-lg"></i>
+    </button>
+
+    <!-- alarm Toggle-->
+<!--    <button-->
+<!--      class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0 icon-gray"-->
+<!--      id="alramToggle"-->
+<!--      href="#!"-->
+<!--    >-->
+<!--      <i class="fas fa-bell fa-lg"></i>-->
+<!--    </button>-->
+
+    <!-- Navbar-->
+    <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+      <!-- 양 : th:fragment="viewFrameHeader (isLogin)" -->
+      <li class="nav-item dropdown">
+        <a
+          class="nav-link dropdown-toggle"
+          id="navbarDropdown"
+          href="#"
+          role="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+          ><i class="fas fa-user fa-fw"></i
+        ></a>
+        <ul
+          class="dropdown-menu dropdown-menu-end"
+          aria-labelledby="navbarDropdown"
+        >
+
+          <li th:if="${#authorization.expr('isAuthenticated()')}">
+            <a class="dropdown-item" th:href="@{'/myPage/Playlist/' + ${#authentication.principal.getMemberVo.getNo}}">
+                  <span th:text="${#authentication.principal.getMemberVo.getEmail}"></span>
+            </a>
+          </li>
+<!--          <li><a class="dropdown-item" href="/notelist">쪽지함</a></li>-->
+
+          <li><hr class="dropdown-divider" /></li>
+
+          <!--				로그인한 사용자 -->
+          <li th:if="${#authorization.expr('isAuthenticated()')}">
+            <a class="dropdown-item" href="/logout">Logout</a>
+          </li>
+          <!--				로그인하지 않은 사용자-->
+          <li th:if="${#authorization.expr('isAnonymous()')}">
+            <a class="dropdown-item" href="/musicatlogin">Login</a>
+          </li>
+
+          <li><hr class="dropdown-divider" /></li>
+          <li><a class="dropdown-item" href="/passwordCheck">비밀번호 변경</a></li>
+          <li><a class="dropdown-item" href="/outForm">회원 탈퇴</a></li>
+
+        </ul>
+      </li>
+      <li class="nav-item dropdown" th:if="${#authorization.expr('isAuthenticated()')}">
+        <a
+                class="nav-link dropdown-toggle position-relative dropdown-alram"
+                id="alramToggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+        ><i class="fas fa-bell fa-lg"></i>
+        <span id="noticeCount" class="position-absolute top-0 bg-danger rounded-circle" style="width: 25px;height: 25px; padding-left: 4px; right: -7px">0</span></a>
+        <ul id = "noticeList" class="dropdown-menu dropdown-menu-end notify-ul-style"
+                aria-labelledby="navbarDropdown">
+          <li>새로운 알림이 없습니다.</li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+  <script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+  <script>
+    $(document).ready(function () {
+      $(document).on("click", "#search_btn", function () {
+        const content = $("#search_content").val();
+        console.log(1, content);
+        if (content == null || content === "") {
+          alert("검색어를 입력하세요.");
+          return false;
+        }
+        $("#all_search_form").submit();
+      });
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+  <script th:inline="javascript">
+    $(document).ready(function() {
+      var sta = [[${#authorization.expr('isAuthenticated()')}]];
+      if(sta) {
+        var sockJs = new SockJS("/stomp/topic");
+        var stomp = Stomp.over(sockJs);
+        stomp.connect({}, function () {
+          console.log("STOMP Connection");
+
+          var userVo = [[${#authentication.principal}]];
+          console.log(userVo);
+          var userInfo = userVo.memberVo;
+          var notifyId = userInfo.notifyId;
+          console.log(notifyId);
+
+          stomp.subscribe("/sub/topic/notify/" + notifyId, function (notify) {
+            var content = JSON.parse(notify.body);
+
+            //console.log("notify : " + notify);
+            console.log("content : " + content);
+            //console.log(notify.body);
+
+            $('#noticeList').empty();
+            // $('#noticeList').append("<li><a href=" + "/main" + ">" + notify.body +"</a></li>");
+
+
+            var i;
+            var noticeCount = 0;
+            for(i = 0; i < content.length; i++){
+              //$('#noticeList').append("<li><a href=" + "/main" + ">" + content[i].content +"</a></li>");
+              let li = document.createElement("li");
+              let a = document.createElement("a");
+              let nIcon = document.createElement("span");
+              nIcon.innerText = "n";
+
+              li.setAttribute("class","notify-li-style");
+              a.setAttribute("id", "notify" + content[i].notify_no);
+              a.setAttribute("href", "/notifyRead/" + content[i].notify_no);
+              a.innerText = content[i].content;
+              li.append(a);
+              console.log(content[i].content + " : " + content[i].readDate);
+              if(content[i].readDate == null) {
+                console.log(content[i].content + " : " + "n 아이콘 출력");
+                ++noticeCount;
+                li.append(nIcon);
+              }
+
+              $('#noticeList').append(li);
+            }
+            $('#noticeCount').show();
+
+            if(noticeCount == 0 )
+              $('#noticeCount').hide();
+            else
+              $('#noticeCount').text(noticeCount);
+
+
+            //console.log("noticecount : " + i);
+          });
+
+          // 연결 확인 테스트용
+          //stomp.send('/pub/topic/notify/register', {}, JSON.stringify({notifyId: notifyId}));
+          stomp.send('/pub/topic/notify/register', {}, userInfo.no);
+          });
+          }
+
+
+        });
+
+
+    function openChildChat() {
+      window.open(
+              "/chat/rooms",
+              "Chattings",
+              "width=600, height=700"
+      );
+    }
+
+  </script>
+</html>
