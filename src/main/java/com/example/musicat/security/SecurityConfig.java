@@ -173,6 +173,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         } else { //요청 페이지가 있으면 보낼 url
                             response.sendRedirect(savedRequest.getRedirectUrl());
                         }
+
+                        //sessionTimeout 설정
+                        //request.getSession().setMaxInactiveInterval(3600); //60s * 60m
                     }
                 })
                 .failureHandler(new AuthenticationFailureHandler() {
