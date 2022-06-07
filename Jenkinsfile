@@ -22,14 +22,14 @@ pipeline {
         
         stage('Deploy') {
             steps {
-                deploy adapters: [tomcat9(credentialsId: 'jekins_access_token', path: '', url: 'http://3.38.88.242:8080/')], contextPath: '/', onFailure: false, war: '**/*.war'
+                deploy adapters: [tomcat9(credentialsId: 'jekins_access_token', path: '', url: 'http://3.38.88.242:8091/')], contextPath: '/', onFailure: false, war: '**/*.war'
 			}
         }
         
         stage('Restart') {
             steps {
-                sh '''curl -u admin:javatomcat http://3.38.88.242:8080/host-manager/text/stop
-curl -u admin:javatomcat http://3.38.88.242:8080/host-manager/text/start'''
+                sh '''curl -u admin:javatomcat http://3.38.88.242:8091/host-manager/text/stop
+curl -u admin:javatomcat http://3.38.88.242:8091/host-manager/text/start'''
             }
         }
     }
