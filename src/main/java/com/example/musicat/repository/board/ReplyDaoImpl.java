@@ -4,10 +4,12 @@ import java.util.List;
 
 import com.example.musicat.domain.board.ReplyVO;
 import com.example.musicat.mapper.board.ReplyMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 
+@Slf4j
 @Repository("replyDao")
 public class ReplyDaoImpl implements ReplyDao {
 

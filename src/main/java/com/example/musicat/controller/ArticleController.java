@@ -81,13 +81,13 @@ public class ArticleController {
 			,HttpServletRequest req
 			,Model model) {
 		// create
-		log.info("ArticleController.detailArticle: authAnon = " + SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString());
+		//log.info("ArticleController.detailArticle: authAnon = " + SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString());
 
 		MemberVO member = HomeController.checkMemberNo();
 		int gradeNo = member.getGradeNo();
 
 		ArticleVO article = this.articleService.retrieveArticle(articleNo);
-		log.info("Acontroller.detailArticle: -------" + article.toString());
+		//log.info("Acontroller.detailArticle: -------" + article.toString());
 		int boardNo = article.getBoardNo();
 		//gradeNo = member.getGradeNo();
 		boolean grade = this.boardService.retrieveAllReadBoard(boardNo, gradeNo);

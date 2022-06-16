@@ -228,7 +228,7 @@
                     <div th:if="${#authorization.expr('isAuthenticated()')}" id="writeReplyForm"
                          class="detailArticle-reply-style">
                   <textarea id="write_content" name="write_content" rwos="10"
-                                  cols="75" placeholder="댓글을 입력해주세요."></textarea>
+                            cols="75" placeholder="댓글을 입력해주세요."></textarea>
 
                         <button type="button" id="write_reply_btn">등록</button>
                     </div>
@@ -274,12 +274,10 @@
                                     </div>
                                 </th:block>
 
-                                <th:block th:unless="${reply.depth == 1}">
-
-                                    <div class="reply-style" th:id="${reply.no}">
-
-                                        <div class="reply-info-style">
-                                            <div>
+                                    <th:block th:unless="${reply.depth == 1}">
+                                        <div class="reply-style" th:id="${reply.groupNo}">
+                                            <div class="reply-info-style">
+                                                <div>
                                             <span class="me-3 dropdown">
 <!--                                                <span class="fw-bold fs-5" th:text="${reply.nickname}"></span>-->
                                                 <a class="dropdown-toggle fw-bold" data-bs-toggle="dropdown"
@@ -291,47 +289,24 @@
                                                     <li><a class="dropdown-item" href="/notelist">쪽지함</a></li>
                                                 </ul>
                                             </span>
-                                                <span th:text="${reply.writeDate}"></span>
+                                                    <span th:text="${reply.writeDate}"></span>
+                                                </div>
+                                                <span class="Content reply-text-style" th:text="${reply.content}"></span>
                                             </div>
-                                            <span class="Content reply-text-style" th:text="${reply.content}"></span>
+
+
+                                            <div class="mt-2 detail-replyBtn-style" th:id="${reply.groupNo}">
+
+                                                <input th:if="${#authorization.expr('isAuthenticated()')}" type="button"
+                                                       class="depth_reply_btn me-2" value="답글쓰기"/>
+
+                                                <th:block th:if="${loginMemberNo == reply.memberNo}">
+                                                    <input type="button" class="modify_Reply_Form_Btn me-2" value="수정"/>
+                                                    <input type="button" class="remove_Reply_Btn me-2" value="삭제"/>
+                                                </th:block>
+                                            </div>
                                         </div>
-
-
-                                        <th:block th:unless="${reply.depth == 1}">
-                                            <div class="reply-style" th:id="${reply.groupNo}">
-                                                <div class="reply-info-style">
-                                                    <div>
-                                            <span class="me-3 dropdown">
-<!--                                                <span class="fw-bold fs-5" th:text="${reply.nickname}"></span>-->
-                                                <a class="dropdown-toggle fw-bold" data-bs-toggle="dropdown"
-                                                   th:text="${reply.nickname}">
-                                                </a>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item"
-                                                           th:href="|/myPage/Playlist/${reply.memberNo}|">MyPage</a></li>
-                                                    <li><a class="dropdown-item" href="/notelist">쪽지함</a></li>
-                                                </ul>
-                                            </span>
-                                                        <span th:text="${reply.writeDate}"></span>
-                                                    </div>
-                                                    <span class="Content reply-text-style" th:text="${reply.content}"></span>
-                                                </div>
-
-
-                                                <div class="mt-2 detail-replyBtn-style" th:id="${reply.groupNo}">
-
-                                                    <input th:if="${#authorization.expr('isAuthenticated()')}" type="button"
-                                                           class="depth_reply_btn me-2" value="답글쓰기"/>
-
-                                                    <th:block th:if="${loginMemberNo == reply.memberNo}">
-                                                        <input type="button" class="modify_Reply_Form_Btn me-2" value="수정"/>
-                                                        <input type="button" class="remove_Reply_Btn me-2" value="삭제"/>
-                                                    </th:block>
-                                                </div>
-                                            </div>
-                                        </th:block>
-
-                                </th:block>
+                                    </th:block>
 
                         </div>
                     </div>
@@ -340,7 +315,7 @@
                     <div id="write_depth_reply_form" style="display: none">
                         <div id="writeDepthReplyForm" class="detailArticle-reply-style">
                      <textarea id="write_depth_content" name="write_content" rwos="10"
-                                      cols="75" placeholder="댓글을 입력해주세요."></textarea>
+                               cols="75" placeholder="댓글을 입력해주세요."></textarea>
                             <div class="detailArticle-replyBtn-style">
                                 <button type="button" id="write_depth_reply_btn">등록</button>
                                 <button type="button" class="depth_reply_cancle_btn mt-2">취소</button>

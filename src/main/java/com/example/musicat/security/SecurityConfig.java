@@ -43,7 +43,7 @@ import java.util.List;
 
 @Log
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
