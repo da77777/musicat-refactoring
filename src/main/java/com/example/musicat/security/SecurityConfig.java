@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
@@ -15,7 +14,6 @@ import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.*;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,8 +23,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
-import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -43,12 +39,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Log
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
@@ -61,10 +56,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    //인증 커스텀
+    //인증 커스텀 : authenticationManagerBean, configure, customAuthenticationProvider
+    // --------------------------------------- 이거 왜 필요한지 모르겠네
+//    @Override
+//    public AuthenticationManager authenticationManagerBean() throws Exception {
+//        return super.authenticationManagerBean();
+//    }
+
+    //인증에 대한 지원을 설정하는 메소드를 가지고 있음 ( customAuthenticationProvider : 인증 커스텀 )
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.authenticationProvider(customAuthenticationProvider());
+//    }
+
+    // --------------------------------------
+
     @Bean
-    public AuthenticationProvider customAutheticationProvider() {
-        return new CustomAutheticationProvider();
+    public AuthenticationProvider customAuthenticationProvider() {
+        return new CustomAuthenticationProvider();
     }
 
     //ApplicationListener<SessionDestroyedEvent> ( SessionDestroyListener )를 사용하기 위한 Bean 등록
@@ -74,9 +83,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         });
     }
 
-    //security 기본 필터 작동 전에 처리할 내용들
+    //security 기본 필터(FilterSecurityInterceptor) 작동 전에 처리할 내용들
     @Bean
     public FilterSecurityInterceptor customFilterSecurityInterceptor() throws Exception {
+
         FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
         filterSecurityInterceptor.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
         filterSecurityInterceptor.setAccessDecisionManager(accessDecisionManager()); //AccessDecisionManager에 권한 검사 위임
@@ -90,11 +100,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new UrlFilterInvocationSecurityMetadataSource();
     }
 
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
     // 권한 계층 설정
     @Bean
     public RoleHierarchy roleHierarchy() {
@@ -104,6 +109,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     // 권한 계층 부여
+    // Voter 정책 : AffirmativeBased(하나만 통과되어도 통과), ConsensusBased(다수결), UnanimouseBased(만장일치)
+    // 보통 AffirmativeBased 사용
     @Bean
     public AffirmativeBased accessDecisionManager() {
         List<AccessDecisionVoter<?>> decisionVoters = new ArrayList<>();
@@ -120,11 +127,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return affirm;
     }
 
-    //인증에 대한 지원을 설정하는 메소드를 가지고 있음 ( customAutheticationProvider : 인증 커스텀 )
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(customAutheticationProvider());
-    }
 
     //필요 없는 인증처리 방지를 위한 정적파일 ignoring 처리 : ignoring 처리하지 않으면 permitAll에 포함되므로 static에 있는 파일들도 인증처리를 거치게 됨
     //정적파일 뿐만 아니라 인증이 필요 없는 url은 ignoring 처리 해주는 것이 좋음
@@ -135,22 +137,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
-        //권한 계층 설정 필터를 먼저 실행하도록
         http
                 .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class);
 
         http
                 .csrf().disable();
-
-//        http
-//                .authorizeRequests()
-//                .antMatchers("/user/**", "/ChangePwd/**", "/logout", "/articles/insert").authenticated() //
-//                .antMatchers("/manager/**", "/members/**", "/boardManager/**").access("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')" )
-//                .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
-//                .anyRequest().permitAll();
 
         http
                 .formLogin()

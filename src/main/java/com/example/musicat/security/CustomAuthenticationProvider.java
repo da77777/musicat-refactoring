@@ -5,16 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 
 @Log
 //인증에 대한 커스텀은 여기서 함
 //UserDetailsService(CustomMemberDetailsService)에서 정보를 담은 memberAccount를 AuthenticationManager에 넣기 위한 클래스(AuthenticationProvider 구현체)
-public class CustomAutheticationProvider implements AuthenticationProvider {
+public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     private UserDetailsService userDetailsService;
