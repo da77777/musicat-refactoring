@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,11 +29,17 @@ public class FileManager {
 //		 this.fileDir = "D:/SpringBootHome/petopia2/src/main/resources/static/upload/";
 //	}
 
+//  local
 //	private String fileDir = "C:/Users/양다예/AppData/Local/upload/";
 //	private String thumbnailFileDir = "C:/Users/양다예/AppData/Local/upload/thumbnail/";
 
-	private String fileDir = "/upload/";
-	private String thumbnailFileDir = "/upload/thumbnail/";
+//	배포
+//	private String fileDir = "/upload/";
+//	private String thumbnailFileDir = "/upload/thumbnail/";
+	@Value("${file.dir}")
+	private String fileDir;
+	@Value("${file.thumbDir}")
+	private String thumbnailFileDir;
 
 	//public void createDir() {
 	public void createDir(String dir) {

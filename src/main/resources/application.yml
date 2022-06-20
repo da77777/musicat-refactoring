@@ -57,6 +57,7 @@ server.error:
 
 file:
   dir: /upload/
+  thumbDir: /upload/thumbnail/
 #  dir: D:/SpringBootHome/musicat/src/main/resources/static/upload/
 #  dir2: D:/SpringBootHome/musicat/src/main/resources/static/upload/
 #  dir2: C:/Users/MZC/git/musicat/src/main/resources/static/upload/
