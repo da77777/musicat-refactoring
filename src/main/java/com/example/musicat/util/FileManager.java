@@ -28,8 +28,11 @@ public class FileManager {
 //		 this.fileDir = "D:/SpringBootHome/petopia2/src/main/resources/static/upload/";
 //	}
 
-	private String fileDir = "C:\\Users\\양다예\\AppData\\Local\\upload\\";
-	private String thumbnailFileDir = "C:\\Users\\양다예\\AppData\\Local\\upload\\thumbnail\\";
+//	private String fileDir = "C:/Users/양다예/AppData/Local/upload/";
+//	private String thumbnailFileDir = "C:/Users/양다예/AppData/Local/upload/thumbnail/";
+
+	private String fileDir = "/upload/";
+	private String thumbnailFileDir = "/upload/thumbnail/";
 
 	//public void createDir() {
 	public void createDir(String dir) {
@@ -93,7 +96,7 @@ public class FileManager {
 	public void createThumbnail(String systemFileName) throws IOException {
 
 		File image = new File(getFullPath(systemFileName));
-		File thumbnail = new File(getFullPath("thumbnail\\thumb" + systemFileName));
+		File thumbnail = new File(getFullPath("thumbnail/thumb" + systemFileName));
 
 		//systemFileName에서 확장자 추출
 		int pos = systemFileName.lastIndexOf("."); 
@@ -122,8 +125,8 @@ public class FileManager {
 	}
 
 	// 확장자 추출
-	private String extract(String originaFileName) {
-		int pos = originaFileName.lastIndexOf(".");
-		return originaFileName.substring(pos + 1);
+	private String extract(String originalFileName) {
+		int pos = originalFileName.lastIndexOf(".");
+		return originalFileName.substring(pos + 1);
 	}
 }
