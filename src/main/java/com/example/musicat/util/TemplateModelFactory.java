@@ -64,9 +64,9 @@ public class TemplateModelFactory {
         List<Music> musics = null;
         MemberVO member = getUserMemberVO();
         if (member != null) {
-            log.info("user logged in");
+            //log.info("user logged in");
             musics = musicApiService.showDetailPlaylist(member.getNo() + CUR_PLAYLIST_KEY);
-            log.info(musics.toString());
+            //log.info(musics.toString());
         }
 
         if(musics == null){
@@ -76,8 +76,6 @@ public class TemplateModelFactory {
             List<Map<String, Object>> newMusicInfos = new ArrayList<Map<String, Object>>();
             for (int i = 0; i < musics.size(); ++i) {
                 Map<String, Object> map = (Map<String, Object>) musics.get(i);
-                log.info("뭔데" + (Integer) map.get("memberNo"));
-                log.info("뭐냐고" + memberService.retrieveMemberByManager(1).getNickname());
                 map.put("memberNickname", memberService.retrieveMemberByManager((Integer) map.get("memberNo")).getNickname());
                 newMusicInfos.add((Map<String, Object>) musics.get(i));
             }
@@ -86,7 +84,8 @@ public class TemplateModelFactory {
             model.addAttribute("curPlaylist", newMusicInfos);
             log.info("setted music : " + model.getAttribute("curPlaylist"));
         } catch (Exception e) {
-            log.error("현재 재생목록 셋팅 실패 {}", e);
+            //log.error("현재 재생목록 셋팅 실패 {}", e);
+            log.info("setCurPlaylistModel 에러메세지 주석처리함");
         }
         return model;
     }

@@ -1,24 +1,17 @@
 package com.example.musicat.controller;
 
 import java.io.IOException;
-import java.lang.reflect.Member;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import com.example.musicat.controller.form.ArticleForm;
 import com.example.musicat.domain.board.*;
-import com.example.musicat.domain.etc.NotifyVO;
 import com.example.musicat.domain.member.MemberVO;
 import com.example.musicat.domain.music.Music;
-import com.example.musicat.mapper.board.ArticleMapper;
 import com.example.musicat.repository.board.ArticleDao;
-
-import com.example.musicat.security.MemberAccount;
 
 import com.example.musicat.service.member.MemberService;
 import com.example.musicat.service.music.MusicApiService;
@@ -28,9 +21,6 @@ import com.example.musicat.util.FileManager;
 import com.example.musicat.util.TemplateModelFactory;
 import com.example.musicat.websocket.manager.NotifyManager;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -146,8 +136,7 @@ public class ArticleController {
 	 * 작성 폼 이동
 	 */
 	@GetMapping("/insert")
-	public String writeForm(HttpServletRequest req
-			,Model model) {
+	public String writeForm(HttpServletRequest req, Model model) {
 		// create
 		ArticleForm form = new ArticleForm(); // 변경
 
@@ -162,18 +151,21 @@ public class ArticleController {
 		model.addAttribute("categoryBoardList", categoryList);
 
 		int gradeNo = member.getGradeNo();
-		log.info("Start insertArticleCont--");
-		log.info("writeForm get No::::" + gradeNo);
+//		log.info("Start insertArticleCont--");
+//		log.info("writeForm get No::::" + gradeNo);
+
 		// bind
-		log.info("insert form 이동 권한 조회 전");
+//		log.info("insert form 이동 권한 조회 전");
 		List<BoardVO> boardList = this.boardService.retrieveAllWriteBoard(gradeNo);
-		log.info("insert form 이동 권한 조회 후");
-		log.info("End insertArticleCont--");
+//		log.info("insert form 이동 권한 조회 후");
+//		log.info("End insertArticleCont--");
+
 		// view
 		model.addAttribute("boardList", boardList);
 		model.addAttribute("form", form);
 		model.addAttribute("gradeNo", gradeNo); // 나중에 seesion member에 접근해서 grade_no 받아올 것
 		model.addAttribute("HomeContent", "/view/board/writeArticleForm");
+		log.info("-------- writeForm --------");
 		return "view/home/viewHomeTemplate";
 	}
 
@@ -188,8 +180,8 @@ public class ArticleController {
 			,@RequestParam(value = "audioNo", required = false) Long audioNo
 			,HttpServletRequest req) throws IOException {
 		ModelAndView mv = new ModelAndView();
-		log.info("audioNo= {}",audioNo);
-		log.info("insert접근");
+//		log.info("audioNo= {}",audioNo);
+//		log.info("insert접근");
 		if (result.hasErrors()){
 			List<CategoryVO> categoryList = this.categoryService.retrieveCategoryBoardList();
 			mv.addObject("categoryBoardList", categoryList);
@@ -278,13 +270,13 @@ public class ArticleController {
 
 	// 게시글 수정
 	@PostMapping("/update/{articleNo}")
-	public ModelAndView updatetArticle(@ModelAttribute("article") ArticleVO article
-			,@Validated @ModelAttribute("form") ArticleForm articleForm
-			,BindingResult result
-			,@ModelAttribute FileFormVO form
-			,@RequestParam("tags") String tags
-			,@PathVariable("articleNo") int articleNo
-			,@RequestParam(value = "audioNo", required = false) Long audioNo)
+	public ModelAndView updateArticle(@ModelAttribute("article") ArticleVO article
+			, @Validated @ModelAttribute("form") ArticleForm articleForm
+			, BindingResult result
+			, @ModelAttribute FileFormVO form
+			, @RequestParam("tags") String tags
+			, @PathVariable("articleNo") int articleNo
+			, @RequestParam(value = "audioNo", required = false) Long audioNo)
 			throws IOException {
 		log.info("update접근");
 
@@ -441,7 +433,7 @@ public class ArticleController {
 		log.info("Post insert grade");
 		ModelAndView mv = new ModelAndView();
 		log.info(gradeArticleVO.toString());
-		this.articleService.insertGradeArtilce(gradeArticleVO);
+		this.articleService.insertGradeArticle(gradeArticleVO);
 		log.info("Post insert grade2");
 		mv.setView(new RedirectView("/board/76/articles"));
 		return mv;

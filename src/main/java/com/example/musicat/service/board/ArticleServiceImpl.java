@@ -37,7 +37,7 @@ public class ArticleServiceImpl implements ArticleService {
 	public ArticleVO retrieveArticle(int articleNo) {
 		List<SelectArticleVO> results = this.articleDao.selectArticle(articleNo);
 		List<TagVO> tags = this.articleMapper.selectArticleTags(articleNo);
-		System.out.println("ArticleServiceImpl.retrieveArticle: results : " + results.size());
+//		System.out.println("ArticleServiceImpl.retrieveArticle: results : " + results.size());
 
 		ArticleVO article = results.get(0).getArticle(); // 게시글 정보 출력
 		article.setSelectTags(tags);
@@ -69,9 +69,9 @@ public class ArticleServiceImpl implements ArticleService {
 		HashMap<String, Object> map = new HashMap<>();
 		Criteria cre = Criteria.getThumbnailPaging(currentNo, 1);
 		int offset = cre.getPageStart();
-		log.info("cre: {}", cre.toString());
-		log.info("currentNo: {}", currentNo);
-		log.info("offset: {}", offset);
+//		log.info("cre: {}", cre.toString());
+//		log.info("currentNo: {}", currentNo);
+//		log.info("offset: {}", offset);
 		map.put("boardNo", boardNo);
 		map.put("offset", offset);
 		return this.articleDao.selectBoardList(map);
@@ -89,7 +89,7 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
-	public void insertGradeArtilce(GradeArticleVO gradeArticleVO) {
+	public void insertGradeArticle(GradeArticleVO gradeArticleVO) {
 		this.articleDao.insertGradeArticle(gradeArticleVO);
 	}
 
