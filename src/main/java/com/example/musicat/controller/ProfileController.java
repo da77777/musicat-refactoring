@@ -28,19 +28,13 @@ import java.net.MalformedURLException;
 public class ProfileController {
     @Autowired private ProfileService profileService;
     @Autowired private MemberService memberService;
-//    @Value("${file.dir2}") private String dir2;
     @Value("${file.dir}") private String dir2;
 
     // 프로필 페이지 이동, session 정보를 가져와서 이동할 예정. 기능 구현을 위해서 임시 처리
     @GetMapping("/profile")
     public String chooseProfile(Model model) throws Exception{
-        // 양 ~
         MemberVO member = HomeController.checkMemberNo();
-        // ~ 양
 
-        //MemberVO member = ((MemberAccount) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberVo();
-        //MemberVO member = memberService.retrieveMemberByManager(2);
-        log.info("member : " + member);
         try {
             ProfileVO profile = profileService.retrieveProfile(member.getNo());
             log.info("memberNo : " + member.getNo() + ", profileMember : " + profile.getNo());

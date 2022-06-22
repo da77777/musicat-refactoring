@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import com.example.musicat.controller.form.GradeArticleForm;
 import com.example.musicat.controller.form.JoinForm;
 import com.example.musicat.domain.board.GradeArticleVO;
+import com.example.musicat.security.MemberAccount;
 import com.example.musicat.service.board.ArticleService;
 import com.example.musicat.service.member.ProfileService;
 import com.example.musicat.service.music.MusicApiService;
@@ -21,6 +22,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,10 +47,8 @@ import org.springframework.web.servlet.view.RedirectView;
 @Controller
 public class MemberController {
 
-	// 양
 	@Autowired
 	private BCryptPasswordEncoder encodePwd;
-
 	@Autowired
 	private MemberService memberService;
 	@Autowired
@@ -100,7 +100,7 @@ public class MemberController {
 		mvo = this.memberService.retrieveMemberByEmail(mvo.getEmail());
 		log.info("방금 가입한 멤버 넘버 : " + mvo.getNo());
 		this.musicApiService.makeNowPlaying(mvo);
-//		this.profileService.addProfile(mvo.getNo());
+		this.profileService.addProfile(mvo.getNo());
 
 //		return "redirect:/musicatlogin"; // string으로 리턴되는건 html 파일로 넘어감! (회원가입 다음 로그인화면으로 넘어가고 싶다면 templates 안에 있는 로그인
 								// html 파일명 쓰기)
@@ -238,7 +238,7 @@ public class MemberController {
 //	회원 자진 탈퇴 로직 실행 =
 	@PostMapping("/outMember")  //이걸 실행하는 값의 주소
 	public String outMember(@RequestParam String password, HttpSession session) {
-		MemberVO member =  (MemberVO) session.getAttribute("loginUser");
+		MemberVO member = ((MemberAccount) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberVo();
 		this.memberService.modifyMember(member.getNo(), password);
 		return "redirect:logout"; 
 	}

@@ -49,8 +49,6 @@ spring:
 #      max-file-size: 10MB
 #      max-request-size: 10MB
 
-
-
 server.error:
   include-exception: true
   include-stacktrace: always
@@ -58,21 +56,12 @@ server.error:
 file:
   dir: /upload/
   thumbDir: /upload/thumbnail/
-#  dir: D:/SpringBootHome/musicat/src/main/resources/static/upload/
-#  dir2: D:/SpringBootHome/musicat/src/main/resources/static/upload/
-#  dir2: C:/Users/MZC/git/musicat/src/main/resources/static/upload/
+  profileDir: /upload/profile/
 
 # hibernate가 생성하는 SQL이 모두 보인다.
 logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
-
-#      jdbc-url: jdbc:mysql://13.124.245.202:3306/musicat_temp
-#      username: scott
-#      password: Tiger_1234
-#      jdbc-url: jdbc:mysql://localhost:3306/musicat
-#      username: root
-#      password: mymysql
 
 

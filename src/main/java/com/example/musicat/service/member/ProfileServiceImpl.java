@@ -2,6 +2,7 @@ package com.example.musicat.service.member;
 
 import com.example.musicat.domain.member.ProfileVO;
 import com.example.musicat.mapper.member.ProfileMapper;
+import com.example.musicat.util.FileManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -19,22 +22,37 @@ import java.util.UUID;
 @Transactional(readOnly = true)
 public class ProfileServiceImpl implements ProfileService{
     @Autowired private ProfileMapper profileMapper;
-    //dir2인데 임시로 dir로 수정함
-    @Value("${file.dir}") private String dir2; // 프로필 이미지 로컬 저장 경로
-    private static final String initOriginImg = "Seoul.JPG"; // 기본 이미지 original name
-    private static final String initSysImg = "Seoul.JPG"; // 기본 이미지 system name
+
+//    @Value("${file.profileDir}")
+//    private String profileFileDir; // 프로필 이미지 로컬 저장 경로
+//    private static final String initOriginImg = "Seoul.JPG"; // 기본 이미지 original name
+//    private static final String initSysImg = "Seoul.JPG"; // 기본 이미지 system name
+
+
+    private String profileFileDir = "C:/Users/양다예/AppData/Local/upload/profile/"; // 프로필 이미지 로컬 저장 경로
+    private static final String initOriginImg = "basicImageAga.jpg"; // 기본 이미지 original name
+    private static final String initSysImg = "basicImageAga.jpg"; // 기본 이미지 system name
 
     // 회원가입 시 프로필 생성, 회원가입 쪽에 해당 서비스 붙일 것.
     @Override
     @Transactional
     public void addProfile(int no) throws Exception{
-        String originalFileName = initOriginImg;
-        String systemFileName = initSysImg;
-        String location = dir2 + systemFileName;
+//        String originalFileName = initOriginImg;
+//        String systemFileName = initSysImg;
+//        String location = profileFileDir + systemFileName;
+//        File file = new File(location);
+//        long fileSize = file.length();
+//        log.info("no : " + no);
+//        ProfileVO profile = new ProfileVO(no, originalFileName, systemFileName, fileSize);
+//        profileMapper.insertProfile(profile);
+
+
+        String location = profileFileDir + initSysImg;
+        log.info("----- 프로필 파일 경로 location : " + location);
         File file = new File(location);
         long fileSize = file.length();
-        log.info("no : " + no);
-        ProfileVO profile = new ProfileVO(no, originalFileName, systemFileName, fileSize);
+        ProfileVO profile = new ProfileVO(no, initOriginImg, initSysImg, fileSize);
+        log.info("----- 회원가입 시 profile" + profile);
         profileMapper.insertProfile(profile);
     }
 
@@ -54,23 +72,30 @@ public class ProfileServiceImpl implements ProfileService{
         profileMapper.updateProfile(map);
     }
 
-    // 프로필 파일 로컬 저장
+    // 프로필 수정 시 파일 로컬 저장
     @Override
     public ProfileVO uploadProfilePhoto(MultipartFile multipartFile) throws Exception {
         if(multipartFile.isEmpty()) {
             return null;
         }
+
+        if(!Files.exists(Paths.get(profileFileDir))) {
+            log.info("---------- 프로필 파일 저장 중 폴더 생성");
+            FileManager.createDir(profileFileDir);
+        }
+
         String originalFileName = multipartFile.getOriginalFilename();
         String extension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
         String systemFileName = UUID.randomUUID().toString() + "." + extension;
         long fileSize = multipartFile.getSize();
         //String location = this.dir2 + systemFileName;
-        String location = this.dir2 + "profile/" + systemFileName;
+        //String location = this.dir2 + "profile/" + systemFileName;
+        String location = this.profileFileDir + systemFileName;
 
-        log.info("Original : " + originalFileName);
-        log.info("System : " + systemFileName);
-        log.info("size : " + fileSize);
-        log.info("location : " + location);
+//        log.info("Original : " + originalFileName);
+//        log.info("System : " + systemFileName);
+//        log.info("size : " + fileSize);
+//        log.info("location : " + location);
 
         multipartFile.transferTo(new File(location));
 
@@ -80,7 +105,8 @@ public class ProfileServiceImpl implements ProfileService{
     // 프로필 이미지 업데이트 시 기존 프로필 이미지 삭제
     @Override
     public void deleteProfilePhoto(ProfileVO profile) throws Exception {
-        String location = this.dir2 + "profile/" + profile.getSystemFileName();
+        //String location = this.profileFileDir + "profile/" + profile.getSystemFileName();
+        String location = this.profileFileDir + profile.getSystemFileName();
         log.info("loc : " + location);
         File file = new File(location);
         if(file.exists()) {
@@ -98,9 +124,11 @@ public class ProfileServiceImpl implements ProfileService{
         String originalFileName = initOriginImg;
         String extension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
         String systemFileName = UUID.randomUUID().toString() + "." + extension;
-        String location = dir2 + "profile/" + originalFileName;
+        //String location = profileFileDir + "profile/" + originalFileName;
+        String location = profileFileDir + originalFileName;
         long fileSize = location.length();
-        String newLocation = dir2 + "profile/" + systemFileName;
+        //String newLocation = profileFileDir + "profile/" + systemFileName;
+        String newLocation = profileFileDir + systemFileName;
 
         // 원본 이미지 복사 후 새로운 system이름으로 저장
         final int N = 1024;
