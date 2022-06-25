@@ -33,8 +33,9 @@ import java.util.Map;
 @Service
 public class MusicApiService {
 
-    private final String baseURI = "http://localhost:20000/api";
+    //private final String baseURI = "http://localhost:20000/api";
     //private final String baseURI = "http://3.38.88.242:8092/api";
+    private final String baseURI = "http://13.124.245.202:20000/api";
 
     private final String URI_MUSICS_ID = baseURI + "/musics/find/{id}";
     private final String URI_MUSICS_UPLOAD = baseURI + "/music";
@@ -142,12 +143,12 @@ public class MusicApiService {
         params.put("musicId", musicId);
         params.put("articleNo", articleNo);
         log.info(params.toString());
-        restTemplate.put("http://13.124.245.202:20000/api/music/{musicId}/{articleNo}",String.class, params);
+        restTemplate.put(baseURI + "/music/{musicId}/{articleNo}",String.class, params);
     }
 
     public List<Music> retrieveMusics(int articleNo){
 
-        ResponseEntity<List> response = restTemplate.getForEntity("http://13.124.245.202:20000/api/musics/article/{articleNo}", List.class, articleNo);
+        ResponseEntity<List> response = restTemplate.getForEntity(baseURI + "/musics/article/{articleNo}", List.class, articleNo);
        
         log.info("response body : " + response.getBody());
 
@@ -196,8 +197,7 @@ public class MusicApiService {
         map.put("playlistKey", playlistKey);
         log.info("map : " + map);
 
-        //restTemplate.delete("http://localhost:20000/api/playlists/delete/{memberNo}/{playlistKey}" , map);
-        restTemplate.delete("http://13.124.245.202:20000/api/playlists/delete/{memberNo}/{playlistKey}" , map);
+        restTemplate.delete(baseURI + "/playlists/delete/{memberNo}/{playlistKey}" , map);
 
     }
 
@@ -227,15 +227,13 @@ public class MusicApiService {
         map.put("musicNos", musicNos);
 
         map.put("playlistKey", playlistKey);
-      
-        //restTemplate.delete("http://localhost:20000/api/playlists/pull/{playlistKey}/{musicNos}", map);
-        restTemplate.delete("http://13.124.245.202:20000/api/playlists/pull/{playlistKey}/{musicNos}", map);
+
+        restTemplate.delete(baseURI + "/playlists/pull/{playlistKey}/{musicNos}", map);
     }
 
     // 플레이리스트 정보 가져오기
     public Playlist getOnePlaylist(String playlistKey) {
-        //ResponseEntity<Playlist> response = restTemplate.getForEntity("http://localhost:20000/api/onePlaylists/{playlistNo}", Playlist.class, playlistKey);
-        ResponseEntity<Playlist> response = restTemplate.getForEntity("http://13.124.245.202:20000/api/onePlaylists/{playlistKey}", Playlist.class, playlistKey);
+        ResponseEntity<Playlist> response = restTemplate.getForEntity(baseURI + "/onePlaylists/{playlistKey}", Playlist.class, playlistKey);
         return response.getBody();
     }
 
