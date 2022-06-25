@@ -18,6 +18,13 @@ $(document).ready(function () {
                     articleNo: $("#article_no").val(),
                     depth: depth
                 },
+                beforeSend: function (jqXHR, settings) {
+                    var header = $("meta[name='_csrf_header']").attr("content");
+                    var token = $("meta[name='_csrf']").attr("content");
+                    console.log("----- header : " + header);
+                    console.log("----- token : " + token);
+                    jqXHR.setRequestHeader(header, token);
+                },
                 success: function (data) {
                     resolve(data);
                 },

@@ -143,8 +143,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class);
 
-        http
-                .csrf().disable();
+//        http
+//                .csrf().disable();
 
         http
                 .formLogin()
