@@ -14,4 +14,7 @@ public interface ProfileService {
     public void addProfile(int no) throws Exception;
     public void deleteProfilePhoto(ProfileVO profile) throws Exception;
     public void modifyBio(int no, String bio) throws Exception;
+
+    //수정 필요
+    //ProfileVO test();
 }

@@ -41,6 +41,10 @@
 		{ CALL sp_file_select_thumbnail(#{articleNo}, #{fileType}) }
 	</select>
 
+	<select id="selectFileNo" parameterType="int" resultType="int">
+		SELECT IFNULL(MAX(file_no), 0) FROM file WHERE article_no = #{articleNo};
+	</select>
+
 	<select id="selectArticleFiles" parameterType="int" statementType="CALLABLE" resultType="fileVo" resultMap="selectFileMap">
 		{ CALL sp_select_article_files(#{articleNo}) }
 	</select>

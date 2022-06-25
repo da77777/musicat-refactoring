@@ -17,6 +17,9 @@ public interface FileMapper {
 
 	//썸네일 조회
 	List<FileVO> selectThumbFile(FileVO fileVo);
+
+	//게시글에 속한 파일 번호 조회
+	int selectFileNo(int articleNo);
 	
 	//파일 삭제
 	void deleteFile(int FileNo);

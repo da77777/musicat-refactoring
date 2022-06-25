@@ -1,10 +1,12 @@
 package com.example.musicat.controller;
 
+import com.example.musicat.domain.board.FileVO;
 import com.example.musicat.domain.member.MemberVO;
 import com.example.musicat.domain.member.ProfileVO;
 import com.example.musicat.security.MemberAccount;
 import com.example.musicat.service.member.MemberService;
 import com.example.musicat.service.member.ProfileService;
+import com.example.musicat.util.FileManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,8 +29,8 @@ import java.net.MalformedURLException;
 @Slf4j
 public class ProfileController {
     @Autowired private ProfileService profileService;
-    @Autowired private MemberService memberService;
-    @Value("${file.dir}") private String dir2;
+    @Value("${file.profileDir}") private String profileFileDir;
+
 
     // 프로필 페이지 이동, session 정보를 가져와서 이동할 예정. 기능 구현을 위해서 임시 처리
     @GetMapping("/profile")
@@ -37,13 +39,12 @@ public class ProfileController {
 
         try {
             ProfileVO profile = profileService.retrieveProfile(member.getNo());
-            log.info("memberNo : " + member.getNo() + ", profileMember : " + profile.getNo());
+            log.info("----- sys : " + profile.getSystemFileName() + " ----- origin : " + profile.getOriginalFileName());
             model.addAttribute("member", member);
             model.addAttribute("profile", profile);
             return "view/member/profile";
         } catch (Exception e) {
             e.printStackTrace();
-//            return "/error";
             return null;
         }
     }
@@ -52,7 +53,8 @@ public class ProfileController {
     @ResponseBody
     @GetMapping("/profileTempImage/{filename}")
     public Resource showProfileTempImage(@PathVariable String filename) throws MalformedURLException {
-        return new UrlResource("file:" + this.dir2 + "profile/" + filename);
+        log.info("프로필 미리보기 출력 : " + profileFileDir + filename);
+        return new UrlResource("file:" + profileFileDir + filename);
     }
 
     // 프로필 이미지
@@ -61,8 +63,13 @@ public class ProfileController {
     public Resource showProfileImage(@PathVariable int no) throws MalformedURLException {
         try{
             ProfileVO profile = profileService.retrieveProfile(no);
+            log.info("----- profile image : " + profile);
+            
+            //조회 불가할 때 처리 필요
+            
             String filename = profile.getSystemFileName();
-            return new UrlResource("file:" + this.dir2 + "profile/" + filename);
+            log.info("프로필 이미지 출력 : " + profileFileDir + filename);
+            return new UrlResource("file:" + profileFileDir + filename);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -75,22 +82,19 @@ public class ProfileController {
         log.info("update 시작");
         log.info("flag : " + flag);
         log.info("null : " + importAttachFile.getOriginalFilename().isEmpty());
-        MemberVO member = ((MemberAccount) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberVo();
         log.info("mul : " + importAttachFile.getOriginalFilename());
         try {
             if(!importAttachFile.getOriginalFilename().isEmpty()){
                 ProfileVO oldProfile = profileService.retrieveProfile(no);
                 profileService.deleteProfilePhoto(oldProfile);
-                ProfileVO newProfile = new ProfileVO();
-                newProfile = profileService.uploadProfilePhoto(importAttachFile);
+                ProfileVO newProfile = profileService.uploadProfilePhoto(importAttachFile);
                 profileService.modifyProfile(no, newProfile);
             }
             else{
                 if(flag.equals("true")) {
                     ProfileVO oldProfile = profileService.retrieveProfile(no);
                     profileService.deleteProfilePhoto(oldProfile);
-                    ProfileVO newProfile = new ProfileVO();
-                    newProfile = profileService.resetProfilePhoto();
+                    ProfileVO newProfile = profileService.resetProfilePhoto();
                     profileService.modifyProfile(no, newProfile);
                 }
             }
@@ -98,7 +102,6 @@ public class ProfileController {
             return "redirect:/myPage/Playlist/"+no;
         } catch(Exception e) {
             e.printStackTrace();
-//            return "error";
             return null;
         }
     }

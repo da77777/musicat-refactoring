@@ -19,6 +19,8 @@ public interface FileDao {
 	//파일 등록
 	void insertFile(FileVO fileVO);
 
+	int selectFileNo(int articleNo);
+
 	//파일 삭제
 	void deleteFile(int FileNo);
 	

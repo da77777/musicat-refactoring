@@ -54,9 +54,12 @@ server.error:
   include-stacktrace: always
 
 file:
-  dir: /upload/
-  thumbDir: /upload/thumbnail/
-  profileDir: /upload/profile/
+#    dir: /upload/
+#    thumbDir: /upload/thumbnail/
+#    profileDir : /upload/profile/
+  dir: C:/Users/양다예/AppData/Local/upload/
+  thumbDir: C:/Users/양다예/AppData/Local/upload/thumbnail/
+  profileDir: C:/Users/양다예/AppData/Local/upload/profile/
 
 # hibernate가 생성하는 SQL이 모두 보인다.
 logging:

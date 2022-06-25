@@ -1,6 +1,5 @@
 package com.example.musicat.domain.board;
 
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.ibatis.type.Alias;
 

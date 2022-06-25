@@ -1,5 +1,12 @@
 package com.example.musicat.util;
 
+import com.example.musicat.domain.board.FileVO;
+import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,33 +15,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.example.musicat.service.board.FileService;
-import com.example.musicat.service.board.FileServicleImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.example.musicat.domain.board.FileVO;
-
-import lombok.extern.slf4j.Slf4j;
-import net.coobird.thumbnailator.Thumbnails;
-
 @Slf4j
 @Component
 public class FileManager {
-	
 
-//  local
-	private String fileDir = "C:/Users/양다예/AppData/Local/upload/";
-	private String thumbnailFileDir = "C:/Users/양다예/AppData/Local/upload/thumbnail/";
+	@Value("${file.dir}")
+	public String fileDir;
+	@Value("${file.thumbDir}")
+	public String thumbnailFileDir;
+	@Value("${file.profileDir}")
+	public String profileFileDir;
+	public static final String initOriginImage = "basicImage.png";
+	public static final String initSysImage = "basicImage.png";
 
-//	배포
-//	@Value("${file.dir}")
-//	private String fileDir;
-//	@Value("${file.thumbDir}")
-//	private String thumbnailFileDir;
-
+//		if(!Files.exists(Paths.get(fileDir))) {
+//			log.info("---------- 파일 저장 중 폴더 생성");
+//			createDir(fileDir);
+//		}
 	public static void createDir(String dir) {
 		try{
 			Files.createDirectories(Paths.get(dir));
@@ -43,9 +40,8 @@ public class FileManager {
 		}
 	}
 
-	// fileName을 받아서 fullPath 반환
-	public String getFullPath(String fileName) {
-		return this.fileDir + fileName;
+	public String getFullPath(String dir, String fileName) {
+		return dir + fileName;
 	}
 
 	// 여러개 저장
@@ -53,22 +49,24 @@ public class FileManager {
 		List<FileVO> uploadFileResult = new ArrayList<>();
 		for (MultipartFile multipartFile : multipartFiles) { // part로 한개씩 꺼낸다.
 			if (!multipartFile.isEmpty()) { // Null이 아니라면
-				uploadFileResult.add(uploadFile(multipartFile));
+				uploadFileResult.add(uploadFile(fileDir, multipartFile));
 			}
 		}
 		return uploadFileResult;
 	}
 
-
 	// 파일 저장
-	public FileVO uploadFile(MultipartFile multipartFile) throws IOException{
+	public FileVO uploadFile(String dir, MultipartFile multipartFile) throws IOException{
 		if (multipartFile.isEmpty()) { // 파일이 없는 경우
 			return null;
 		}
+
+		log.info("----- 파일 저장 경로 : " + dir);
+
 		String originalFileName = multipartFile.getOriginalFilename(); // 사용자가 올린 파일명
 		String systemFileName = createSystemFileName(originalFileName);
 		Long fileSize = multipartFile.getSize(); // File크기
-		multipartFile.transferTo(new File(getFullPath(systemFileName))); // 파일 경로에 저장
+		multipartFile.transferTo(new File(getFullPath(dir, systemFileName))); // 파일 경로에 저장
 
 		return new FileVO(originalFileName, systemFileName, fileSize); // 파일 저장하고 원본, 시스템 파일명 반환
 	}
@@ -76,8 +74,8 @@ public class FileManager {
 
 	// 썸네일 생성
 	public void createThumbnail(String systemFileName) throws IOException {
-		File image = new File(getFullPath(systemFileName));
-		File thumbnail = new File(getFullPath("thumbnail/thumb" + systemFileName));
+		File image = new File(getFullPath(fileDir, systemFileName));
+		File thumbnail = new File(getFullPath(thumbnailFileDir, systemFileName));
 
 		//systemFileName에서 확장자 추출
 		int pos = systemFileName.lastIndexOf("."); 
@@ -91,15 +89,20 @@ public class FileManager {
 	
 	// Upload Folder에서 삭제
 	public void deleteUploadFile(FileVO fileVO){
-		File file = new File(getFullPath(fileVO.getSystemFileName()));
+		String systemFileName = fileVO.getSystemFileName();
+		File file = new File(getFullPath(fileDir, systemFileName));
 		if(file.exists()){
 			file.delete();
+		}
+		File thumbFile = new File(getFullPath(thumbnailFileDir, systemFileName));
+		if(thumbFile.exists()) {
+			thumbFile.delete();
 		}
 	}
 
 
 	// 서버에서 관리할 파일이름 추출
-	private String createSystemFileName(String originalFileName) {
+	public String createSystemFileName(String originalFileName) {
 		String uuid = UUID.randomUUID().toString(); // 랜덤 UUID값 생성
 		String ext = extract(originalFileName); // 원본 파일에서 확장자 추출
 		return uuid + "." + ext;
