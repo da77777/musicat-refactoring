@@ -317,4 +317,9 @@
 		WHERE MG.member_no = #{no} AND G.grade_no > 0;
 	</update>
 
+	<select id="selectMemberName" parameterType="int" resultType="String">
+		SELECT nickname
+		FROM member
+		WHERE member_no = #{memberNo}
+	</select>
 </mapper>

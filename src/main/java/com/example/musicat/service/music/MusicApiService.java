@@ -4,9 +4,12 @@ import com.example.musicat.domain.member.MemberVO;
 import com.example.musicat.domain.music.Music;
 import com.example.musicat.domain.music.Playlist;
 import com.example.musicat.domain.music.PlaylistImage;
+import com.example.musicat.domain.music.PlaylistNode;
 import com.example.musicat.exception.RestErrorHandler;
+import com.example.musicat.repository.member.MemberDao;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
 import org.apache.logging.log4j.core.pattern.MdcPatternConverter;
@@ -53,11 +56,13 @@ public class MusicApiService {
 
     private final RestTemplate restTemplate;
 
+    private final MemberDao memberDao;
     /*******************************************************************
      * RestTemplate Error Handling
      ******************************************************************/
-    public MusicApiService(RestTemplate restTemplate) {
+    public MusicApiService(RestTemplate restTemplate, MemberDao memberDao) {
         this.restTemplate = restTemplate;
+        this.memberDao = memberDao;
         //this.restTemplate.setErrorHandler(new RestErrorHandler());
     }
 
@@ -280,8 +285,29 @@ public class MusicApiService {
             list.remove(0);
         }
 
-        System.out.println(list);
-        return pl.getBody();
+
+        //System.out.println(list);[
+
+        //return pl.getBody();
+        //List<Playlist> playlists = pl.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Playlist> mapperlist = objectMapper.convertValue(pl.getBody(), new TypeReference<List<Playlist>>(){});
+
+        return setPlaylistMemberName(mapperlist);
+    }
+    protected List<Playlist> setPlaylistMemberName(List<Playlist> playlists) {
+
+
+        for(Playlist playlist : playlists) {
+            for(PlaylistNode playlistNode : playlist.getPlaylistNodes()){
+
+                playlistNode.getMusic().setMemberName(
+                        memberDao.selectMemberName(playlistNode.getMusic().getMemberNo())
+                );
+            }
+        }
+
+        return playlists;
     }
 
     // 플레이리스트 상세 불러오기

@@ -7,6 +7,7 @@ import com.example.musicat.domain.member.FollowVO;
 import com.example.musicat.domain.member.MemberVO;
 import com.example.musicat.domain.music.Music;
 import com.example.musicat.domain.music.Playlist;
+import com.example.musicat.domain.music.PlaylistNode;
 import com.example.musicat.security.MemberAccount;
 import com.example.musicat.service.board.ArticleService;
 import com.example.musicat.service.board.BoardService;
@@ -183,6 +184,7 @@ public class HomeController {
         model.addAttribute("member", member);
         model.addAttribute("follow", follow);
         model.addAttribute("playlists", playlists);
+
         model.addAttribute("checkFollow", checkFollow);
         log.info("before html playlists : " + playlists);
 

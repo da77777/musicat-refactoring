@@ -137,4 +137,9 @@ public class MemberDaoImpl implements MemberDao { // @Autowired가 속해 있는
 	public String selectMemberPassword(int memberNo) {
 		return this.selectMemberPassword(memberNo);
 	}
+
+	@Override
+	public String selectMemberName(int memberNo) {
+		return mapper.selectMemberName(memberNo);
+	}
 }

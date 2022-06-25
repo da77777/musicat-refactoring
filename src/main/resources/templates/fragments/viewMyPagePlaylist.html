@@ -84,28 +84,25 @@
                             <a th:href="|/myPage/Playlist/${member.getNo()}/*{id}|">
                                 <img th:src="*{links[0].href}">
                             </a>
+                            <div th:text="*{playlistName}"></div>
                         </div>
                         <input type="hidden" id="id_no" th:value="*{id}">
                         <div class="myPage-content-left-playlist-table">
                             <table>
+                                <thead>
+                                <tr>
+                                    <th>NO</th>
+                                    <th>올린사람</th>
+                                    <th>노래제목</th>
+<!--                                    <th>노래길이</th>-->
+                                </tr>
+                                </thead>
                                 <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>ArtistName</td>
-                                    <td>SongName</td>
-                                    <td>PlayTime</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>ArtistName</td>
-                                    <td>SongName</td>
-                                    <td>PlayTime</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>ArtistName</td>
-                                    <td>SongName</td>
-                                    <td>PlayTime</td>
+                                <tr th:each="playlistNode, index : ${playlist.playlistNodes}">
+                                    <td th:text="${index.index + 1}">1</td>
+                                    <td th:text="${playlistNode.music.memberName}">ArtistName</td>
+                                    <td th:text="${playlistNode.music.title}"></td>
+<!--                                    <td>PlayTime</td>-->
                                 </tr>
                                 </tbody>
                             </table>

@@ -54,4 +54,5 @@ public interface MemberDao {
 
 	String selectMemberPassword(int memberNo);
 
+	String selectMemberName(int memberNo);
 }
