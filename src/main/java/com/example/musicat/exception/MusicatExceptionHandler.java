@@ -2,25 +2,16 @@ package com.example.musicat.exception;
 
 import com.example.musicat.controller.HomeController;
 import com.example.musicat.domain.board.BestArticleVO;
-import com.example.musicat.domain.board.CategoryVO;
 import com.example.musicat.exception.customException.EmptyFileException;
 import com.example.musicat.service.board.ArticleService;
-import com.example.musicat.service.board.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.NoHandlerFoundException;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -38,7 +29,6 @@ public class MusicatExceptionHandler {
 //        mv.setViewName("/404error");
 //        return mv;
 //    }
-
     @ExceptionHandler(EmptyFileException.class)
     public ModelAndView handleEmptyFileException(HttpServletRequest req, EmptyFileException e) {
 

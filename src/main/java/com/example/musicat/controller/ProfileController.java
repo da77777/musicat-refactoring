@@ -1,28 +1,19 @@
 package com.example.musicat.controller;
 
-import com.example.musicat.domain.board.FileVO;
 import com.example.musicat.domain.member.MemberVO;
 import com.example.musicat.domain.member.ProfileVO;
-import com.example.musicat.security.MemberAccount;
-import com.example.musicat.service.member.MemberService;
 import com.example.musicat.service.member.ProfileService;
-import com.example.musicat.util.FileManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.websocket.server.PathParam;
-import java.lang.reflect.Member;
 import java.net.MalformedURLException;
 
 @Controller
@@ -63,7 +54,7 @@ public class ProfileController {
     public Resource showProfileImage(@PathVariable int no) throws MalformedURLException {
         try{
             ProfileVO profile = profileService.retrieveProfile(no);
-            log.info("----- profile image : " + profile);
+            log.info("----- 프로필 이미지 sys : " + profile.getSystemFileName());
             
             //조회 불가할 때 처리 필요
             

@@ -6,6 +6,7 @@ import com.example.musicat.mapper.member.ProfileMapper;
 import com.example.musicat.util.FileManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,8 +25,10 @@ public class ProfileServiceImpl implements ProfileService{
 //    private static final String initOriginImg = "basicImage.png"; // 기본 이미지 original name
 //    private static final String initSysImg = "basicImage.png"; // 기본 이미지 system name
 
-    private final String initOriginImg = fileManager.initOriginImage; // 기본 이미지 original name
-    private final String initSysImg = fileManager.initSysImage; // 기본 이미지 system name
+    @Value("${file.initOriginImage}")
+    public String initOriginImg;
+    @Value("${file.initSysImage}")
+    public String initSysImg;
 
     // 회원가입 시 프로필 생성, 회원가입 쪽에 해당 서비스 붙일 것.
     @Override
@@ -95,7 +98,7 @@ public class ProfileServiceImpl implements ProfileService{
 
         log.info("----- 기본 이미지로 변경");
         String originalFileName = initOriginImg;
-        String systemFileName = fileManager.createSystemFileName(originalFileName);
+        String systemFileName = fileManager.createSystemFileName(initOriginImg);
         String location = fileManager.profileFileDir + originalFileName;
         long fileSize = location.length();
         String newLocation = fileManager.profileFileDir + systemFileName;

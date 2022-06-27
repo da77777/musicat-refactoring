@@ -25,8 +25,13 @@ public class FileManager {
 	public String thumbnailFileDir;
 	@Value("${file.profileDir}")
 	public String profileFileDir;
-	public static final String initOriginImage = "basicImage.png";
-	public static final String initSysImage = "basicImage.png";
+	@Value("${file.initOriginImage}")
+	public String initOriginImage;
+	@Value("${file.initSysImage}")
+	public String initSysImage;
+
+//	public static final String initOriginImage = "basicImage.png";
+//	public static final String initSysImage = "basicImage.png";
 
 //		if(!Files.exists(Paths.get(fileDir))) {
 //			log.info("---------- 파일 저장 중 폴더 생성");
@@ -60,8 +65,6 @@ public class FileManager {
 		if (multipartFile.isEmpty()) { // 파일이 없는 경우
 			return null;
 		}
-
-		log.info("----- 파일 저장 경로 : " + dir);
 
 		String originalFileName = multipartFile.getOriginalFilename(); // 사용자가 올린 파일명
 		String systemFileName = createSystemFileName(originalFileName);
