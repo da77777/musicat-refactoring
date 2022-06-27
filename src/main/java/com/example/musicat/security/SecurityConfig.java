@@ -1,6 +1,8 @@
 package com.example.musicat.security;
 
 import com.example.musicat.domain.member.MemberVO;
+import com.example.musicat.service.member.MemberService;
+import com.example.musicat.websocket.manager.NotifyManager;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -49,6 +51,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private MemberService memberService;
+
+    @Autowired
+    NotifyManager notifyManager;
 
     //비밀번호 암호화
     @Bean
@@ -158,6 +166,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         //인증 성공 시 인증 결과를 담은 인증 객체를 파라미터로 받음 (인증 요청하지 않은 사용자의 정보는 HomController(/main)에서 처리해줌
                         MemberVO member = ((MemberAccount) authentication.getPrincipal()).getMemberVo();
 
+                        //마지막 방문일 업데이트
+                        memberService.modifyLastDate(member.getNo());
+
+                        //방문 횟수 업데이트
+                        memberService.modifyVisit(member.getNo());
+
+                        // 예나 - notify 임시 id set
+                        member.setNotifyId(member.getNo() + member.getEmail());
+                        notifyManager.addToNotifyList(member.getNo(), member.getNotifyId());
+
+                        //sessionTimeout 설정
+                        //request.getSession().setMaxInactiveInterval(3600); //60s * 60m
+
                         //사용자 요청페이지 저장
                         RequestCache requestCache = new HttpSessionRequestCache();
                         SavedRequest savedRequest = requestCache.getRequest(request, response);
@@ -168,8 +189,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             response.sendRedirect(savedRequest.getRedirectUrl());
                         }
 
-                        //sessionTimeout 설정
-                        //request.getSession().setMaxInactiveInterval(3600); //60s * 60m
                     }
                 })
                 .failureHandler(new AuthenticationFailureHandler() {

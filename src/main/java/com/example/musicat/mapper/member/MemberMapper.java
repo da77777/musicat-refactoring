@@ -15,13 +15,15 @@ import org.springframework.stereotype.Repository;
 public interface MemberMapper {
 
 	// 양 : Session에 담을 회원 정보
-	public MemberVO selectMemberByEmail(String email);
+	MemberVO selectMemberByEmail(String email);
 
-	public MemberVO selectMember_byIDPwd(String email, String password) throws Exception;
+	MemberVO selectMember_byIDPwd(String email, String password) throws Exception;
 
-	public void updateLastDate(int no) ;
+	void updateVisit(int no);
 
-	public MemberVO test();
+	void updateLastDate(int no) ;
+
+	MemberVO test();
 
 	// 연주 ----------------------------------------
 	// 회원 가입

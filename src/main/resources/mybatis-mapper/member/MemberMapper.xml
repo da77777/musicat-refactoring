@@ -165,7 +165,9 @@
         WHERE email=#{email} AND password=#{password}
     </select>
 
-
+	<update id="updateVisit" parameterType="int">
+		UPDATE member SET visits = visits + 1 WHERE member_no = #{no};
+	</update>
 
     
     <update id = "updateLastDate" parameterType = "int">
