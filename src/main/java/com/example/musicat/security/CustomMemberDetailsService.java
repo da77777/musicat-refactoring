@@ -44,13 +44,6 @@ public class CustomMemberDetailsService implements UserDetailsService {
         List<GrantedAuthority> roles = new ArrayList<>();
         roles.add(new SimpleGrantedAuthority(memberVo.getGrade()));
 
-        // 예나 - notify 임시 id set
-        memberVo.setNotifyId(memberVo.getNo() + memberVo.getEmail());
-        notifyManager.addToNotifyList(memberVo.getNo(), memberVo.getNotifyId());
-
-        //마지막 방문일 업데이트
-        memberService.modifyLastDate(memberVo.getNo());
-
         return new MemberAccount(memberVo, roles);
     }
 

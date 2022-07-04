@@ -9,18 +9,13 @@ import java.util.Map;
 
 public interface MemberDao {
 
-	// 양 ~
-	public MemberVO selectMemberByEmail(String email);
+	MemberVO selectMemberByEmail(String email);
 
-	// ~ 양
+	void test();
 
-	public void test();
+	void updateVisit(int no);
 
-	public MemberVO selectMember(int no);
-
-	public MemberVO selectMember(String email, String password) throws Exception;
-
-	public void updateLastDate(int no);
+	void updateLastDate(int no);
 
 	// 회원 가입
 	void insertMember(MemberVO mVo);
@@ -29,29 +24,26 @@ public interface MemberDao {
 
 	int joinCheck(Map<String, Object> map);
 
-	
 	//회원 자진 탈퇴
 	void updateMember(int memberNo, String password);
 	
 	//비밀번호 재설정
 	void updatePassword(int memNo, String newPassword);
 
-	MemberVO selectMember(String email);
-
-	MemberVO selectMemberProfile(int member_no);
-
-
-	boolean selectNickname(String nickname);
-
 	//비밀번호 변경
 	void updatePassword(MemberVO memberVo);
 
-
-	ArrayList<MemberVO> selectSearchMember(int startRow, int memberPerPage, String keyfield, String keyword);
-
 	int updateTempPassword(MemberVO mVo) throws Exception;
 
-
 	String selectMemberPassword(int memberNo);
+
+
+	public MemberVO selectMember(int no);
+	public MemberVO selectMember(String email, String password) throws Exception;
+	MemberVO selectMember(String email);
+	MemberVO selectMemberProfile(int member_no);
+	boolean selectNickname(String nickname);
+	ArrayList<MemberVO> selectSearchMember(int startRow, int memberPerPage, String keyfield, String keyword);
+
 
 }

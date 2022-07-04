@@ -196,7 +196,7 @@ public class ArticleController {
 		MemberVO member = HomeController.checkMemberNo();
 
 		// 파일 첨부 지정 폴더에 Upload도 동시에 실행
-		FileVO attacheFile = fileManager.uploadFile(form.getImportAttacheFile()); // 첨부 파일
+		FileVO attacheFile = fileManager.uploadFile(fileManager.fileDir, form.getImportAttacheFile()); // 첨부 파일
 		List<FileVO> imageFiles = fileManager.uploadFiles(form.getImageFiles()); // 이미지 파일
 		if (imageFiles.size() > 0) {
 			int pos = imageFiles.get(0).getSystemFileName().indexOf(".");
@@ -307,7 +307,7 @@ public class ArticleController {
 		}
 
 		// 파일 첨부 지정 폴더에 Upload도 동시에 실행
-		FileVO attacheFile = fileManager.uploadFile(form.getImportAttacheFile()); // 첨부 파일
+		FileVO attacheFile = fileManager.uploadFile(fileManager.fileDir, form.getImportAttacheFile()); // 첨부 파일
 		List<FileVO> imageFiles = fileManager.uploadFiles(form.getImageFiles()); // 이미지 파일
 		if (imageFiles.size() > 0) {
 			fileManager.createThumbnail(imageFiles.get(0).getSystemFileName()); // 썸네일 생성

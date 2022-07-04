@@ -23,6 +23,9 @@ public interface FileService {
 	// 썸네일 조회
 	FileVO retrieveThumbFile(FileVO file);
 
+	// 게시글에 속한 파일 번호 조회
+	int retrieveFileNo(int articleNo);
+
 	// 파일 삭제
 	void removeFile(int fileNo);
 	

@@ -9,6 +9,7 @@ import com.example.musicat.mapper.member.MemberMapper;
 import com.example.musicat.repository.board.ArticleDao;
 import com.example.musicat.service.music.MusicApiService;
 import com.example.musicat.util.BestArticle;
+import com.example.musicat.util.FileManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service("articleService")
 public class ArticleServiceImpl implements ArticleService {
 
-//	private final BoardService boardService;
 	private final MusicApiService musicApiService;
 	private final ArticleMapper articleMapper;
 	private final ArticleDao articleDao;
 	private final FileService fileService;
 	private final MemberMapper memberMapper;
 	private final BestArticle bestArticleUtil;
+	private final FileManager fileManager;
 	
 
 	@Override
@@ -37,8 +38,6 @@ public class ArticleServiceImpl implements ArticleService {
 	public ArticleVO retrieveArticle(int articleNo) {
 		List<SelectArticleVO> results = this.articleDao.selectArticle(articleNo);
 		List<TagVO> tags = this.articleMapper.selectArticleTags(articleNo);
-//		System.out.println("ArticleServiceImpl.retrieveArticle: results : " + results.size());
-
 		ArticleVO article = results.get(0).getArticle(); // 게시글 정보 출력
 		article.setSelectTags(tags);
 
@@ -69,9 +68,6 @@ public class ArticleServiceImpl implements ArticleService {
 		HashMap<String, Object> map = new HashMap<>();
 		Criteria cre = Criteria.getThumbnailPaging(currentNo, 1);
 		int offset = cre.getPageStart();
-//		log.info("cre: {}", cre.toString());
-//		log.info("currentNo: {}", currentNo);
-//		log.info("offset: {}", offset);
 		map.put("boardNo", boardNo);
 		map.put("offset", offset);
 		return this.articleDao.selectBoardList(map);
@@ -129,6 +125,15 @@ public class ArticleServiceImpl implements ArticleService {
 	@Override
 	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
 	public int removeArticle(int articleNo, int memberNo) {
+
+		log.info("---- 게시글에 속한 파일 삭제");
+		int fileNo = fileService.retrieveFileNo(articleNo);
+		if(fileNo != 0) {
+			FileVO findFile = fileService.selectOneFile(fileNo);
+			fileManager.deleteUploadFile(findFile); // upload 폴더에서 삭제
+		}
+
+		log.info("----- 게시글 삭제");
 		this.musicApiService.deleteMusicByArticleNo(articleNo); // 음악 삭제
 		this.memberMapper.minusMemberDocs(memberNo);
 		int boardNo = this.articleDao.selectArticle(articleNo).get(0).getArticle().getBoardNo();

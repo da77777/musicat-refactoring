@@ -2,6 +2,8 @@ package com.example.musicat.service.board;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +49,12 @@ public class FileServiceImpl implements FileService {
 			}
 		}
 		if (article.getFileList() != null) { // 이미지 첨부 파일이 있을 때
+
+			if(!Files.exists(Paths.get(fileManager.fileDir))) {
+				log.info("---------- 게시글 저장 중 파일 폴더 생성");
+				fileManager.createDir(fileManager.fileDir);
+			}
+
 			List<FileVO> fileList = article.getFileList();
 			for (FileVO file : fileList) {
 				if (fileCheck(this.dirPath, file.getSystemFileName())) {
@@ -68,10 +76,14 @@ public class FileServiceImpl implements FileService {
 	// 썸네일 생성
 	@Override
 	public void createThumbnail(FileVO thumbFile) throws IOException {
-		//String thumPath = this.dirPath + "thumbnail";
-		String thumPath = this.dirPath;
-		log.info("thumPath : " + thumPath);
-		if (fileCheck(thumPath, thumbFile.getSystemFileName())) {
+
+		if(!Files.exists(Paths.get(fileManager.thumbnailFileDir))) {
+			log.info("---------- 게시글 저장 중 썸네일 생성");
+			fileManager.createDir(fileManager.thumbnailFileDir);
+		}
+
+		String thumbPath = this.fileManager.thumbnailFileDir;
+		if (fileCheck(thumbPath, thumbFile.getSystemFileName())) {
 			this.fileManager.createThumbnail(thumbFile.getSystemFileName());
 		}
 	}
@@ -126,7 +138,12 @@ public class FileServiceImpl implements FileService {
 			return null;
 		}
 	}
-	
+
+	@Override
+	public int retrieveFileNo(int articleNo) {
+		return this.fileDao.selectFileNo(articleNo);
+	}
+
 	@Override
 	public void removeFile(int fileNo) {
 		this.fileDao.deleteFile(fileNo);

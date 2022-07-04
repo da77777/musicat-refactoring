@@ -1,54 +1,41 @@
 package com.example.musicat.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import com.example.musicat.controller.form.GradeArticleForm;
 import com.example.musicat.controller.form.JoinForm;
-import com.example.musicat.domain.board.GradeArticleVO;
+import com.example.musicat.domain.member.MemberVO;
+import com.example.musicat.domain.paging.Criteria;
+import com.example.musicat.domain.paging.Paging;
+import com.example.musicat.security.MemberAccount;
 import com.example.musicat.service.board.ArticleService;
+import com.example.musicat.service.member.GradeService;
+import com.example.musicat.service.member.MemberService;
 import com.example.musicat.service.member.ProfileService;
 import com.example.musicat.service.music.MusicApiService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import org.json.simple.JSONArray;
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import com.example.musicat.service.member.GradeService;
-import com.example.musicat.service.member.MemberService;
-import com.example.musicat.domain.member.GradeVO;
-import com.example.musicat.domain.member.MemberVO;
-import com.example.musicat.domain.paging.Criteria;
-import com.example.musicat.domain.paging.Paging;
-
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 //여기부터가 기본 세팅
 @Slf4j
 @Controller
 public class MemberController {
 
-	// 양
 	@Autowired
 	private BCryptPasswordEncoder encodePwd;
-
 	@Autowired
 	private MemberService memberService;
 	@Autowired
@@ -60,23 +47,6 @@ public class MemberController {
 
 	@Autowired
 	private MusicApiService musicApiService;
-
-//	회원가입
-//	@PostMapping("/join") // 이걸 실행하는 값의 주소
-//	public String joinMember(MemberVO mVo) {
-//		mVo.setPassword(encodePwd.encode(mVo.getPassword())); //비밀번호 암호화
-//		try{
-//			this.memberService.registerMember(mVo);
-//			this.profileService.addProfile(mVo.getNo());
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		//log.info("비밀번호 : " + mVo.getPassword() + " 이메일 : " + mVo.getEmail() + " 닉네임 : " + mVo.getNickname());
-//
-//		//log.info("비밀번호(암호화) : " + mVo.getPassword());
-//		return "redirect:/musicatlogin"; // string으로 리턴되는건 html 파일로 넘어감! (회원가입 다음 로그인화면으로 넘어가고 싶다면 templates 안에 있는 로그인
-//								// html 파일명 쓰기)
-//	}
 
 	@PostMapping("/join") // 이걸 실행하는 값의 주소
 	public ModelAndView joinMember(@Validated JoinForm form, BindingResult result) throws Exception{
@@ -100,7 +70,7 @@ public class MemberController {
 		mvo = this.memberService.retrieveMemberByEmail(mvo.getEmail());
 		log.info("방금 가입한 멤버 넘버 : " + mvo.getNo());
 		this.musicApiService.makeNowPlaying(mvo);
-//		this.profileService.addProfile(mvo.getNo());
+		this.profileService.addProfile(mvo.getNo());
 
 //		return "redirect:/musicatlogin"; // string으로 리턴되는건 html 파일로 넘어감! (회원가입 다음 로그인화면으로 넘어가고 싶다면 templates 안에 있는 로그인
 								// html 파일명 쓰기)
@@ -238,7 +208,7 @@ public class MemberController {
 //	회원 자진 탈퇴 로직 실행 =
 	@PostMapping("/outMember")  //이걸 실행하는 값의 주소
 	public String outMember(@RequestParam String password, HttpSession session) {
-		MemberVO member =  (MemberVO) session.getAttribute("loginUser");
+		MemberVO member = ((MemberAccount) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMemberVo();
 		this.memberService.modifyMember(member.getNo(), password);
 		return "redirect:logout"; 
 	}

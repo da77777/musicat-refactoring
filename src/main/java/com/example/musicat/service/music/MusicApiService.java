@@ -65,11 +65,12 @@ public class MusicApiService {
     }
 
     public void makeNowPlaying(MemberVO memberVO) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        log.info("makeNowPlaying no : {}", memberVO.getNo());
-        map.put("memberNo", memberVO.getNo());
-        log.info("map value no : {}", map.get("memberNo"));
-        restTemplate.postForEntity("http://13.124.245.202:20000/api/playlists/makeNow/"+memberVO.getNo(), memberVO.getNo(), String.class);
+//        Map<String, Object> map = new HashMap<String, Object>();
+//        log.info("makeNowPlaying no : {}", memberVO.getNo());
+//        map.put("memberNo", memberVO.getNo());
+//        log.info("map value no : {}", map.get("memberNo"));
+//        restTemplate.postForEntity("http://13.124.245.202:20000/api/playlists/makeNow/"+memberVO.getNo(), memberVO.getNo(), String.class);
+        log.info("----- makeNowPlaying 주석처리 ");
     }
 
     public void retrieveMusicById(Long id) {
@@ -290,17 +291,19 @@ public class MusicApiService {
 
     // 플레이리스트 목록 불러오기
     public List<Playlist> showPlaylist(int memberNo) {
-        ObjectMapper mapper = new ObjectMapper();
-        ResponseEntity<List> pl = restTemplate.getForEntity(URI_PLAYLIST_ID, List.class, memberNo);
-        //log.info(pl.toString());
-        log.info("playlist information : " + pl);
-        List<Playlist> list = pl.getBody();
-        if(list.size() != 0) {
-            list.remove(0);
-        }
-
-        System.out.println(list);
-        return pl.getBody();
+//        ObjectMapper mapper = new ObjectMapper();
+//        ResponseEntity<List> pl = restTemplate.getForEntity(URI_PLAYLIST_ID, List.class, memberNo);
+//        //log.info(pl.toString());
+//        log.info("playlist information : " + pl);
+//        List<Playlist> list = pl.getBody();
+//        if(list.size() != 0) {
+//            list.remove(0);
+//        }
+//
+//        System.out.println(list);
+//        return pl.getBody();
+        log.info("----- 플레이리스트 목록 불러오기 주석처리");
+        return null;
     }
 
     // 플레이리스트 상세 불러오기

@@ -58,6 +58,7 @@ public interface MemberService {
 
 	int updateTempPassword(MemberVO mVo);
 
+    void modifyVisit(int no);
 
   void modifyLastDate(int no);
 

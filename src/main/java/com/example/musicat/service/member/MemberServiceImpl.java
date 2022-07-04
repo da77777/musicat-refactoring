@@ -201,6 +201,11 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
+	public void modifyVisit(int no) {
+		this.memberdao.updateVisit(no);
+	}
+
+	@Override
 	@Transactional
 	public void modifyLastDate(int no) {
 		this.memberdao.updateLastDate(no);

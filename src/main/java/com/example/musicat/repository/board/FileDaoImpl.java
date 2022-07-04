@@ -37,6 +37,11 @@ public class FileDaoImpl implements FileDao {
 	}
 
 	@Override
+	public int selectFileNo(int articleNo) {
+		return this.fileMapper.selectFileNo(articleNo);
+	}
+
+	@Override
 	public void deleteFile(int FileNo) {
 		this.fileMapper.deleteFile(FileNo);
 	}
